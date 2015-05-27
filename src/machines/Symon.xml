@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<Machine name="Symon">
+	<Bus>
+		<Width>16</Width>
+		<Cpu>
+			<Processor>6502</Processor>
+			<Clock>1000000</Clock>
+		</Cpu>
+	</Bus>
+</Machine>
