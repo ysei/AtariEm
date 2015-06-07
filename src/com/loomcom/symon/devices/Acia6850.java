@@ -54,9 +54,8 @@ public class Acia6850 extends Acia {
      */
     private int commandRegister;
 
-
-    public Acia6850(int address) throws MemoryRangeException {
-        super(address, ACIA_SIZE, "ACIA6850");
+    public Acia6850() throws MemoryRangeException {
+        super(ACIA_SIZE, "ACIA6850");
         setBaudRate(2400);
     }
 

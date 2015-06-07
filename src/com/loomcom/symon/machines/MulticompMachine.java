@@ -28,11 +28,8 @@ import com.loomcom.symon.Bus;
 import com.loomcom.symon.Cpu;
 import com.loomcom.symon.devices.Acia;
 import com.loomcom.symon.devices.Acia6850;
-import com.loomcom.symon.devices.Crtc;
 import com.loomcom.symon.devices.Memory;
-import com.loomcom.symon.devices.Pia;
 import com.loomcom.symon.devices.SdController;
-import com.loomcom.symon.exceptions.MemoryRangeException;
 import java.io.File;
 import java.util.logging.Logger;
 
@@ -41,10 +38,6 @@ public class MulticompMachine implements Machine {
     
     private final static Logger logger = Logger.getLogger(MulticompMachine.class.getName());
     
-    // Constants used by the simulated system. These define the memory map.
-    private static final int BUS_BOTTOM = 0x0000;
-    private static final int BUS_TOP    = 0xffff;
-
     // 56K of RAM from $0000 - $DFFF
     private static final int MEMORY_BASE = 0x0000;
     private static final int MEMORY_SIZE = 0xE000;
@@ -70,17 +63,17 @@ public class MulticompMachine implements Machine {
 
 
     public MulticompMachine() throws Exception {
-        this.bus = new Bus(BUS_BOTTOM, BUS_TOP);
+        this.bus = new Bus(16);
         this.cpu = new Cpu();
-        this.ram = new Memory(MEMORY_BASE, MEMORY_BASE + MEMORY_SIZE - 1, false);
-        this.acia = new Acia6850(ACIA_BASE);
+        this.ram = new Memory(MEMORY_SIZE - 1, false);
+        this.acia = new Acia6850();
         this.acia.setBaudRate(0);
-        this.sdController = new SdController(SD_BASE);
+        this.sdController = new SdController();
 
         bus.addCpu(cpu);
-        bus.addDevice(ram);
-        bus.addDevice(acia, 1);
-        bus.addDevice(sdController, 1);
+        bus.addDevice(ram, MEMORY_BASE);
+        bus.addDevice(acia, ACIA_BASE, 1);
+        bus.addDevice(sdController, SD_BASE, 1);
         
         // TODO: Make this configurable, of course.
         File romImage = new File("rom.bin");
@@ -106,55 +99,6 @@ public class MulticompMachine implements Machine {
     public Cpu getCpu() {
         return cpu;
     }
-
-    @Override
-    public Memory getRam() {
-        return ram;
-    }
-
-    @Override
-    public Acia getAcia() {
-        return acia;
-    }
-
-    @Override
-    public Pia getPia() {
-        return null;
-    }
-
-    @Override
-    public Crtc getCrtc() {
-        return null;
-    }
-
-    @Override
-    public Memory getRom() {
-        return rom;
-    }
-    
-    public void setRom(Memory rom) throws MemoryRangeException {
-        if(this.rom != null) {
-            bus.removeDevice(this.rom);
-        }
-        this.rom = rom;
-        bus.addDevice(this.rom);
-    }
-
-    @Override
-    public int getRomBase() {
-        return ROM_BASE;
-    }
-
-    @Override
-    public int getRomSize() {
-        return ROM_SIZE;
-    }
-
-    @Override
-    public int getMemorySize() {
-        return MEMORY_SIZE;
-    }
-
     @Override
     public String getName() {
         return "Multicomp";

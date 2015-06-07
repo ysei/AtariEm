@@ -54,7 +54,7 @@ public class Acia6551 extends Acia {
 
 
     public Acia6551(int address) throws MemoryRangeException {
-        super(address, ACIA_SIZE, "ACIA");
+        super(ACIA_SIZE, "ACIA");
     }
 
     @Override

@@ -39,10 +39,6 @@ import java.util.TreeSet;
  * The Bus ties the whole thing together, man.
  */
 public class Bus {
-
-    // The default address at which to load programs
-    public static int DEFAULT_LOAD_ADDRESS = 0x0200;
-	
     // By default, our bus starts at 0, and goes up to 64K
     private int startAddress = 0x0000;
     private int endAddress = 0xffff;
@@ -53,18 +49,14 @@ public class Bus {
     // Ordered sets of IO devices, associated with their priority
     private Map<Integer, SortedSet<Device>> deviceMap;
     
-    // an array for quick lookup of adresses, brute-force style
+    // an array for quick lookup of addresses, brute-force style
     private Device[] deviceAddressArray;
     
 
-    public Bus(int size) {
-        this(0, size - 1);
-    }
-
-    public Bus(int startAddress, int endAddress) {
+    public Bus(int busWidth) {
         this.deviceMap = new HashMap<Integer, SortedSet<Device>>();
-        this.startAddress = startAddress;
-        this.endAddress = endAddress;
+        this.startAddress = 0;
+        this.endAddress = (1 << busWidth) - 1;
     }
 
     public int startAddress() {
@@ -79,10 +71,14 @@ public class Bus {
         int size = (this.endAddress - this.startAddress) + 1;
         deviceAddressArray = new Device[size];
    
+        for(int i=startAddress; i<=endAddress; i++) {
+        	deviceAddressArray[i] = null;
+        }
+        
         // getDevices() provides an OrderedSet with devices ordered by priorities
         for(Device device : getDevices()) {
-            MemoryRange range = device.getMemoryRange();
-            for(int address = range.startAddress; address <= range.endAddress; ++address) {
+        	MemoryRange range = device.getMemoryRange();
+            for(int address = range.startAddress(); address <= range.endAddress(); ++address) {
                 deviceAddressArray[address - this.startAddress] = device;
             }
         }
@@ -96,7 +92,7 @@ public class Bus {
      * @param priority
      * @throws MemoryRangeException
      */
-    public void addDevice(Device device, int priority) throws MemoryRangeException {
+    public void addDevice(Device device, int startAddress, int priority) throws MemoryRangeException {
         
         MemoryRange range = device.getMemoryRange();
         if(range.startAddress() < this.startAddress || range.startAddress() > this.endAddress) {
@@ -124,8 +120,8 @@ public class Bus {
      * @param device
      * @throws MemoryRangeException
      */
-    public void addDevice(Device device) throws MemoryRangeException {
-        addDevice(device, 0);
+    public void addDevice(Device device, int startAddress) throws MemoryRangeException {
+        addDevice(device, startAddress, 0);
     }
     
 

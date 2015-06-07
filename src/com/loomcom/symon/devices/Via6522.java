@@ -43,8 +43,8 @@ public class Via6522 extends Pia {
     private char[] portData = {0, 0};
     private char[] portDirections = {0, 0};
 
-    public Via6522(int address) throws MemoryRangeException {
-        super(address, address + VIA_SIZE - 1, "MOS 6522 VIA");
+    public Via6522() throws MemoryRangeException {
+        super(VIA_SIZE, "MOS 6522 VIA");
     }
 
     @Override

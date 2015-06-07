@@ -36,25 +36,8 @@ import java.util.Set;
  */
 
 public abstract class Device implements Comparable<Device> {
-
-    /**
-     * Size of the device in memory
-     */
-    int size;
-
-    /**
-     * The memory range for this device.
-     */
-    private MemoryRange memoryRange;
-
-    /**
-     * The name of the device.
-     */
+    private MemoryRange range;
     private String name;
-
-    /**
-     * Reference to the bus where this Device is attached.
-     */
     private Bus bus;
 
     /**
@@ -62,16 +45,15 @@ public abstract class Device implements Comparable<Device> {
      */
     private Set<DeviceChangeListener> deviceChangeListeners;
 
-    public Device(int startAddress, int endAddress, String name)
+    public Device(String name)
             throws MemoryRangeException {
-        this.memoryRange = new MemoryRange(startAddress, endAddress);
-        this.size = endAddress - startAddress + 1;
+    	this.range = new MemoryRange(0, 0);
         this.name = name;
         this.deviceChangeListeners = new HashSet<DeviceChangeListener>();
     }
 
-    public Device(int startAddress, int endAddress) throws MemoryRangeException {
-        this(startAddress, endAddress, null);
+    public Device() throws MemoryRangeException {
+        this(null);
     }
 
     /* Methods required to be implemented by inheriting classes. */
@@ -89,28 +71,12 @@ public abstract class Device implements Comparable<Device> {
         this.bus = bus;
     }
 
-    public MemoryRange getMemoryRange() {
-        return memoryRange;
-    }
-
-    public int endAddress() {
-        return memoryRange.endAddress();
-    }
-
-    public int startAddress() {
-        return memoryRange.startAddress();
-    }
-
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public int getSize() {
-        return size;
     }
 
     public void registerListener(DeviceChangeListener listener) {
@@ -122,11 +88,20 @@ public abstract class Device implements Comparable<Device> {
             l.deviceStateChanged();
         }
     }
+    
+    public void setRange(MemoryRange r) {
+    	range.set(r);
+    }
+    
+    public void setAddress(int addr) {
+    	try {
+			range.setStartAddress(addr);
+		} catch (MemoryRangeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
 
-    /**
-     * Compares two devices.  The sort order is defined by the sort
-     * order of the device's memory ranges.
-     */
     public int compareTo(Device other) {
         if (other == null) {
             throw new NullPointerException("Cannot compare to null.");
@@ -134,6 +109,11 @@ public abstract class Device implements Comparable<Device> {
         if (this == other) {
             return 0;
         }
-        return getMemoryRange().compareTo(other.getMemoryRange());
+
+        return range.compareTo(other.range);
     }
+
+	public MemoryRange getMemoryRange() {
+		return range;
+	}
 }

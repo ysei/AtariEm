@@ -26,10 +26,7 @@ package com.loomcom.symon.machines;
 
 import com.loomcom.symon.Bus;
 import com.loomcom.symon.Cpu;
-import com.loomcom.symon.devices.Acia;
-import com.loomcom.symon.devices.Crtc;
 import com.loomcom.symon.devices.Memory;
-import com.loomcom.symon.devices.Pia;
 import com.loomcom.symon.exceptions.MemoryRangeException;
 
 /**
@@ -38,17 +35,15 @@ import com.loomcom.symon.exceptions.MemoryRangeException;
  * for running 6502 functional tests or debugging by hand.
  */
 public class SimpleMachine implements Machine {
-
-    private static final int BUS_BOTTOM = 0x0000;
-    private static final int BUS_TOP    = 0xffff;
+    private static final int K64 = (1<<16);
 
     private final Bus bus;
     private final Memory ram;
     private final Cpu cpu;
 
     public SimpleMachine() throws MemoryRangeException {
-        this.bus = new Bus(BUS_BOTTOM, BUS_TOP);
-        this.ram = new Memory(BUS_BOTTOM, BUS_TOP, false);
+        this.bus = new Bus(16);
+        this.ram = new Memory(K64, false);
         this.cpu = new Cpu();
 
         bus.addCpu(cpu);
@@ -65,52 +60,7 @@ public class SimpleMachine implements Machine {
         return cpu;
     }
 
-    @Override
-    public Memory getRam() {
-        return ram;
-    }
-
-    @Override
-    public Acia getAcia() {
-        return null;
-    }
-
-    @Override
-    public Pia getPia() {
-        return null;
-    }
-
-    @Override
-    public Crtc getCrtc() {
-        return null;
-    }
-
-    @Override
-    public Memory getRom() {
-        return null;
-    }
-
-    @Override
-    public void setRom(Memory rom) throws MemoryRangeException {
-        // No-op
-    }
-
-    @Override
-    public int getRomBase() {
-        return 0;
-    }
-
-    @Override
-    public int getRomSize() {
-        return 0;
-    }
-
-    @Override
-    public int getMemorySize() {
-        return BUS_TOP + 1;
-    }
-
-    @Override
+   @Override
     public String getName() {
         return "Simple";
     }

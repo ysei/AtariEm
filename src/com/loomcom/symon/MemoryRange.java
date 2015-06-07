@@ -35,21 +35,27 @@ import com.loomcom.symon.exceptions.*;
 public class MemoryRange implements Comparable<MemoryRange> {
 
   /** The starting address of the memory range. */
-  public int startAddress;
+  private int startAddress;
+  
   /** The ending address of the memory range. */
-  public int endAddress;
-
+  private int endAddress;
+  
+  private int length;
+  
   public MemoryRange(int startAddress, int endAddress)
 		throws MemoryRangeException {
     if (startAddress < 0 || endAddress < 0) {
       throw new MemoryRangeException("Addresses cannot be less than 0.");
     }
+  
     if (startAddress >= endAddress) {
       throw new MemoryRangeException("End address must be greater " +
                                      "than start address.");
     }
+
     this.startAddress = startAddress;
     this.endAddress = endAddress;
+    this.length = endAddress - startAddress + 1;
   }
 
   /**
@@ -59,11 +65,36 @@ public class MemoryRange implements Comparable<MemoryRange> {
     return startAddress;
   }
 
+  public void setStartAddress(int addr) throws MemoryRangeException {
+	  if (startAddress < 0) {
+		  throw new MemoryRangeException("Addresses cannot be less than 0.");
+	  }
+
+	  startAddress = addr;
+	  length = endAddress - startAddress + 1;
+  }
+
   /**
    * @returns the ending address.
    */
   public int endAddress() {
     return endAddress;
+  }
+  
+  public void setEndAddress(int addr) throws MemoryRangeException {
+	  if (endAddress < 0) {
+		  throw new MemoryRangeException("Addresses cannot be less than 0.");
+	  }
+	    
+	  endAddress = addr;
+	  length = endAddress - startAddress + 1;
+  }
+
+  /**
+   * @returns the length of the range
+   */
+  public int length() {
+	  return endAddress - startAddress + 1;
   }
 
   /**
@@ -86,17 +117,28 @@ public class MemoryRange implements Comparable<MemoryRange> {
     return (this.includes(other.startAddress()) ||
             other.includes(this.startAddress()));
   }
+  
+  public void set(MemoryRange other) {
+	  if (this != other) {
+		  startAddress = other.startAddress;
+		  endAddress = other.endAddress;
+		  length = other.length;
+	  }
+  }
 
   // Implementation of Comparable interface
   public int compareTo(MemoryRange other) {
     if (other == null) {
       throw new NullPointerException("Cannot compare to null.");
     }
+    
     if (this == other) {
       return 0;
     }
+    
     Integer thisStartAddr = new Integer(this.startAddress());
     Integer thatStartAddr = new Integer(other.startAddress());
+    
     return thisStartAddr.compareTo(thatStartAddr);
   }
 

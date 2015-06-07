@@ -58,10 +58,9 @@ public abstract class Acia extends Device {
     boolean txEmpty = true;
 	
 	
-    public Acia(int address, int size, String name) throws MemoryRangeException {
-        super(address, address + size - 1, name);
+    public Acia(int size, String name) throws MemoryRangeException {
+        super(size, name);
         this.name = name;
-        this.baseAddress = address;
     }
 
 

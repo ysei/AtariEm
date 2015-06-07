@@ -29,8 +29,8 @@ public abstract class Pia extends Device {
 
     private final String name;
 
-    public Pia(int startAddress, int endAddress, String name) throws MemoryRangeException {
-        super(startAddress, endAddress, name);
+    public Pia(int size, String name) throws MemoryRangeException {
+        super(size, name);
         this.name = name;
     }
 

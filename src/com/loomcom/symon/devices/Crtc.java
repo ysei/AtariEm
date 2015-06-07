@@ -95,8 +95,8 @@ public class Crtc extends Device {
 
     private Memory memory;
 
-    public Crtc(int deviceAddress, Memory memory) throws MemoryRangeException, IOException {
-        super(deviceAddress, deviceAddress + 2, "CRTC");
+    public Crtc(Memory memory) throws MemoryRangeException, IOException {
+        super(2, "CRTC");
         this.memory = memory;
 
         // Defaults
@@ -270,16 +270,15 @@ public class Crtc extends Device {
                 break;
         }
 
-        if (startAddress + pageSize > memory.endAddress()) {
+        if (pageSize > memory.getSize()) {
             startAddress = oldStartAddress;
             throw new MemoryAccessException("Cannot draw screen starting at selected address.");
         }
 
-        if (cursorPosition > memory.endAddress()) {
+        if (cursorPosition > memory.getSize()) {
             cursorPosition = oldCursorPosition;
             throw new MemoryAccessException("Cannot position cursor past end of memory.");
         }
-
 
         notifyListeners();
     }

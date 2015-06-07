@@ -27,7 +27,6 @@ package com.loomcom.symon.machines;
 import com.loomcom.symon.Bus;
 import com.loomcom.symon.Cpu;
 import com.loomcom.symon.devices.*;
-import com.loomcom.symon.exceptions.MemoryRangeException;
 import java.io.File;
 import java.util.logging.Logger;
 
@@ -36,10 +35,6 @@ public class SymonMachine implements Machine {
     
     private final static Logger logger = Logger.getLogger(SymonMachine.class.getName());
     
-    // Constants used by the simulated system. These define the memory map.
-    private static final int BUS_BOTTOM = 0x0000;
-    private static final int BUS_TOP    = 0xffff;
-
     // 32K of RAM from $0000 - $7FFF
     private static final int MEMORY_BASE = 0x0000;
     private static final int MEMORY_SIZE = 0x8000;
@@ -70,7 +65,7 @@ public class SymonMachine implements Machine {
 
 
     public SymonMachine() throws Exception {
-        this.bus = new Bus(BUS_BOTTOM, BUS_TOP);
+        this.bus = new Bus(16);
         this.cpu = new Cpu();
         this.ram = new Memory(MEMORY_BASE, MEMORY_BASE + MEMORY_SIZE - 1, false);
         this.pia = new Via6522(PIA_BASE);
@@ -109,57 +104,7 @@ public class SymonMachine implements Machine {
     }
 
     @Override
-    public Memory getRam() {
-        return ram;
-    }
-
-    @Override
-    public Acia getAcia() {
-        return acia;
-    }
-
-    @Override
-    public Pia getPia() {
-        return pia;
-    }
-
-    @Override
-    public Crtc getCrtc() {
-        return crtc;
-    }
-
-    @Override
-    public Memory getRom() {
-        return rom;
-    }
-    
-    public void setRom(Memory rom) throws MemoryRangeException {
-        if(this.rom != null) {
-            bus.removeDevice(this.rom);
-        }
-        this.rom = rom;
-        bus.addDevice(this.rom);
-    }
-
-    @Override
-    public int getRomBase() {
-        return ROM_BASE;
-    }
-
-    @Override
-    public int getRomSize() {
-        return ROM_SIZE;
-    }
-
-    @Override
-    public int getMemorySize() {
-        return MEMORY_SIZE;
-    }
-
-    @Override
     public String getName() {
         return "Symon";
     }
-
-
 }

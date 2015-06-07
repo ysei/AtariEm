@@ -23,10 +23,7 @@
 
 package com.loomcom.symon;
 
-import com.loomcom.symon.devices.Memory;
-import com.loomcom.symon.exceptions.FifoUnderrunException;
 import com.loomcom.symon.exceptions.MemoryAccessException;
-import com.loomcom.symon.exceptions.MemoryRangeException;
 import com.loomcom.symon.exceptions.SymonException;
 import com.loomcom.symon.machines.Machine;
 import com.loomcom.symon.ui.*;
@@ -72,14 +69,9 @@ public class Simulator {
     // The simulated machine
     private Machine machine;
 
-    // Number of CPU steps between CRT repaints.
-    // TODO: Dynamically refresh the value at runtime based on performance figures to reach ~ 30fps.
-    private long stepsBetweenCrtcRefreshes = 2500;
-
     // A counter to keep track of the number of UI updates that have been
     // requested
     private int stepsSinceLastUpdate = 0;
-    private int stepsSinceLastCrtcRefresh = 0;
 
     // The number of steps to run per click of the "Step" button
     private int stepsPerClick = 1;
@@ -100,8 +92,6 @@ public class Simulator {
      * The Memory Window shows the contents of one page of memory.
      */
     private MemoryWindow memoryWindow;
-
-    private VideoWindow videoWindow;
 
     private SimulatorMenu menuBar;
 
@@ -233,11 +223,6 @@ public class Simulator {
         // Prepare the memory window
         memoryWindow = new MemoryWindow(machine.getBus());
 
-        // Composite Video and 6545 CRTC
-        if(machine.getCrtc() != null) {
-            videoWindow = new VideoWindow(machine.getCrtc(), 2, 2);
-        }
-
         mainWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // The Menu. This comes last, because it relies on other components having
@@ -299,10 +284,6 @@ public class Simulator {
             traceLog.reset();
             // If we're doing a cold reset, clear the memory.
             if (isColdReset) {
-                Memory mem = machine.getRam();
-                if (mem != null) {
-                    mem.fill(0);
-                }
             }
             // Update status.
             SwingUtilities.invokeLater(new Runnable() {
@@ -347,30 +328,6 @@ public class Simulator {
         machine.getCpu().step();
 
         traceLog.append(machine.getCpu().getCpuState());
-
-        // Read from the ACIA and immediately update the console if there's
-        // output ready.
-        if (machine.getAcia() != null && machine.getAcia().hasTxChar()) {
-            // This is thread-safe
-            console.print(Character.toString((char) machine.getAcia().txRead()));
-            console.repaint();
-        }
-
-        // If a key has been pressed, fill the ACIA.
-        try {
-            if (machine.getAcia() != null && console.hasInput()) {
-                machine.getAcia().rxWrite((int) console.readInputChar());
-            }
-        } catch (FifoUnderrunException ex) {
-            logger.severe("Console type-ahead buffer underrun!");
-        }
-
-        if (videoWindow != null && stepsSinceLastCrtcRefresh++ > stepsBetweenCrtcRefreshes) {
-            stepsSinceLastCrtcRefresh = 0;
-            if (videoWindow.isVisible()) {
-                videoWindow.repaint();
-            }
-        }
 
         // This is a very expensive update, and we're doing it without
         // a delay, so we don't want to overwhelm the Swing event processing thread
@@ -484,118 +441,6 @@ public class Simulator {
         }
     }
 
-    class LoadProgramAction extends AbstractAction {
-		private static final long serialVersionUID = 1L;
-
-		public LoadProgramAction() {
-            super("Load Program...", null);
-            putValue(SHORT_DESCRIPTION, "Load a program into memory");
-            putValue(MNEMONIC_KEY, KeyEvent.VK_L);
-        }
-
-        public void actionPerformed(ActionEvent actionEvent) {
-            try {
-                int retVal = fileChooser.showOpenDialog(mainWindow);
-                if (retVal == JFileChooser.APPROVE_OPTION) {
-                    File f = fileChooser.getSelectedFile();
-                    if (f.canRead()) {
-                        long fileSize = f.length();
-
-                        if (fileSize > machine.getMemorySize()) {
-                            throw new IOException("File will not fit in " +
-                                    "available memory ($" +
-                                    Integer.toString(machine.getMemorySize(), 16) +
-                                    " bytes)");
-                        } else {
-                            byte[] program = new byte[(int) fileSize];
-                            int i = 0;
-                            FileInputStream fis = new FileInputStream(f);
-                            BufferedInputStream bis = new BufferedInputStream(fis);
-                            DataInputStream dis = new DataInputStream(bis);
-                            while (dis.available() != 0) {
-                                program[i++] = dis.readByte();
-                            }
-                            dis.close();
-
-                            SwingUtilities.invokeLater(new Runnable() {
-                                public void run() {
-                                    console.reset();
-                                }
-                            });
-
-                            // Now load the program at the starting address.
-                            loadProgram(program, preferences.getProgramStartAddress());
-                            // TODO: "Don't Show Again" checkbox
-                            JOptionPane.showMessageDialog(mainWindow,
-                                    "Loaded Successfully At " +
-                                            String.format("$%04X", preferences.getProgramStartAddress()),
-                                    "OK",
-                                    JOptionPane.PLAIN_MESSAGE);
-                        }
-                    }
-                }
-            } catch (IOException ex) {
-                logger.log(Level.SEVERE, "Unable to read program file: " + ex.getMessage());
-                JOptionPane.showMessageDialog(mainWindow, ex.getMessage(), "Failure", JOptionPane.ERROR_MESSAGE);
-            } catch (MemoryAccessException ex) {
-                logger.log(Level.SEVERE, "Memory access error loading program: " + ex.getMessage());
-                JOptionPane.showMessageDialog(mainWindow, ex.getMessage(), "Failure", JOptionPane.ERROR_MESSAGE);
-            }
-        }
-    }
-
-    class LoadRomAction extends AbstractAction {
-		private static final long serialVersionUID = 1L;
-
-		public LoadRomAction() {
-            super("Load ROM...", null);
-            putValue(SHORT_DESCRIPTION, "Load a ROM image");
-            putValue(MNEMONIC_KEY, KeyEvent.VK_R);
-        }
-
-        public void actionPerformed(ActionEvent actionEvent) {
-            try {
-                int retVal = fileChooser.showOpenDialog(mainWindow);
-                if (retVal == JFileChooser.APPROVE_OPTION) {
-                    File romFile = fileChooser.getSelectedFile();
-                    if (romFile.canRead()) {
-                        long fileSize = romFile.length();
-
-                        if (fileSize != machine.getRomSize()) {
-                            throw new IOException("ROM file must be exactly " + String.valueOf(machine.getRomSize()) + " bytes.");
-                        } else {
-                            
-                            // Load the new ROM image
-                            Memory rom = Memory.makeROM(machine.getRomBase(), machine.getRomBase() + machine.getRomSize() - 1, romFile);
-                            machine.setRom(rom);
-
-                            // Now, reset
-                            machine.getCpu().reset();
-
-                            logger.log(Level.INFO, "ROM File `" + romFile.getName() + "' loaded at " +
-                                                   String.format("0x%04X", machine.getRomBase()));
-                            // TODO: "Don't Show Again" checkbox
-                            JOptionPane.showMessageDialog(mainWindow,
-                                    "Loaded Successfully At " +
-                                            String.format("$%04X", machine.getRomBase()),
-                                    "OK",
-                                    JOptionPane.PLAIN_MESSAGE);
-                        }
-                    }
-                }
-            } catch (IOException ex) {
-                logger.log(Level.SEVERE, "Unable to read ROM file: " + ex.getMessage());
-                JOptionPane.showMessageDialog(mainWindow, ex.getMessage(), "Failure", JOptionPane.ERROR_MESSAGE);
-            } catch (MemoryRangeException ex) {
-                logger.log(Level.SEVERE, "Memory range error while loading ROM file: " + ex.getMessage());
-                JOptionPane.showMessageDialog(mainWindow, ex.getMessage(), "Failure", JOptionPane.ERROR_MESSAGE);
-            } catch (MemoryAccessException ex) {
-                logger.log(Level.SEVERE, "Memory access error while loading ROM file: " + ex.getMessage());
-                JOptionPane.showMessageDialog(mainWindow, ex.getMessage(), "Failure", JOptionPane.ERROR_MESSAGE);
-            }
-        }
-    }
-
     class ShowPrefsAction extends AbstractAction {
 		private static final long serialVersionUID = 1L;
 
@@ -626,9 +471,6 @@ public class Simulator {
 
             memoryWindow.dispose();
             traceLog.dispose();
-            if(videoWindow != null) {
-                videoWindow.dispose();
-            }
             mainWindow.dispose();
 
             command = MAIN_CMD.SELECTMACHINE;
@@ -716,25 +558,6 @@ public class Simulator {
         }
     }
 
-    class ToggleVideoWindowAction extends AbstractAction {
-		private static final long serialVersionUID = 1L;
-
-		public ToggleVideoWindowAction() {
-            super("Video Window", null);
-            putValue(SHORT_DESCRIPTION, "Show or Hide the Video Window");
-        }
-
-        public void actionPerformed(ActionEvent actionEvent) {
-            synchronized (videoWindow) {
-                if (videoWindow.isVisible()) {
-                    videoWindow.setVisible(false);
-                } else {
-                    videoWindow.setVisible(true);
-                }
-            }
-        }
-    }
-
     class SimulatorMenu extends JMenuBar {
 		private static final long serialVersionUID = 1L;
 
@@ -775,16 +598,6 @@ public class Simulator {
              */
 
             JMenu fileMenu = new JMenu("File");
-
-            loadProgramItem = new JMenuItem(new LoadProgramAction());
-            fileMenu.add(loadProgramItem);
-
-            // Simple Machine does not implement a ROM, so it makes no sense to
-            // offer a ROM load option.
-            if (machine.getRom() != null) {
-                loadRomItem = new JMenuItem(new LoadRomAction());
-                fileMenu.add(loadRomItem);
-            }
 
             JMenuItem prefsItem = new JMenuItem(new ShowPrefsAction());
             fileMenu.add(prefsItem);
@@ -836,17 +649,6 @@ public class Simulator {
                 }
             });
             viewMenu.add(showMemoryTable);
-
-            if(videoWindow != null) {
-                final JCheckBoxMenuItem showVideoWindow = new JCheckBoxMenuItem(new ToggleVideoWindowAction());
-                videoWindow.addWindowListener(new WindowAdapter() {
-                    @Override
-                    public void windowClosing(WindowEvent e) {
-                        showVideoWindow.setSelected(false);
-                    }
-                });
-                viewMenu.add(showVideoWindow);
-            }
 
             add(viewMenu);
         }

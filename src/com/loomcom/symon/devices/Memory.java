@@ -29,33 +29,32 @@ import java.util.*;
 import com.loomcom.symon.exceptions.*;
 
 public class Memory extends Device {
-
     private boolean readOnly;
     private int[] mem;
 
     /* Initialize all locations to 0x00 (BRK) */
     private static final int DEFAULT_FILL = 0x00;
 
-    public Memory(int startAddress, int endAddress, boolean readOnly)
-            throws MemoryRangeException {
-        super(startAddress, endAddress, (readOnly ? "RO Memory" : "RW Memory"));
+    public Memory(int size, boolean readOnly) throws MemoryRangeException {
+        super(size, readOnly ? "RO Memory" : "RW Memory");
+        
         this.readOnly = readOnly;
         this.mem = new int[this.size];
         this.fill(DEFAULT_FILL);
     }
 
-    public Memory(int startAddress, int endAddress) throws MemoryRangeException {
-        this(startAddress, endAddress, false);
+    public Memory(int size) throws MemoryRangeException {
+        this(size, false);
     }
 
-    public static Memory makeROM(int startAddress, int endAddress, File f) throws MemoryRangeException, IOException {
-        Memory memory = new Memory(startAddress, endAddress, true);
+    public static Memory makeROM(int size, File f) throws MemoryRangeException, IOException {
+        Memory memory = new Memory(size, true);
         memory.loadFromFile(f);
         return memory;
     }
 
-    public static Memory makeRAM(int startAddress, int endAddress) throws MemoryRangeException {
-        Memory memory = new Memory(startAddress, endAddress, false);
+    public static Memory makeRAM(int size) throws MemoryRangeException {
+        Memory memory = new Memory(size, false);
         return memory;
     }
 
@@ -105,7 +104,7 @@ public class Memory extends Device {
     }
 
     public String toString() {
-        return "Memory: " + getMemoryRange().toString();
+        return "Memory: " + size;
     }
 
     public int[] getDmaAccess() {
