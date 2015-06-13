@@ -41,22 +41,8 @@ public class Main {
      *
      * @param args
      */
-    public static void main(String args[]) throws Exception {
-        
-        Class machineClass = SymonMachine.class;
-        for(int i = 0; i < args.length; ++i) {
-            String arg = args[i].toLowerCase(Locale.ENGLISH);
-            if(arg.equals("-machine") && (i+1) < args.length) {
-                String machine = args[i+1].trim().toLowerCase(Locale.ENGLISH);
-                if(machine.equals("symon")) {
-                    machineClass = SymonMachine.class;
-                } else if(machine.equals("multicomp")) {
-                    machineClass = MulticompMachine.class;
-                } else if (machine.equals("simple")) {
-                    machineClass = SimpleMachine.class;
-                }
-            }
-        }
+    public static void main(String args[]) throws Exception { 
+        Class machineClass = null;
         
         while (true) {
             if (machineClass == null) {
