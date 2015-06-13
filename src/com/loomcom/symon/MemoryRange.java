@@ -57,6 +57,10 @@ public class MemoryRange implements Comparable<MemoryRange> {
     this.endAddress = endAddress;
     this.length = endAddress - startAddress + 1;
   }
+  
+  public MemoryRange(int size) throws MemoryRangeException {
+	  this(0, size-1);
+  }
 
   /**
    * @returns the starting address.

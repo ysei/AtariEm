@@ -79,14 +79,14 @@ public class MulticompMachine implements Machine {
         File romImage = new File("rom.bin");
         if (romImage.canRead()) {
             logger.info("Loading ROM image from file " + romImage);
-            this.rom = Memory.makeROM(ROM_BASE, ROM_BASE + ROM_SIZE - 1, romImage);
+            this.rom = Memory.makeROM(ROM_SIZE - 1, romImage);
         } else {
             logger.info("Default ROM file " + romImage +
                         " not found, loading empty R/W memory image.");
-            this.rom = Memory.makeRAM(ROM_BASE, ROM_BASE + ROM_SIZE - 1);
+            this.rom = Memory.makeRAM(ROM_SIZE - 1);
         }
 
-        bus.addDevice(rom);
+        bus.addDevice(rom, ROM_BASE);
         
     }
 

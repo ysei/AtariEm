@@ -45,6 +45,15 @@ public abstract class Device implements Comparable<Device> {
      */
     private Set<DeviceChangeListener> deviceChangeListeners;
 
+    public Device(MemoryRange range, String name) {
+    	this.range = range;
+    	this.name = name;
+    }
+    
+    public Device(MemoryRange range) {
+    	this(range, null);
+    }
+    
     public Device(String name)
             throws MemoryRangeException {
     	this.range = new MemoryRange(0, 0);
@@ -53,7 +62,7 @@ public abstract class Device implements Comparable<Device> {
     }
 
     public Device() throws MemoryRangeException {
-        this(null);
+        this((String)null);
     }
 
     /* Methods required to be implemented by inheriting classes. */

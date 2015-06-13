@@ -26,6 +26,7 @@ package com.loomcom.symon.devices;
 import java.io.*;
 import java.util.*;
 
+import com.loomcom.symon.MemoryRange;
 import com.loomcom.symon.exceptions.*;
 
 public class Memory extends Device {
@@ -36,10 +37,10 @@ public class Memory extends Device {
     private static final int DEFAULT_FILL = 0x00;
 
     public Memory(int size, boolean readOnly) throws MemoryRangeException {
-        super(size, readOnly ? "RO Memory" : "RW Memory");
+        super(new MemoryRange(size), readOnly ? "RO Memory" : "RW Memory");
         
         this.readOnly = readOnly;
-        this.mem = new int[this.size];
+        this.mem = new int[getMemoryRange().length()];
         this.fill(DEFAULT_FILL);
     }
 
@@ -104,10 +105,14 @@ public class Memory extends Device {
     }
 
     public String toString() {
-        return "Memory: " + size;
+        return "Memory: " + getMemoryRange().length();
     }
 
     public int[] getDmaAccess() {
         return mem;
+    }
+    
+    public int getSize() {
+    	return getMemoryRange().length();
     }
 }

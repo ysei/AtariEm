@@ -23,6 +23,7 @@
 
 package com.loomcom.symon.devices;
 
+import com.loomcom.symon.MemoryRange;
 import com.loomcom.symon.exceptions.MemoryAccessException;
 import com.loomcom.symon.exceptions.MemoryRangeException;
 
@@ -34,9 +35,7 @@ import java.util.logging.Logger;
  * Simulation of a 6545 CRTC and virtual CRT output.
  */
 public class Crtc extends Device {
-
     private static final Logger logger = Logger.getLogger(Crtc.class.getName());
-
 
     // Memory locations in the CRTC address space
     public static final int REGISTER_SELECT          = 0;
@@ -53,7 +52,6 @@ public class Crtc extends Device {
     public static final int DISPLAY_START_LOW        = 13;
     public static final int CURSOR_POSITION_HIGH     = 14;
     public static final int CURSOR_POSITION_LOW      = 15;
-
 
     /*
      * These will determine how the Character ROM is decoded,
@@ -96,7 +94,7 @@ public class Crtc extends Device {
     private Memory memory;
 
     public Crtc(Memory memory) throws MemoryRangeException, IOException {
-        super(2, "CRTC");
+        super(new MemoryRange(2), "CRTC");
         this.memory = memory;
 
         // Defaults

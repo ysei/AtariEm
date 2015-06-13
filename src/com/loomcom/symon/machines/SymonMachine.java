@@ -40,7 +40,6 @@ public class SymonMachine implements Machine {
     private static final int MEMORY_SIZE = 0x8000;
 
     // PIA at $8000-$800F
-
     private static final int PIA_BASE = 0x8000;
 
     // ACIA at $8800-$8803
@@ -67,29 +66,29 @@ public class SymonMachine implements Machine {
     public SymonMachine() throws Exception {
         this.bus = new Bus(16);
         this.cpu = new Cpu();
-        this.ram = new Memory(MEMORY_BASE, MEMORY_BASE + MEMORY_SIZE - 1, false);
-        this.pia = new Via6522(PIA_BASE);
+        this.ram = new Memory(MEMORY_SIZE - 1, false);
+        this.pia = new Via6522();
         this.acia = new Acia6551(ACIA_BASE);
-        this.crtc = new Crtc(CRTC_BASE, ram);
+        this.crtc = new Crtc(this.ram);
 
         bus.addCpu(cpu);
-        bus.addDevice(ram);
-        bus.addDevice(pia);
-        bus.addDevice(acia);
-        bus.addDevice(crtc);
+        bus.addDevice(ram, MEMORY_BASE);
+        bus.addDevice(pia, PIA_BASE);
+        bus.addDevice(acia, ACIA_BASE);
+        bus.addDevice(crtc, CRTC_BASE);
         
         // TODO: Make this configurable, of course.
         File romImage = new File("rom.bin");
         if (romImage.canRead()) {
             logger.info("Loading ROM image from file " + romImage);
-            this.rom = Memory.makeROM(ROM_BASE, ROM_BASE + ROM_SIZE - 1, romImage);
+            this.rom = Memory.makeROM(ROM_SIZE - 1, romImage);
         } else {
             logger.info("Default ROM file " + romImage +
                         " not found, loading empty R/W memory image.");
-            this.rom = Memory.makeRAM(ROM_BASE, ROM_BASE + ROM_SIZE - 1);
+            this.rom = Memory.makeRAM(ROM_SIZE - 1);
         }
 
-        bus.addDevice(rom);
+        bus.addDevice(rom, ROM_BASE);
         
     }
 

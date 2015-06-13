@@ -25,8 +25,10 @@
 
 package com.loomcom.symon.devices;
 
+import com.loomcom.symon.MemoryRange;
 import com.loomcom.symon.exceptions.MemoryAccessException;
 import com.loomcom.symon.exceptions.MemoryRangeException;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -64,7 +66,7 @@ public class SdController extends Device {
    
     
     public SdController() throws MemoryRangeException {
-        super(CONTROLLER_SIZE, "SDCONTROLLER");
+        super(new MemoryRange(CONTROLLER_SIZE), "SDCONTROLLER");
        
         sdImageFile = new File("sd.img");
         if(!sdImageFile.exists()) {

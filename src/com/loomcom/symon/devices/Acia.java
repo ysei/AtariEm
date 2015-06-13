@@ -23,6 +23,7 @@
 
 package com.loomcom.symon.devices;
 
+import com.loomcom.symon.MemoryRange;
 import com.loomcom.symon.exceptions.MemoryRangeException;
 
 
@@ -59,7 +60,7 @@ public abstract class Acia extends Device {
 	
 	
     public Acia(int size, String name) throws MemoryRangeException {
-        super(size, name);
+        super(new MemoryRange(size), name);
         this.name = name;
     }
 
