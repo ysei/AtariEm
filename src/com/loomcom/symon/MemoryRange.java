@@ -75,8 +75,7 @@ public class MemoryRange implements Comparable<MemoryRange> {
 	  }
 
 	  startAddress = addr;
-	  length = endAddress - startAddress + 1;
-	  endAddress = addr+length;
+	  endAddress = addr+length-1;
   }
 
   /**
@@ -86,20 +85,11 @@ public class MemoryRange implements Comparable<MemoryRange> {
     return endAddress;
   }
   
-  public void setEndAddress(int addr) throws MemoryRangeException {
-	  if (endAddress < 0) {
-		  throw new MemoryRangeException("Addresses cannot be less than 0.");
-	  }
-	    
-	  endAddress = addr;
-	  length = endAddress - startAddress + 1;
-  }
-
   /**
    * @returns the length of the range
    */
   public int length() {
-	  return endAddress - startAddress + 1;
+	  return length;
   }
 
   /**
