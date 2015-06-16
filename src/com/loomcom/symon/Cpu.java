@@ -109,6 +109,25 @@ public class Cpu implements InstructionTable {
     public CpuBehavior getBehavior() {
         return behavior;
     }
+    
+    public String toString() {
+    	String res = "NMOS 6502 Processor";
+    	
+    	switch (behavior) {
+    	case NMOS_WITH_INDIRECT_JMP_BUG:
+    		res = res + " (with Indirect JMP bug)";
+    		break;
+    				
+    	case NMOS_WITHOUT_INDIRECT_JMP_BUG:
+    		break;
+
+    	case NMOS_WITH_ROR_BUG:
+    		res = res + " (with ROR bug)";
+    		break;
+    	}
+    	
+    	return res;
+    }
 
     /**
      * Reset the CPU to known initial values.
