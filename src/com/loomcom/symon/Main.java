@@ -25,13 +25,10 @@
 
 package com.loomcom.symon;
 
-import com.loomcom.symon.machines.MulticompMachine;
-import com.loomcom.symon.machines.SimpleMachine;
-import com.loomcom.symon.machines.SymonMachine;
-import java.util.Locale;
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import javax.swing.UIManager.LookAndFeelInfo;
+
+import uk.org.wookey.atari.ui.ApplicationWindow;
 
 public class Main {
     
@@ -42,51 +39,18 @@ public class Main {
      * @param args
      */
     public static void main(String args[]) throws Exception { 
-        Class machineClass = null;
-        
-        while (true) {
-            if (machineClass == null) {
-                Object[] possibilities = {"Symon", "Multicomp", "Simple"};
-                String s = (String)JOptionPane.showInputDialog(
-                                null,
-                                "Please choose the machine type to be emulated:",
-                                "Machine selection",
-                                JOptionPane.PLAIN_MESSAGE,
-                                null,
-                                possibilities,
-                                "Symon");
-                
+        try {
+		    for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+		        if ("Metal".equals(info.getName())) {
+		            UIManager.setLookAndFeel(info.getClassName());
+		            break;
+		        }
+		    }
+		} catch (Exception e) {
+		    // If Nimbus is not available, you can set the GUI to another look and feel.
+		}
+		
 
-                if (s != null && s.equals("Multicomp")) {
-                    machineClass = MulticompMachine.class;
-                } else if (s != null && s.equals("Simple")) {
-                    machineClass = SimpleMachine.class;
-                } else {
-                    machineClass = SymonMachine.class;
-                }
-            }
-        
-            final Simulator simulator = new Simulator(machineClass);
-        
-            SwingUtilities.invokeLater(new Runnable() {
-                public void run() {
-                    try {
-                        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-                        // Create the main UI window
-                        simulator.createAndShowUi();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-        
-        
-            Simulator.MAIN_CMD cmd = simulator.waitForCommand();
-            if (cmd.equals(Simulator.MAIN_CMD.SELECTMACHINE)) {
-                machineClass = null;
-            } else {
-                break;
-            }
-        }
+        ApplicationWindow app = new ApplicationWindow();
     }
 }

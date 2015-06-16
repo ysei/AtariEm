@@ -76,6 +76,7 @@ public class MemoryRange implements Comparable<MemoryRange> {
 
 	  startAddress = addr;
 	  length = endAddress - startAddress + 1;
+	  endAddress = addr+length;
   }
 
   /**

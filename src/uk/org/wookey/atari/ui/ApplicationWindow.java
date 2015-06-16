@@ -22,6 +22,12 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTabbedPane;
 
+import com.loomcom.symon.Bus;
+import com.loomcom.symon.devices.Acia;
+import com.loomcom.symon.devices.Acia6850;
+import com.loomcom.symon.devices.Via6522;
+import com.loomcom.symon.exceptions.MemoryRangeException;
+
 import uk.org.wookey.atari.utils.Logger;
 
 public class ApplicationWindow extends JFrame implements ActionListener {
@@ -96,6 +102,21 @@ public class ApplicationWindow extends JFrame implements ActionListener {
 		add(outer, gbc);
 		
 		setVisible(true);
+		
+		Bus b = new Bus(16);
+		try {
+			b.addDevice(new Acia6850(), 42);
+			b.addDevice(new Acia6850(), 84);
+			b.addDevice(new Acia6850(), 64);
+			b.addDevice(new Via6522(), 128);
+			b.addDevice(new Via6522(), 4);
+			b.addDevice(new Acia6850(), 112);
+			b.addDevice(new Via6522(), 120);
+		} catch (MemoryRangeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		b.dumpState();
 	}
 	
 	public void addTab(JPanel tab) {

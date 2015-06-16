@@ -26,37 +26,37 @@ package com.loomcom.symon;
 import com.loomcom.symon.devices.Device;
 import com.loomcom.symon.exceptions.MemoryAccessException;
 import com.loomcom.symon.exceptions.MemoryRangeException;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
-
 import java.util.SortedSet;
 import java.util.TreeSet;
+
+import uk.org.wookey.atari.utils.Logger;
 
 /**
  * The Bus ties the whole thing together, man.
  */
 public class Bus {
-    // By default, our bus starts at 0, and goes up to 64K
+	private final static Logger _logger = new Logger("Bus");
     private int startAddress = 0x0000;
     private int endAddress = 0xffff;
 
     // The CPU
     private Cpu cpu;
-
-    // Ordered sets of IO devices, associated with their priority
-    private Map<Integer, SortedSet<Device>> deviceMap;
     
-    // an array for quick lookup of addresses, brute-force style
-    private Device[] deviceAddressArray;
-    
+    private ArrayList<Device> deviceList;
 
     public Bus(int busWidth) {
-        this.deviceMap = new HashMap<Integer, SortedSet<Device>>();
-        this.startAddress = 0;
-        this.endAddress = (1 << busWidth) - 1;
+    	deviceList = new ArrayList<Device>();
+        startAddress = 0;
+        endAddress = (1 << busWidth) - 1;
+        cpu = null;
+        
+        _logger.logSuccess("bus created and initialesed.");
     }
 
     public int startAddress() {
@@ -67,24 +67,6 @@ public class Bus {
         return endAddress;
     }
     
-    private void buildDeviceAddressArray() {
-        int size = (this.endAddress - this.startAddress) + 1;
-        deviceAddressArray = new Device[size];
-   
-        for(int i=startAddress; i<=endAddress; i++) {
-        	deviceAddressArray[i] = null;
-        }
-        
-        // getDevices() provides an OrderedSet with devices ordered by priorities
-        for(Device device : getDevices()) {
-        	MemoryRange range = device.getMemoryRange();
-            for(int address = range.startAddress(); address <= range.endAddress(); ++address) {
-                deviceAddressArray[address - this.startAddress] = device;
-            }
-        }
-        
-    }
-
     /**
      * Add a device to the bus.
      *
@@ -92,92 +74,66 @@ public class Bus {
      * @param priority
      * @throws MemoryRangeException
      */
-    public void addDevice(Device device, int startAddress, int priority) throws MemoryRangeException {
-        
+    public void addDevice(Device device, int startAddress) throws MemoryRangeException {    
         MemoryRange range = device.getMemoryRange();
         if(range.startAddress() < this.startAddress || range.startAddress() > this.endAddress) {
             throw new MemoryRangeException("start address of device " + device.getName() + " does not fall within the address range of the bus");
         }
+        
         if(range.endAddress() < this.startAddress || range.endAddress() > this.endAddress) {
             throw new MemoryRangeException("end address of device " + device.getName() + " does not fall within the address range of the bus");
         }
-  
-        
-        SortedSet<Device> deviceSet = deviceMap.get(priority);
-        if(deviceSet == null) {
-            deviceSet = new TreeSet<Device>();
-            deviceMap.put(priority, deviceSet);
-        }
-        
+
+        // Work out where to put it in the list
+        device.setAddress(startAddress);
         device.setBus(this);
-        deviceSet.add(device);
-        buildDeviceAddressArray();
-    }
-    
-    /**
-     * Add a device to the bus. Throws a MemoryRangeException if the device overlaps with any others.
-     *
-     * @param device
-     * @throws MemoryRangeException
-     */
-    public void addDevice(Device device, int startAddress) throws MemoryRangeException {
-        addDevice(device, startAddress, 0);
-    }
-    
 
-    /**
-     * Remove a device from the bus.
-     *
-     * @param device
-     */
-    public void removeDevice(Device device) {
-        for(SortedSet<Device> deviceSet : deviceMap.values()) {
-            deviceSet.remove(device);
+        if (deviceList.size() == 0) {
+        	_logger.logInfo("Adding device to empty bus");
+        	deviceList.add(device);
         }
-        buildDeviceAddressArray();
+        else {
+        	boolean inserted = false;
+        	int nDevs = deviceList.size();
+        	
+        	_logger.logInfo("Adding device into a bus with other devices");
+        	for (int i=0; i<nDevs; i++) {
+        		MemoryRange r = deviceList.get(i).getMemoryRange();
+        	
+        		if (!inserted && (r.compareTo(range) > 0)) {
+        			_logger.logInfo("Inserting device at position " + i + " in bus");
+        			deviceList.add(i, device);
+        			inserted = true;
+        		}
+        	}
+        	
+        	if (!inserted) {
+        		_logger.logInfo("Adding device at end of bus");
+        		deviceList.add(device);
+        	}
+        }
     }
-
+    
     public void addCpu(Cpu cpu) {
         this.cpu = cpu;
         cpu.setBus(this);
     }
 
-    /**
-     * Returns true if the memory map is full, i.e., there are no
-     * gaps between any IO devices.  All memory locations map to some
-     * device.
-     */
-    public boolean isComplete() {
-        if(deviceAddressArray == null) {
-            buildDeviceAddressArray();
-        }
-        
-        for(int address = startAddress; address <= endAddress; ++address) {
-            if(deviceAddressArray[address - startAddress] == null) {
-                return false;
-            }
-        }
-        
-        return true;
-    }
-
     public int read(int address) throws MemoryAccessException {
-        Device d = deviceAddressArray[address - this.startAddress];
-        if(d != null) {
-            MemoryRange range = d.getMemoryRange();
-            int devAddr = address - range.startAddress();
-            return d.read(devAddr) & 0xff;
+        Device d = deviceAt(address);
+        
+        if (d != null) {
+            return d.read(address) & 0xff;
         }
         
         throw new MemoryAccessException("Bus read failed. No device at address " + String.format("$%04X", address));
     }
 
     public void write(int address, int value) throws MemoryAccessException {
-        Device d = deviceAddressArray[address - this.startAddress];
-        if(d != null) {
-            MemoryRange range = d.getMemoryRange();
-            int devAddr = address - range.startAddress();
-            d.write(devAddr, value);
+        Device d = deviceAt(address);
+        
+        if (d != null) {
+            d.write(address, value);
             return;
         }
         
@@ -208,23 +164,6 @@ public class Bus {
         }
     }
 
-    public SortedSet<Device> getDevices() {
-        // create an ordered set of devices, ordered by device priorities
-        SortedSet<Device> devices = new TreeSet<Device>();
-        
-        List<Integer> priorities = new ArrayList<Integer>(deviceMap.keySet());
-        Collections.sort(priorities);
-        
-        for(int priority : priorities) {
-            SortedSet<Device> deviceSet = deviceMap.get(priority);
-            for(Device device : deviceSet) {
-                devices.add(device);
-            }
-        }
-        
-        return devices;
-    }
-
     public Cpu getCpu() {
         return cpu;
     }
@@ -235,5 +174,39 @@ public class Bus {
         for (int d : program) {
             write(address + i++, d);
         }
+    }
+    
+    public void dumpState() {
+    	_logger.logInfo("BUS DUMP:");
+    	_logger.logInfo("  Start address: " + startAddress + ", End address: " + endAddress);
+    	
+    	if (cpu == null) {
+    		_logger.logInfo("  No CPU");
+    	}
+    	else {
+    		_logger.logInfo("  CPU: " + cpu.toString());
+    	}
+    	
+    	if (deviceList.size() != 0) {
+    		_logger.logInfo("  Devices:");
+
+    		for (Device dev : deviceList) {
+    			_logger.logInfo("  " + dev.getName() + ":" + dev.toString());
+    		}
+    	}
+    	else {
+    		_logger.logInfo("  No devices attached");
+    	}
+    	_logger.logInfo("\n");
+    }
+    
+    private Device deviceAt(int address) {
+    	for (Device dev : deviceList) {
+    		if (dev.handlesAddress(address)) {
+    			return dev;
+    		}
+    	}
+    	
+    	return null;
     }
 }

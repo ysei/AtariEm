@@ -34,9 +34,4 @@ public abstract class Pia extends Device {
         super(new MemoryRange(size), name);
         this.name = name;
     }
-
-    @Override
-    public String toString() {
-        return name;
-    }
 }

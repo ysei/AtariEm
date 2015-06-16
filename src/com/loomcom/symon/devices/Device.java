@@ -70,7 +70,11 @@ public abstract class Device implements Comparable<Device> {
 
     public abstract int read(int address) throws MemoryAccessException;
 
-    public abstract String toString();
+    public String toString() {
+        return name + "@" + String.format("%04X-%04X", 
+        			getMemoryRange().startAddress(),
+        			getMemoryRange().endAddress());
+    }
 
     public Bus getBus() {
         return this.bus;
@@ -124,5 +128,9 @@ public abstract class Device implements Comparable<Device> {
 
 	public MemoryRange getMemoryRange() {
 		return range;
+	}
+	
+	public boolean handlesAddress(int address) {
+		return this.getMemoryRange().includes(address);
 	}
 }
