@@ -24,17 +24,80 @@
 
 package com.loomcom.symon.machines;
 
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+
+import uk.org.wookey.atari.utils.Logger;
+
 import com.loomcom.symon.Bus;
 import com.loomcom.symon.Cpu;
-import com.loomcom.symon.devices.Acia;
-import com.loomcom.symon.devices.Crtc;
-import com.loomcom.symon.devices.Memory;
-import com.loomcom.symon.devices.Pia;
 import com.loomcom.symon.exceptions.MemoryRangeException;
+import com.loomcom.symon.ui.MemoryWindow;
+import com.loomcom.symon.ui.PreferencesDialog;
+import com.loomcom.symon.ui.StatusPanel;
+import com.loomcom.symon.ui.TraceLog;
 
 
-public interface Machine {
-    public Bus getBus();
-    public Cpu getCpu();
-    String getName();
+public class Machine {
+	private final static Logger _logger = new Logger("Machine");
+	
+	protected Bus bus;
+	protected Cpu cpu;
+	
+	protected JPanel ui;
+	
+	private String name;
+	public Machine(String name) {
+		bus = new Bus(getBusWidth());
+		cpu = new Cpu();
+		
+		setName(name);
+		bus.addCpu(cpu);
+		addDevices();
+		
+		ui = createCoreUI();
+		
+		bus.dumpState();
+	}
+	
+	public void addDevices() {
+	}
+	
+	public int getBusWidth() {
+		return 16;
+	}
+	
+    public Bus getBus() {
+    	return bus;
+    }
+    
+    public Cpu getCpu() {
+    	return cpu;
+    }
+    
+    public JPanel getUI() {
+    	return ui;
+    }
+    
+    public void setName(String name) {
+    	this.name = name;
+    }
+    
+    public String getName() {
+    	return name;
+    }
+    
+    public final JPanel createCoreUI() {
+    	return new JPanel();
+    }
+    
 }

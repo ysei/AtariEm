@@ -24,20 +24,20 @@
 
 package com.loomcom.symon.machines;
 
-import com.loomcom.symon.Bus;
-import com.loomcom.symon.Cpu;
 import com.loomcom.symon.devices.*;
+import com.loomcom.symon.exceptions.MemoryRangeException;
+
 import java.io.File;
-import java.util.logging.Logger;
+import java.io.IOException;
 
+import uk.org.wookey.atari.utils.Logger;
 
-public class SymonMachine implements Machine {
-    
-    private final static Logger logger = Logger.getLogger(SymonMachine.class.getName());
+public class SymonMachine extends Machine {
+    private final static Logger _logger = new Logger(SymonMachine.class.getName());
     
     // 32K of RAM from $0000 - $7FFF
-    private static final int MEMORY_BASE = 0x0000;
-    private static final int MEMORY_SIZE = 0x8000;
+    private static final int RAM_BASE = 0x0000;
+    private static final int RAM_SIZE = 0x8000;
 
     // PIA at $8000-$800F
     private static final int PIA_BASE = 0x8000;
@@ -54,56 +54,47 @@ public class SymonMachine implements Machine {
 
 
         // The simulated peripherals
-    private final Bus    bus;
-    private final Cpu    cpu;
-    private final Acia   acia;
-    private final Pia    pia;
-    private final Crtc   crtc;
-    private final Memory ram;
-    private       Memory rom;
+    private Acia acia;
+    private Pia pia;
+    private Crtc crtc;
+    private Memory ram;
+    private Memory rom;
 
+    public SymonMachine() {
+    	super("Symon");
+    }
 
-    public SymonMachine() throws Exception {
-        this.bus = new Bus(16);
-        this.cpu = new Cpu();
-        this.ram = new Memory(MEMORY_SIZE - 1, false);
-        this.pia = new Via6522();
-        this.acia = new Acia6551(ACIA_BASE);
-        this.crtc = new Crtc(this.ram);
+	public void addDevices() {
+        try {
+			this.ram = new Memory(RAM_SIZE, false);
+	        this.pia = new Via6522();
+	        this.acia = new Acia6551(ACIA_BASE);
+	        this.crtc = new Crtc(this.ram);
 
-        bus.addCpu(cpu);
-        bus.addDevice(ram, MEMORY_BASE);
-        bus.addDevice(pia, PIA_BASE);
-        bus.addDevice(acia, ACIA_BASE);
-        bus.addDevice(crtc, CRTC_BASE);
+	        bus.addCpu(cpu);
+	        bus.addDevice(ram, RAM_BASE);
+	        bus.addDevice(pia, PIA_BASE);
+	        bus.addDevice(acia, ACIA_BASE);
+	        bus.addDevice(crtc, CRTC_BASE);
+
+	        File romImage = new File("rom.bin");
+	        if (romImage.canRead()) {
+	            _logger.logInfo("Loading ROM image from file " + romImage);
+	            this.rom = Memory.makeROM(ROM_SIZE, romImage);
+	        } else {
+	            _logger.logInfo("Default ROM file " + romImage +
+	                        " not found, loading empty R/W memory image.");
+	            this.rom = Memory.makeRAM(ROM_SIZE - 1);
+	        }
+
+	        bus.addDevice(rom, ROM_BASE);
+		} catch (MemoryRangeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
         
-        // TODO: Make this configurable, of course.
-        File romImage = new File("rom.bin");
-        if (romImage.canRead()) {
-            logger.info("Loading ROM image from file " + romImage);
-            this.rom = Memory.makeROM(ROM_SIZE - 1, romImage);
-        } else {
-            logger.info("Default ROM file " + romImage +
-                        " not found, loading empty R/W memory image.");
-            this.rom = Memory.makeRAM(ROM_SIZE - 1);
-        }
-
-        bus.addDevice(rom, ROM_BASE);
-        
-    }
-
-    @Override
-    public Bus getBus() {
-        return bus;
-    }
-
-    @Override
-    public Cpu getCpu() {
-        return cpu;
-    }
-
-    @Override
-    public String getName() {
-        return "Symon";
-    }
+	}
 }

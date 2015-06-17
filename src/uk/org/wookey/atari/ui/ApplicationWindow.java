@@ -23,11 +23,16 @@ import javax.swing.JPopupMenu;
 import javax.swing.JTabbedPane;
 
 import com.loomcom.symon.Bus;
+import com.loomcom.symon.Cpu;
 import com.loomcom.symon.devices.Acia;
 import com.loomcom.symon.devices.Acia6850;
 import com.loomcom.symon.devices.Via6522;
+import com.loomcom.symon.exceptions.MemoryAccessException;
 import com.loomcom.symon.exceptions.MemoryRangeException;
+import com.loomcom.symon.machines.Machine;
+import com.loomcom.symon.machines.SymonMachine;
 
+import uk.org.wookey.atari.sim.Simulator;
 import uk.org.wookey.atari.utils.Logger;
 
 public class ApplicationWindow extends JFrame implements ActionListener {
@@ -84,6 +89,7 @@ public class ApplicationWindow extends JFrame implements ActionListener {
         tabs.addMouseListener(new PopupListener());
         
 		tabs.add("Console", new DebugTab());
+		tabs.add("Simulator", new Simulator(new SymonMachine()));
 		
 		gbc.gridy = 1;
 		gbc.weighty = 1.0;
@@ -102,23 +108,7 @@ public class ApplicationWindow extends JFrame implements ActionListener {
 		add(outer, gbc);
 		
 		setVisible(true);
-		
-		Bus b = new Bus(16);
-		try {
-			b.addDevice(new Acia6850(), 42);
-			b.addDevice(new Acia6850(), 84);
-			b.addDevice(new Acia6850(), 64);
-			b.addDevice(new Via6522(), 128);
-			b.addDevice(new Via6522(), 4);
-			b.addDevice(new Acia6850(), 112);
-			b.addDevice(new Via6522(), 120);
-		} catch (MemoryRangeException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		b.dumpState();
-	}
-	
+	}	
 	public void addTab(JPanel tab) {
 		String title;
 		

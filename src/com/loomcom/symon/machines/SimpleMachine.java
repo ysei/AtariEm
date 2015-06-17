@@ -24,8 +24,6 @@
 
 package com.loomcom.symon.machines;
 
-import com.loomcom.symon.Bus;
-import com.loomcom.symon.Cpu;
 import com.loomcom.symon.devices.Memory;
 import com.loomcom.symon.exceptions.MemoryRangeException;
 
@@ -34,34 +32,23 @@ import com.loomcom.symon.exceptions.MemoryRangeException;
  * consists solely of RAM and a CPU. This machine is primarily useful
  * for running 6502 functional tests or debugging by hand.
  */
-public class SimpleMachine implements Machine {
+public class SimpleMachine extends Machine {
     private static final int K64 = (1<<16);
 
-    private final Bus bus;
-    private final Memory ram;
-    private final Cpu cpu;
+    private Memory ram;
 
-    public SimpleMachine() throws MemoryRangeException {
-        this.bus = new Bus(16);
-        this.ram = new Memory(K64, false);
-        this.cpu = new Cpu();
-
-        bus.addCpu(cpu);
-        bus.addDevice(ram, 0);
+    public SimpleMachine() {
+    	super("Simple");
     }
+    
+    public void addDevices() {
+    	try {
+    		this.ram = new Memory(K64, false);
 
-    @Override
-    public Bus getBus() {
-        return bus;
-    }
-
-    @Override
-    public Cpu getCpu() {
-        return cpu;
-    }
-
-   @Override
-    public String getName() {
-        return "Simple";
+    		bus.addDevice(ram, 0);
+    	} catch (MemoryRangeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
     }
 }

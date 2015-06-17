@@ -139,11 +139,6 @@ public class Crtc extends Device {
         }
     }
 
-    @Override
-    public String toString() {
-        return null;
-    }
-
     public int getCharAtAddress(int address) throws MemoryAccessException {
         // TODO: Row/Column addressing
         return memory.read(address);

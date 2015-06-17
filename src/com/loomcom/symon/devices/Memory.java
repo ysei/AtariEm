@@ -104,10 +104,6 @@ public class Memory extends Device {
         Arrays.fill(this.mem, val);
     }
 
-    public String toString() {
-        return "Memory: " + getMemoryRange().length();
-    }
-
     public int[] getDmaAccess() {
         return mem;
     }
