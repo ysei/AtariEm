@@ -1,41 +1,33 @@
 package uk.org.wookey.atari.sim;
 
 import java.awt.BorderLayout;
-import java.awt.Container;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.logging.Level;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
 import uk.org.wookey.atari.utils.Logger;
 
-import com.loomcom.symon.exceptions.SymonException;
+import com.loomcom.symon.Cpu;
+import com.loomcom.symon.exceptions.MemoryAccessException;
 import com.loomcom.symon.machines.Machine;
-import com.loomcom.symon.ui.Console;
 import com.loomcom.symon.ui.MemoryWindow;
-import com.loomcom.symon.ui.PreferencesDialog;
 import com.loomcom.symon.ui.StatusPanel;
 import com.loomcom.symon.ui.TraceLog;
 
 public class Simulator extends JPanel {
+	private static final long serialVersionUID = 1L;
+
 	private final static Logger _logger = new Logger(Simulator.class.getName());
 	
-    private static final int  DEFAULT_FONT_SIZE = 12;
-    private static final Font DEFAULT_FONT = new Font(Font.MONOSPACED, Font.PLAIN, DEFAULT_FONT_SIZE);
-    private static final int  CONSOLE_BORDER_WIDTH = 5;
-    
     private static final String[] STEPS = {"1", "5", "10", "20", "50", "100"};
 
-	private Console console;
 	private StatusPanel statusPane;
 	
     private JButton runStopButton;
@@ -50,18 +42,21 @@ public class Simulator extends JPanel {
     private JFileChooser fileChooser;
     
     private int stepsPerClick;
+    
+    private Cpu cpu;
 
 	public Simulator(Machine machine) {
 		super();
+		
+		stepsPerClick = 1;
+		
+		cpu = machine.getCpu();
 
 		//setTitle("6502 Simulator - " + machine.getName());
 		setLayout(new BorderLayout());
 
         // UI components used for I/O.
-        console = new Console(80, 25, DEFAULT_FONT);
         statusPane = new StatusPanel(machine);
-
-        console.setBorderWidth(CONSOLE_BORDER_WIDTH);
 
         // File Chooser
         fileChooser = new JFileChooser(System.getProperty("user.dir"));
@@ -100,7 +95,7 @@ public class Simulator extends JPanel {
         buttonContainer.add(hardResetButton);
 
         // Left side - console
-        consoleContainer.add(console, BorderLayout.CENTER);
+        //consoleContainer.add(console, BorderLayout.CENTER);
         add(consoleContainer, BorderLayout.LINE_START);
 
         // Right side - status pane
@@ -116,21 +111,19 @@ public class Simulator extends JPanel {
 
         stepButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-//                handleStep(stepsPerClick);
+                handleStep(stepsPerClick);
             }
         });
 
         softResetButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-                // If this was a CTRL-click, do a hard reset.
-//                handleReset(false);
+                handleReset(false);
             }
         });
 
         hardResetButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-                // If this was a CTRL-click, do a hard reset.
-//                handleReset(true);
+                handleReset(true);
             }
         });
 
@@ -139,9 +132,34 @@ public class Simulator extends JPanel {
 
         // Prepare the memory window
         memoryWindow = new MemoryWindow(machine.getBus());
+        add(memoryWindow, BorderLayout.LINE_START);
 
         setVisible(true);
 
-        console.requestFocus();
+        //console.requestFocus();
+        
+        _logger.logInfo("Simulator created and initialised");
+	}
+	
+	private void handleReset(boolean hard) {
+		_logger.logInfo("Reset CPU");
+		try {
+			cpu.reset();
+			statusPane.updateState();
+		} catch (MemoryAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	private void handleStep(int numSteps) {
+		_logger.logInfo("Step - " + numSteps);
+		try {
+			cpu.step(numSteps);
+			statusPane.updateState();
+		} catch (MemoryAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

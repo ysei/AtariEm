@@ -44,7 +44,7 @@ import java.util.logging.Logger;
  * This Frame displays the contents of a page of memory. The page number to be displayed
  * is selectable by the user.
  */
-public class MemoryWindow extends JFrame implements ActionListener {
+public class MemoryWindow extends JPanel implements ActionListener {
 
     private MemoryTableModel memoryTableModel;
     private JTable memoryTable;
@@ -111,7 +111,7 @@ public class MemoryWindow extends JFrame implements ActionListener {
      * Set-up the UI.
      */
     private void createUi() {
-        setTitle("Memory Contents");
+        //setTitle("Memory Contents");
         this.memoryTable = new MemoryTable(memoryTableModel);
 
         memoryTable.setDragEnabled(false);
@@ -169,14 +169,12 @@ public class MemoryWindow extends JFrame implements ActionListener {
         memoryPanel.add(scrollPane, BorderLayout.CENTER);
 
         setLayout(new BorderLayout());
-        getContentPane().add(controlPanel, BorderLayout.NORTH);
-        getContentPane().add(memoryPanel, BorderLayout.CENTER);
+        add(controlPanel, BorderLayout.NORTH);
+        add(memoryPanel, BorderLayout.CENTER);
 
         setMinimumSize(MINIMUM_SIZE);
         memoryPanel.setPreferredSize(memoryTable.getPreferredSize());
         setPreferredSize(memoryPanel.getPreferredSize());
-
-        pack();
     }
 
     /**

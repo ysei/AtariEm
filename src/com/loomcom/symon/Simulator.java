@@ -469,7 +469,7 @@ public class Simulator {
                 runLoop.requestStop();
             }
 
-            memoryWindow.dispose();
+            //BG memoryWindow.dispose();
             traceLog.dispose();
             mainWindow.dispose();
 
@@ -642,12 +642,12 @@ public class Simulator {
 
             final JCheckBoxMenuItem showMemoryTable = new JCheckBoxMenuItem(new ToggleMemoryWindowAction());
             // Un-check the menu item if the user closes the window directly
-            memoryWindow.addWindowListener(new WindowAdapter() {
+/* BG            memoryWindow.addWindowListener(new WindowAdapter() {
                 @Override
                 public void windowClosing(WindowEvent e) {
                     showMemoryTable.setSelected(false);
                 }
-            });
+            }); */
             viewMenu.add(showMemoryTable);
 
             add(viewMenu);
