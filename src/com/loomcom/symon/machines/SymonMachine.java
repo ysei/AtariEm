@@ -54,7 +54,7 @@ public class SymonMachine extends Machine {
 
 
         // The simulated peripherals
-    private Acia acia;
+    private Acia6551 acia;
     private Pia pia;
     private Crtc crtc;
     private Memory ram;
@@ -77,14 +77,14 @@ public class SymonMachine extends Machine {
 	        bus.addDevice(acia, ACIA_BASE);
 	        bus.addDevice(crtc, CRTC_BASE);
 
-	        File romImage = new File("rom.bin");
+	        File romImage = new File("machines/" + this.getName() + "/rom.bin");
 	        if (romImage.canRead()) {
 	            _logger.logInfo("Loading ROM image from file " + romImage);
 	            this.rom = Memory.makeROM(ROM_SIZE, romImage);
 	        } else {
 	            _logger.logInfo("Default ROM file " + romImage +
 	                        " not found, loading empty R/W memory image.");
-	            this.rom = Memory.makeRAM(ROM_SIZE - 1);
+	            this.rom = Memory.makeRAM(ROM_SIZE);
 	        }
 
 	        bus.addDevice(rom, ROM_BASE);

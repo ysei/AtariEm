@@ -44,12 +44,14 @@ public class Via6522 extends Pia {
     private char[] portDirections = {0, 0};
 
     public Via6522() throws MemoryRangeException {
-        super(VIA_SIZE, "MOS 6522 VIA");
+        super(VIA_SIZE, "6522-VIA");
     }
 
     @Override
     public void write(int address, int data) throws MemoryAccessException {
         Register[] registers = Register.values();
+
+       	address = addressOffset(address);
 
         if (address >= registers.length) {
             throw new MemoryAccessException("Unknown register: " + address);
@@ -82,7 +84,9 @@ public class Via6522 extends Pia {
     public int read(int address) throws MemoryAccessException {
         Register[] registers = Register.values();
 
-        if (address >= registers.length) {
+       	address = addressOffset(address);
+
+       	if (address >= registers.length) {
             throw new MemoryAccessException("Unknown register: " + address);
         }
 

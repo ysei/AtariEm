@@ -112,7 +112,9 @@ public class Crtc extends Device {
 
     @Override
     public void write(int address, int data) throws MemoryAccessException {
-        switch (address) {
+    	address = addressOffset(address);
+    	
+    	switch (address) {
             case REGISTER_SELECT:
                 setCurrentRegister(data);
                 break;
@@ -124,7 +126,9 @@ public class Crtc extends Device {
 
     @Override
     public int read(int address) throws MemoryAccessException {
-        switch (address) {
+       	address = addressOffset(address);
+
+       	switch (address) {
             case REGISTER_RW:
                 switch (currentRegister) {
                     case CURSOR_POSITION_LOW:

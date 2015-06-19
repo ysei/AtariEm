@@ -32,9 +32,6 @@ import com.loomcom.symon.exceptions.MemoryRangeException;
  */
 
 public abstract class Acia extends Device {
-
-    private String name;
-    
     boolean receiveIrqEnabled = false;
     boolean transmitIrqEnabled = false;
     boolean overrun = false;
@@ -56,7 +53,6 @@ public abstract class Acia extends Device {
 	
     public Acia(int size, String name) throws MemoryRangeException {
         super(new MemoryRange(size), name);
-        this.name = name;
     }
 
 

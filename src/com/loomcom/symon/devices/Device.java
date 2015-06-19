@@ -38,6 +38,7 @@ import java.util.Set;
 public abstract class Device implements Comparable<Device> {
     private MemoryRange range;
     private String name;
+    private String labelPrefix;
     private Bus bus;
 
     /**
@@ -47,7 +48,7 @@ public abstract class Device implements Comparable<Device> {
 
     public Device(MemoryRange range, String name) {
     	this.range = range;
-    	this.name = name;
+    	this.name = labelPrefix = name;
     }
     
     public Device(MemoryRange range) {
@@ -91,6 +92,14 @@ public abstract class Device implements Comparable<Device> {
     public void setName(String name) {
         this.name = name;
     }
+    
+    public String getLabelPrefix() {
+    	return labelPrefix;
+    }
+    
+    public void setLabelPrefix(String newPrefix) {
+    	labelPrefix = newPrefix;
+    }
 
     public void registerListener(DeviceChangeListener listener) {
         deviceChangeListeners.add(listener);
@@ -125,6 +134,10 @@ public abstract class Device implements Comparable<Device> {
 
         return range.compareTo(other.range);
     }
+    
+    protected int addressOffset(int absoluteAddress) {
+    	return absoluteAddress - range.startAddress();
+    }
 
 	public MemoryRange getMemoryRange() {
 		return range;
@@ -132,5 +145,11 @@ public abstract class Device implements Comparable<Device> {
 	
 	public boolean handlesAddress(int address) {
 		return this.getMemoryRange().includes(address);
+	}
+	
+	public String getLabel(int address) {
+       	address = addressOffset(address);
+
+       	return labelPrefix + "+" + String.format("$%04X", address);
 	}
 }

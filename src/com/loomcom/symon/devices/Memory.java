@@ -63,7 +63,8 @@ public class Memory extends Device {
         if (readOnly) {
             throw new MemoryAccessException("Cannot write to read-only memory at address " + address);
         } else {
-            this.mem[address] = data;
+           	address = addressOffset(address);
+           	this.mem[address] = data;
         }
     }
 
@@ -97,6 +98,7 @@ public class Memory extends Device {
     }
 
     public int read(int address) throws MemoryAccessException {
+       	address = addressOffset(address);
         return this.mem[address];
     }
 

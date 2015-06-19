@@ -123,7 +123,7 @@ public class Bus {
         Device d = deviceAt(address);
         
         if (d != null) {
-        	_logger.logInfo("Rd " + String.format("%04X", address) + " - its in device '" + d.toString() + "'.");
+        	//_logger.logInfo("Rd " + String.format("%04X", address) + " - its in device '" + d.toString() + "'.");
             return d.read(address) & 0xff;
         }
         else {
@@ -195,7 +195,7 @@ public class Bus {
     		_logger.logInfo("  Devices:");
 
     		for (Device dev : deviceList) {
-    			_logger.logInfo("    " + dev.getName() + ":" + dev.toString());
+    			_logger.logInfo("    " + dev.toString());
     		}
     	}
     	else {

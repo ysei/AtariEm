@@ -61,6 +61,8 @@ public class Acia6850 extends Acia {
 
     @Override
     public int read(int address) throws MemoryAccessException {
+       	address = addressOffset(address);
+
         switch (address) {
             case RX_REG:
                 return rxRead();
@@ -74,7 +76,9 @@ public class Acia6850 extends Acia {
 
     @Override
     public void write(int address, int data) throws MemoryAccessException {
-        switch (address) {
+       	address = addressOffset(address);
+
+       	switch (address) {
             case TX_REG:
                 txWrite(data);
                 break;

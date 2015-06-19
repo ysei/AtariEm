@@ -407,4 +407,20 @@ public class StatusPanel extends JPanel {
         String val = source.getText().replaceAll("[^0-9a-fA-F]", "");
         return Integer.parseInt(val, 16);
     }
+    
+    public void setGreyed(boolean greyed) {
+    	setGreyed(greyed, this);
+    }
+    
+    private void setGreyed(boolean greyed, Container con) {
+    	boolean enabled = !greyed;
+    	
+    	for (Component c: con.getComponents()) {
+    		if (c instanceof Container) {
+    			setGreyed(greyed, (Container)c);
+    		}
+    		
+    		c.setEnabled(enabled);
+    	}
+    }
 }

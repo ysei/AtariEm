@@ -66,7 +66,7 @@ public class SdController extends Device {
    
     
     public SdController() throws MemoryRangeException {
-        super(new MemoryRange(CONTROLLER_SIZE), "SDCONTROLLER");
+        super(new MemoryRange(CONTROLLER_SIZE), "SD-CONTROLLER");
        
         sdImageFile = new File("sd.img");
         if(!sdImageFile.exists()) {
@@ -78,7 +78,9 @@ public class SdController extends Device {
 
     @Override
     public void write(int address, int data) throws MemoryAccessException {
-        switch(address) {
+       	address = addressOffset(address);
+
+       	switch(address) {
             case 0 :
                 writeData(data);
                 return;
@@ -98,7 +100,9 @@ public class SdController extends Device {
 
     @Override
     public int read(int address) throws MemoryAccessException {
-        switch(address) {
+       	address = addressOffset(address);
+
+       	switch(address) {
             case 0:
                 return readData();
             case 1:
@@ -205,10 +209,4 @@ public class SdController extends Device {
                 this.status = Status.IDLE;
         }
     }
-
-    @Override
-    public String toString() {
-        return getName();
-    }
-    
 }

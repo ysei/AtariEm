@@ -10,6 +10,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JPanel;
+import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
 
 import uk.org.wookey.atari.utils.Logger;
@@ -44,6 +45,8 @@ public class Simulator extends JPanel {
     private int stepsPerClick;
     
     private Cpu cpu;
+    
+    private SimRunner simRunner;
 
 	public Simulator(Machine machine) {
 		super();
@@ -51,13 +54,20 @@ public class Simulator extends JPanel {
 		stepsPerClick = 1;
 		
 		cpu = machine.getCpu();
+		try {
+			cpu.reset();
+		} catch (MemoryAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		//setTitle("6502 Simulator - " + machine.getName());
 		setLayout(new BorderLayout());
 
         // UI components used for I/O.
         statusPane = new StatusPanel(machine);
-
+        statusPane.updateState();
+        
         // File Chooser
         fileChooser = new JFileChooser(System.getProperty("user.dir"));
 
@@ -106,6 +116,7 @@ public class Simulator extends JPanel {
 
         runStopButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
+            	handleRun();
             }
         });
 
@@ -139,6 +150,57 @@ public class Simulator extends JPanel {
         //console.requestFocus();
         
         _logger.logInfo("Simulator created and initialised");
+		
+        _logger.logInfo("Create simRunner thread");
+        simRunner = new SimRunner();
+        _logger.logInfo("Starting SimRunner thread");
+        simRunner.start();
+
+        // Now the simRunner thread is alive, set a timer to update the statusPane every
+        // so often (only if simRunner is actually doing anything)
+        Timer SimpleTimer = new Timer(200, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            	if (simRunner.isRunning()) {
+            		statusPane.updateState();
+            	}
+            }
+        });
+        SimpleTimer.start();
+	}
+	
+	private void handleRun() {
+		// Starting or stopping?
+		_logger.logInfo("in handleRun()");
+		
+		if (!simRunner.isRunning()) {
+			runStopButton.setText("Stop");
+			stepButton.setEnabled(false);
+			//statusPane.setGreyed(true);
+			
+			simRunner.setRunning(true);
+		}
+		else {
+			_logger.logInfo("Stopping SimRunner");
+			simRunner.setRunning(false);
+			
+			// Wait for simRunner to actually stop
+			while (simRunner.isRunning()) {
+				try {
+					Thread.sleep(10);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			
+			statusPane.updateState();
+			
+			runStopButton.setText("Run");
+			stepButton.setEnabled(true);
+			
+			//statusPane.setGreyed(false);
+		}
 	}
 	
 	private void handleReset(boolean hard) {
@@ -158,8 +220,43 @@ public class Simulator extends JPanel {
 			cpu.step(numSteps);
 			statusPane.updateState();
 		} catch (MemoryAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			_logger.logError("Processor threw an exception", e);
+		}
+	}
+
+	
+	
+	
+	private class SimRunner extends Thread {
+		private boolean running = false;
+		
+		@Override
+		public void run() {
+			while (true) {
+				while (isRunning()) {
+					try {
+						cpu.step();
+					} catch (MemoryAccessException e) {
+						_logger.logError("Processor threw an exception", e);
+						setRunning(false);
+					}	
+				}
+
+				// wait a bit before checking again
+				try {
+					sleep(100);
+				} catch (InterruptedException e) {
+					_logger.logError("simRunner caught an InterruptedException", e);
+				}
+			}
+		}
+		
+		public synchronized boolean isRunning() {
+			return running;
+		}
+		
+		public synchronized void setRunning(boolean runningOrNot) {
+			running = runningOrNot;
 		}
 	}
 }
