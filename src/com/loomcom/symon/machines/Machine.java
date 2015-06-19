@@ -25,6 +25,7 @@
 package com.loomcom.symon.machines;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -64,7 +65,9 @@ public class Machine {
 		bus.addCpu(cpu);
 		addDevices();
 		
-		ui = createCoreUI();
+		ui = new JPanel();
+		ui.setBackground(new Color(160, 200, 120));
+		createCoreUI();
 		
 		bus.dumpState();
 	}
@@ -96,8 +99,7 @@ public class Machine {
     	return name;
     }
     
-    public final JPanel createCoreUI() {
-    	return new JPanel();
+    private final void createCoreUI() {
+    	bus.constructUI(ui);
     }
-    
 }

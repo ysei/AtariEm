@@ -31,6 +31,9 @@ import com.loomcom.symon.exceptions.MemoryRangeException;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.swing.JComponent;
+import javax.swing.JPanel;
+
 /**
  * A memory-mapped IO Device.
  */
@@ -40,6 +43,8 @@ public abstract class Device implements Comparable<Device> {
     private String name;
     private String labelPrefix;
     private Bus bus;
+    
+    protected JPanel ui;
 
     /**
      * Listeners to notify on update.
@@ -49,6 +54,8 @@ public abstract class Device implements Comparable<Device> {
     public Device(MemoryRange range, String name) {
     	this.range = range;
     	this.name = labelPrefix = name;
+    	
+    	ui = null;
     }
     
     public Device(MemoryRange range) {
@@ -151,5 +158,13 @@ public abstract class Device implements Comparable<Device> {
        	address = addressOffset(address);
 
        	return labelPrefix + "+" + String.format("$%04X", address);
+	}
+	
+	public boolean hasUI() {
+		return false;
+	}
+	
+	public JPanel getUI() {
+		return ui;
 	}
 }

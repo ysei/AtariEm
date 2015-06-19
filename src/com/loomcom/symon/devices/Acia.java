@@ -143,4 +143,7 @@ public abstract class Acia extends Device {
         return rxFull;
     }
 
+    public boolean hasUI() {
+    	return true;
+    }
 }

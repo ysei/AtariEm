@@ -35,6 +35,9 @@ import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import javax.swing.BoxLayout;
+import javax.swing.JPanel;
+
 import uk.org.wookey.atari.utils.Logger;
 
 /**
@@ -211,5 +214,15 @@ public class Bus {
     	}
     	
     	return null;
+    }
+    
+    public void constructUI(JPanel panel) {
+    	panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+    	
+    	for (Device dev: deviceList) {
+    		if (dev.hasUI()) {
+    			panel.add(dev.getUI());
+    		}
+    	}
     }
 }

@@ -23,6 +23,11 @@
 
 package com.loomcom.symon.devices;
 
+import javax.swing.JComponent;
+import javax.swing.JPanel;
+
+import uk.org.wookey.atari.ui.RegisterPanel;
+
 import com.loomcom.symon.exceptions.MemoryAccessException;
 import com.loomcom.symon.exceptions.MemoryRangeException;
 
@@ -45,16 +50,25 @@ public class Acia6551 extends Acia {
     static final int CMND_REG = 2;
     static final int CTRL_REG = 3;
 
-
     /**
      * Registers. These are ignored in the current implementation.
      */
     private int commandRegister;
     private int controlRegister;
+    
+    private RegisterPanel[] regs;
 
 
     public Acia6551(int address) throws MemoryRangeException {
         super(ACIA_SIZE, "ACIA6551");
+        
+        ui = new JPanel();
+        
+        regs = new RegisterPanel[4];
+        for (int i=0; i<4; i++) {
+        	regs[i] = new RegisterPanel(8);
+        	ui.add(regs[i]);
+        }
     }
 
     @Override
@@ -82,15 +96,19 @@ public class Acia6551 extends Acia {
        	switch (address) {
             case 0:
                 txWrite(data);
+                regs[0].set(data);
                 break;
             case 1:
                 reset();
+                regs[1].set(data);
                 break;
             case 2:
                 setCommandRegister(data);
+                regs[2].set(data);
                 break;
             case 3:
                 setControlRegister(data);
+                regs[3].set(data);
                 break;
             default:
                 throw new MemoryAccessException("No register.");
@@ -199,7 +217,6 @@ public class Acia6551 extends Acia {
         return stat;
     }
 
-
     private synchronized void reset() {
         txChar = 0;
         txEmpty = true;
@@ -208,5 +225,4 @@ public class Acia6551 extends Acia {
         receiveIrqEnabled = false;
         transmitIrqEnabled = false;
     }
-
 }

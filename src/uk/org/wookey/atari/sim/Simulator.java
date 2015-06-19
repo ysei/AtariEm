@@ -31,6 +31,8 @@ public class Simulator extends JPanel {
 
 	private StatusPanel statusPane;
 	
+	private JPanel machinePane;
+	
     private JButton runStopButton;
     private JButton stepButton;
     private JButton softResetButton;
@@ -67,6 +69,9 @@ public class Simulator extends JPanel {
         // UI components used for I/O.
         statusPane = new StatusPanel(machine);
         statusPane.updateState();
+        
+        // UI component for machine specific components
+        machinePane = machine.getUI();
         
         // File Chooser
         fileChooser = new JFileChooser(System.getProperty("user.dir"));
@@ -105,9 +110,11 @@ public class Simulator extends JPanel {
         buttonContainer.add(hardResetButton);
 
         // Left side - console
-        //consoleContainer.add(console, BorderLayout.CENTER);
         add(consoleContainer, BorderLayout.LINE_START);
-
+        
+        // middle - machine panel
+        add(machinePane, BorderLayout.CENTER);
+        
         // Right side - status pane
         add(statusPane, BorderLayout.LINE_END);
 
