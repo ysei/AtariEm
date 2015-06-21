@@ -1520,6 +1520,7 @@ public class Cpu implements InstructionTable {
             switch (instructionModes[ir]) {
                 case ABS:
                     sb.append(" $" + HexUtil.wordToHex(address(args[0], args[1])));
+                    //sb.append(" $" + bus.getLabel(address(args[0], args[1]));
                     break;
                 case ABX:
                     sb.append(" $" + HexUtil.wordToHex(address(args[0], args[1])) + ",X");
@@ -1532,6 +1533,57 @@ public class Cpu implements InstructionTable {
                     break;
                 case IND:
                     sb.append(" ($" + HexUtil.wordToHex(address(args[0], args[1])) + ")");
+                    break;
+                case XIN:
+                    sb.append(" ($" + HexUtil.byteToHex(args[0]) + ",X)");
+                    break;
+                case INY:
+                    sb.append(" ($" + HexUtil.byteToHex(args[0]) + "),Y");
+                    break;
+                case REL:
+                case ZPG:
+                    sb.append(" $" + HexUtil.byteToHex(args[0]));
+                    break;
+                case ZPX:
+                    sb.append(" $" + HexUtil.byteToHex(args[0]) + ",X");
+                    break;
+                case ZPY:
+                    sb.append(" $" + HexUtil.byteToHex(args[0]) + ",Y");
+                    break;
+            }
+
+            return sb.toString();
+        }
+
+        /**
+         * Given an opcode and its operands, return a formatted name.
+         *
+         * @return A string representing the mnemonic and operands of the instruction
+         */
+        public String disassembleOp(Bus bus) {
+            String mnemonic = opcodeNames[ir];
+
+            if (mnemonic == null) {
+                return "???";
+            }
+
+            StringBuilder sb = new StringBuilder(mnemonic);
+
+            switch (instructionModes[ir]) {
+                case ABS:
+                    sb.append(" $" + bus.getLabel(address(args[0], args[1])));
+                    break;
+                case ABX:
+                    sb.append(" $" + bus.getLabel(address(args[0], args[1])) + ",X");
+                    break;
+                case ABY:
+                    sb.append(" $" + bus.getLabel(address(args[0], args[1])) + ",Y");
+                    break;
+                case IMM:
+                    sb.append(" #$" + HexUtil.byteToHex(args[0]));
+                    break;
+                case IND:
+                    sb.append(" ($" + bus.getLabel(address(args[0], args[1])) + ")");
                     break;
                 case XIN:
                     sb.append(" ($" + HexUtil.byteToHex(args[0]) + ",X)");

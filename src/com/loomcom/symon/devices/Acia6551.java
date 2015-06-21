@@ -50,6 +50,7 @@ public class Acia6551 extends Acia {
     static final int STAT_REG = 1;
     static final int CMND_REG = 2;
     static final int CTRL_REG = 3;
+    
 
     /**
      * Registers. These are ignored in the current implementation.
@@ -63,10 +64,17 @@ public class Acia6551 extends Acia {
         super(ACIA_SIZE, "ACIA6551");
         
         regs = new RegisterPanel[ACIA_SIZE];
-        for (int i=0; i<ACIA_SIZE; i++) {
-        	regs[i] = new RegisterPanel(8);
-        	ui.add(regs[i]);
-        }
+        regs[0] = new RegisterPanel("Data Reg", 8);
+        ui.add(regs[0]);
+        
+        regs[1] = new RegisterPanel("Status Reg", 8);
+        ui.add(regs[1]);
+        
+        regs[2] = new RegisterPanel("Command Reg", 8);
+        ui.add(regs[2]);
+        
+        regs[3] = new RegisterPanel("Control Reg", 8);
+        ui.add(regs[3]);
     }
 
     @Override

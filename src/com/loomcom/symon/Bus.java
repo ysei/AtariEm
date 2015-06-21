@@ -131,7 +131,7 @@ public class Bus {
             return d.getLabel(address);
         }
 
-        return String.format("$%04X", address);
+        return String.format("$$$%04X", address);
     }
 
     public int read(int address) throws MemoryAccessException {

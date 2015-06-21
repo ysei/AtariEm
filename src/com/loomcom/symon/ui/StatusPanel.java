@@ -317,7 +317,7 @@ public class StatusPanel extends JPanel {
         negativeFlagLabel.setIcon(iconForFlag(status, 7));
 
         // Update the register and address displays
-        opcodeField.setText(cpu.getCpuState().disassembleOp());
+        opcodeField.setText(cpu.getCpuState().disassembleOp(cpu.getBus()));
         pcField.setText(cpu.getProgramCounterStatus());
         spField.setText(cpu.getStackPointerStatus());
         aField.setText(cpu.getAccumulatorStatus());

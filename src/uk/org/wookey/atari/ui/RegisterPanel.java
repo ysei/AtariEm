@@ -1,30 +1,41 @@
 package uk.org.wookey.atari.ui;
 
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.util.ArrayList;
 
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 public class RegisterPanel extends JPanel {
 	private int width;
 	private boolean lsbFirst;
 	private ArrayList<Bit> bits;
+	private JLabel regName;
 	private int val;
 	
 	public RegisterPanel(int width) {
-		this.width = width;
-		lsbFirst = false;
-		
-		setLayout(new GridBagLayout());
-
-		createBits();
+		this("", width);
+	}
+	
+	public RegisterPanel(String registerName, int width) {
+		this(registerName, width, false);
 	}
 
-	public RegisterPanel(int width, boolean lsbFirst) {
+	public RegisterPanel(String registerName, int width, boolean lsbFirst) {
 		this.width = width;
 		this.lsbFirst = lsbFirst;
 
+		setLayout(new GridBagLayout());
+
+		regName = new JLabel(registerName);
+		Dimension ms = regName.getMinimumSize();
+		ms.width = 100;
+		regName.setMinimumSize(ms);
+		regName.setPreferredSize(ms);
+		regName.setMaximumSize(ms);
+		
 		createBits();
 		set(0);
 	}
@@ -40,6 +51,7 @@ public class RegisterPanel extends JPanel {
 			bits.add(new Bit());
 		}
 		
+		add(regName);
 		if (lsbFirst) {
 			for (int i=0; i<width; i++) {
 				add(bits.get(i), gbc);
