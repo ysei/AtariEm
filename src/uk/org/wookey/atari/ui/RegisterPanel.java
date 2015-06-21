@@ -19,7 +19,6 @@ public class RegisterPanel extends JPanel {
 		setLayout(new GridBagLayout());
 
 		createBits();
-		set(42);
 	}
 
 	public RegisterPanel(int width, boolean lsbFirst) {

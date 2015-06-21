@@ -23,6 +23,8 @@
 
 package com.loomcom.symon.devices;
 
+import uk.org.wookey.atari.ui.RegisterPanel;
+
 import com.loomcom.symon.exceptions.MemoryAccessException;
 import com.loomcom.symon.exceptions.MemoryRangeException;
 
@@ -42,9 +44,16 @@ public class Via6522 extends Pia {
     // Ports A and B
     private char[] portData = {0, 0};
     private char[] portDirections = {0, 0};
+    private RegisterPanel[] regs;
 
     public Via6522() throws MemoryRangeException {
         super(VIA_SIZE, "6522-VIA");
+        
+        regs = new RegisterPanel[VIA_SIZE];
+        for (int i=0; i<VIA_SIZE; i++) {
+        	regs[i] = new RegisterPanel(8);
+        	ui.add(regs[i]);
+        }
     }
 
     @Override
@@ -113,5 +122,9 @@ public class Via6522 extends Pia {
         }
 
         return 0;
+    }
+    
+    public boolean hasUI() {
+    	return true;
     }
 }

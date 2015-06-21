@@ -27,6 +27,7 @@ import com.loomcom.symon.devices.Device;
 import com.loomcom.symon.exceptions.MemoryAccessException;
 import com.loomcom.symon.exceptions.MemoryRangeException;
 
+import java.awt.Component;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -35,6 +36,7 @@ import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
@@ -120,6 +122,16 @@ public class Bus {
     public void addCpu(Cpu cpu) {
         this.cpu = cpu;
         cpu.setBus(this);
+    }
+    
+    public String getLabel(int address) {
+        Device d = deviceAt(address);
+        
+        if (d != null) {
+            return d.getLabel(address);
+        }
+
+        return String.format("$%04X", address);
     }
 
     public int read(int address) throws MemoryAccessException {
@@ -218,11 +230,13 @@ public class Bus {
     
     public void constructUI(JPanel panel) {
     	panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+    	panel.setAlignmentX(Component.LEFT_ALIGNMENT);
     	
     	for (Device dev: deviceList) {
     		if (dev.hasUI()) {
     			panel.add(dev.getUI());
     		}
     	}
+    	panel.add(Box.createVerticalGlue());
     }
 }

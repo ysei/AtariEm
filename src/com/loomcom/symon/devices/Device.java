@@ -31,8 +31,10 @@ import com.loomcom.symon.exceptions.MemoryRangeException;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.swing.BoxLayout;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
+import javax.swing.border.TitledBorder;
 
 /**
  * A memory-mapped IO Device.
@@ -56,6 +58,12 @@ public abstract class Device implements Comparable<Device> {
     	this.name = labelPrefix = name;
     	
     	ui = null;
+    	if (hasUI()) {
+            ui = new JPanel();
+            ui.setBorder(new TitledBorder(getName()));
+            
+            ui.setLayout(new BoxLayout(ui, BoxLayout.Y_AXIS));
+    	}
     }
     
     public Device(MemoryRange range) {

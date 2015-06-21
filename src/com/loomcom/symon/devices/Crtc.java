@@ -30,6 +30,8 @@ import com.loomcom.symon.exceptions.MemoryRangeException;
 import java.io.IOException;
 import java.util.logging.Logger;
 
+import uk.org.wookey.atari.ui.RegisterPanel;
+
 
 /**
  * Simulation of a 6545 CRTC and virtual CRT output.
@@ -42,6 +44,8 @@ public class Crtc extends Device {
     public static final int REGISTER_RW              = 1;
 
     // Registers
+    public static final int NUM_REGISTERS            = 18;
+    
     public static final int HORIZONTAL_DISPLAYED     = 1;
     public static final int VERTICAL_DISPLAYED       = 6;
     public static final int MODE_CONTROL             = 8;
@@ -92,10 +96,18 @@ public class Crtc extends Device {
     private boolean cursorSkew = false;
 
     private Memory memory;
+    
+    private RegisterPanel[] regs;
 
     public Crtc(Memory memory) throws MemoryRangeException, IOException {
         super(new MemoryRange(2), "CRTC");
         this.memory = memory;
+        
+        regs = new RegisterPanel[NUM_REGISTERS];
+        for (int i=0; i<NUM_REGISTERS; i++) {
+        	regs[i] = new RegisterPanel(8);
+        	ui.add(regs[i]);
+        }
 
         // Defaults
         this.horizontalDisplayed = 40;
@@ -279,4 +291,9 @@ public class Crtc extends Device {
 
         notifyListeners();
     }
+    
+    public boolean hasUI() {
+    	return true;
+    }
+
 }

@@ -25,6 +25,7 @@ package com.loomcom.symon.devices;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;
+import javax.swing.border.TitledBorder;
 
 import uk.org.wookey.atari.ui.RegisterPanel;
 
@@ -58,14 +59,11 @@ public class Acia6551 extends Acia {
     
     private RegisterPanel[] regs;
 
-
     public Acia6551(int address) throws MemoryRangeException {
         super(ACIA_SIZE, "ACIA6551");
         
-        ui = new JPanel();
-        
-        regs = new RegisterPanel[4];
-        for (int i=0; i<4; i++) {
+        regs = new RegisterPanel[ACIA_SIZE];
+        for (int i=0; i<ACIA_SIZE; i++) {
         	regs[i] = new RegisterPanel(8);
         	ui.add(regs[i]);
         }

@@ -10,6 +10,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
 
@@ -73,6 +74,7 @@ public class Simulator extends JPanel {
         // UI component for machine specific components
         machinePane = machine.getUI();
         
+        
         // File Chooser
         fileChooser = new JFileChooser(System.getProperty("user.dir"));
 
@@ -113,7 +115,8 @@ public class Simulator extends JPanel {
         add(consoleContainer, BorderLayout.LINE_START);
         
         // middle - machine panel
-        add(machinePane, BorderLayout.CENTER);
+        JScrollPane scroller = new JScrollPane(machinePane);
+        add(scroller, BorderLayout.CENTER);
         
         // Right side - status pane
         add(statusPane, BorderLayout.LINE_END);
