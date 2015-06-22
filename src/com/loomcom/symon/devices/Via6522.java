@@ -67,6 +67,8 @@ public class Via6522 extends Pia {
         }
 
         Register r = registers[address];
+        
+        regs[address].set(data);
 
         switch (r) {
             case ORA:

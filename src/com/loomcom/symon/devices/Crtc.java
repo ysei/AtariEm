@@ -131,6 +131,7 @@ public class Crtc extends Device {
                 setCurrentRegister(data);
                 break;
             case REGISTER_RW:
+            	regs[currentRegister].set(data);
                 writeRegisterValue(data);
                 break;
         }

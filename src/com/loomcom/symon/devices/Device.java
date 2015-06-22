@@ -60,9 +60,10 @@ public abstract class Device implements Comparable<Device> {
     	ui = null;
     	if (hasUI()) {
             ui = new JPanel();
-            ui.setBorder(new TitledBorder(getName()));
+            //ui.setBorder(new TitledBorder(getName()));
             
             ui.setLayout(new BoxLayout(ui, BoxLayout.Y_AXIS));
+            ui.setAlignmentX(0);
     	}
     }
     

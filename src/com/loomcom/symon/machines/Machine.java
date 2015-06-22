@@ -66,6 +66,7 @@ public class Machine {
 		addDevices();
 		
 		ui = new JPanel();
+		ui.setLayout(new BorderLayout());
 		ui.setBackground(new Color(160, 200, 120));
 		createCoreUI();
 		
@@ -100,6 +101,9 @@ public class Machine {
     }
     
     private final void createCoreUI() {
-    	bus.constructUI(ui);
+    	bus.constructUI();
+    	
+    	JPanel busPane = bus.getUI();
+    	ui.add(busPane, BorderLayout.LINE_START);
     }
 }

@@ -40,6 +40,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
+import uk.org.wookey.atari.ui.CollapsablePanel;
 import uk.org.wookey.atari.utils.Logger;
 
 /**
@@ -54,6 +55,8 @@ public class Bus {
     private Cpu cpu;
     
     private ArrayList<Device> deviceList;
+    
+    private JPanel ui;
 
     public Bus(int busWidth) {
     	deviceList = new ArrayList<Device>();
@@ -61,6 +64,10 @@ public class Bus {
         endAddress = (1 << busWidth) - 1;
         cpu = null;
         
+        ui = new JPanel();
+    	ui.setLayout(new BoxLayout(ui, BoxLayout.Y_AXIS));
+    	ui.setAlignmentX(Component.LEFT_ALIGNMENT); 	
+       
         _logger.logSuccess("bus created and initialesed.");
     }
 
@@ -228,15 +235,16 @@ public class Bus {
     	return null;
     }
     
-    public void constructUI(JPanel panel) {
-    	panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-    	panel.setAlignmentX(Component.LEFT_ALIGNMENT);
-    	
+    public void constructUI() {
     	for (Device dev: deviceList) {
     		if (dev.hasUI()) {
-    			panel.add(dev.getUI());
+    			CollapsablePanel coll = new CollapsablePanel(dev.getName(), dev.getUI());
+    			ui.add(coll);
     		}
     	}
-    	panel.add(Box.createVerticalGlue());
+    }
+    
+    public JPanel getUI() {
+    	return ui;
     }
 }

@@ -23,12 +23,20 @@
 
 package com.loomcom.symon.devices;
 
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+
 import javax.swing.JComponent;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 
+import uk.org.wookey.atari.sim.Simulator;
 import uk.org.wookey.atari.ui.RegisterPanel;
+import uk.org.wookey.atari.utils.Logger;
 
+import com.grahamedgecombe.jterminal.JTerminal;
 import com.loomcom.symon.exceptions.MemoryAccessException;
 import com.loomcom.symon.exceptions.MemoryRangeException;
 
@@ -42,15 +50,15 @@ import com.loomcom.symon.exceptions.MemoryRangeException;
  * status (full or empty) for transmit and receive buffers before
  * writing / reading.
  */
-public class Acia6551 extends Acia {
+public class Acia6551 extends Acia implements KeyListener {
+	private final static Logger _logger = new Logger(Simulator.class.getName());
 
-    public static final int ACIA_SIZE = 4;
+	public static final int ACIA_SIZE = 4;
 
     static final int DATA_REG = 0;
     static final int STAT_REG = 1;
     static final int CMND_REG = 2;
     static final int CTRL_REG = 3;
-    
 
     /**
      * Registers. These are ignored in the current implementation.
@@ -59,6 +67,7 @@ public class Acia6551 extends Acia {
     private int controlRegister;
     
     private RegisterPanel[] regs;
+    private JTextArea terminal;
 
     public Acia6551(int address) throws MemoryRangeException {
         super(ACIA_SIZE, "ACIA6551");
@@ -75,6 +84,10 @@ public class Acia6551 extends Acia {
         
         regs[3] = new RegisterPanel("Control Reg", 8);
         ui.add(regs[3]);
+        
+        terminal = new JTextArea(5, 30);
+        terminal.addKeyListener(this);
+        ui.add(terminal);
     }
 
     @Override
@@ -230,5 +243,72 @@ public class Acia6551 extends Acia {
         rxFull = false;
         receiveIrqEnabled = false;
         transmitIrqEnabled = false;
+    }
+
+    /** Handle the key typed event from the text field. */
+    public void keyTyped(KeyEvent e) {
+        displayInfo(e, "KEY TYPED: ");
+    }
+
+    /** Handle the key-pressed event from the text field. */
+    public void keyPressed(KeyEvent e) {
+        displayInfo(e, "KEY PRESSED: ");
+    }
+
+    /** Handle the key-released event from the text field. */
+    public void keyReleased(KeyEvent e) {
+        displayInfo(e, "KEY RELEASED: ");
+    }
+    
+    private void displayInfo(KeyEvent e, String keyStatus) {     
+        //You should only rely on the key char if the event
+        //is a key typed event.
+        int id = e.getID();
+        String keyString;
+        if (id == KeyEvent.KEY_TYPED) {
+            char c = e.getKeyChar();
+            keyString = "key character = '" + c + "'";
+        } else {
+            int keyCode = e.getKeyCode();
+            keyString = "key code = " + keyCode
+                    + " ("
+                    + KeyEvent.getKeyText(keyCode)
+                    + ")";
+        }
+        _logger.logInfo(keyString);
+        
+        int modifiersEx = e.getModifiersEx();
+        String modString = "extended modifiers = " + modifiersEx;
+        String tmpString = KeyEvent.getModifiersExText(modifiersEx);
+        if (tmpString.length() > 0) {
+            modString += " (" + tmpString + ")";
+        } else {
+            modString += " (no extended modifiers)";
+        }
+        _logger.logInfo(modString);
+        
+        String actionString = "action key? ";
+        if (e.isActionKey()) {
+            actionString += "YES";
+        } else {
+            actionString += "NO";
+        }
+        _logger.logInfo(actionString);
+        
+        String locationString = "key location: ";
+        int location = e.getKeyLocation();
+        if (location == KeyEvent.KEY_LOCATION_STANDARD) {
+            locationString += "standard";
+        } else if (location == KeyEvent.KEY_LOCATION_LEFT) {
+            locationString += "left";
+        } else if (location == KeyEvent.KEY_LOCATION_RIGHT) {
+            locationString += "right";
+        } else if (location == KeyEvent.KEY_LOCATION_NUMPAD) {
+            locationString += "numpad";
+        } else { // (location == KeyEvent.KEY_LOCATION_UNKNOWN)
+            locationString += "unknown";
+        }
+        
+        _logger.logInfo(locationString);
     }
 }
