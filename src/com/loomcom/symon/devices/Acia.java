@@ -23,6 +23,9 @@
 
 package com.loomcom.symon.devices;
 
+import uk.org.wookey.atari.sim.Simulator;
+import uk.org.wookey.atari.utils.Logger;
+
 import com.loomcom.symon.MemoryRange;
 import com.loomcom.symon.exceptions.MemoryRangeException;
 
@@ -32,6 +35,8 @@ import com.loomcom.symon.exceptions.MemoryRangeException;
  */
 
 public abstract class Acia extends Device {
+	private final static Logger _logger = new Logger(Simulator.class.getName());
+
     boolean receiveIrqEnabled = false;
     boolean transmitIrqEnabled = false;
     boolean overrun = false;
@@ -100,7 +105,10 @@ public abstract class Acia extends Device {
     }
 
     public synchronized void rxWrite(int data) {
+    	_logger.logInfo("Attempt to put char '" + (char) data + "' into the rx reg");
+    	
         if(rxFull) {
+        	_logger.logError("RX Overrun");
             overrun = true;
         }
         

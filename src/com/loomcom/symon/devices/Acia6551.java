@@ -66,24 +66,33 @@ public class Acia6551 extends Acia implements KeyListener {
     private int commandRegister;
     private int controlRegister;
     
-    private RegisterPanel[] regs;
+    private RegisterPanel txReg;
+    private RegisterPanel rxReg;
+    private RegisterPanel statusReg;
+    private RegisterPanel commandReg;
+    private RegisterPanel controlReg;
+    
     private JTextArea terminal;
 
     public Acia6551(int address) throws MemoryRangeException {
         super(ACIA_SIZE, "ACIA6551");
         
-        regs = new RegisterPanel[ACIA_SIZE];
-        regs[0] = new RegisterPanel("Data Reg", 8);
-        ui.add(regs[0]);
+        JPanel dataRegs = new JPanel();
+        txReg = new RegisterPanel("TX Data", 8);
+        rxReg = new RegisterPanel("RX Data", 8);
+        dataRegs.add(txReg);
+        dataRegs.add(rxReg);        
         
-        regs[1] = new RegisterPanel("Status Reg", 8);
-        ui.add(regs[1]);
+        ui.add(dataRegs);
         
-        regs[2] = new RegisterPanel("Command Reg", 8);
-        ui.add(regs[2]);
+        statusReg = new RegisterPanel("Status Reg", 8);
+        ui.add(statusReg);
         
-        regs[3] = new RegisterPanel("Control Reg", 8);
-        ui.add(regs[3]);
+        commandReg = new RegisterPanel("Command Reg", 8);
+        ui.add(commandReg);
+        
+        controlReg = new RegisterPanel("Control Reg", 8);
+        ui.add(controlReg);
         
         terminal = new JTextArea(5, 30);
         terminal.addKeyListener(this);
@@ -115,19 +124,20 @@ public class Acia6551 extends Acia implements KeyListener {
        	switch (address) {
             case 0:
                 txWrite(data);
-                regs[0].set(data);
+                txReg.set(data);
+                terminal.setText(terminal.getText() + "x");
                 break;
             case 1:
                 reset();
-                regs[1].set(data);
+                statusReg.set(data);
                 break;
             case 2:
                 setCommandRegister(data);
-                regs[2].set(data);
+                commandReg.set(data);
                 break;
             case 3:
                 setControlRegister(data);
-                regs[3].set(data);
+                controlReg.set(data);
                 break;
             default:
                 throw new MemoryAccessException("No register.");
@@ -247,23 +257,31 @@ public class Acia6551 extends Acia implements KeyListener {
 
     /** Handle the key typed event from the text field. */
     public void keyTyped(KeyEvent e) {
-        displayInfo(e, "KEY TYPED: ");
+        //displayInfo(e, "KEY TYPED: ");
     }
 
     /** Handle the key-pressed event from the text field. */
     public void keyPressed(KeyEvent e) {
-        displayInfo(e, "KEY PRESSED: ");
+    	displayInfo(e, "PRESS");
+    	
+        char c = e.getKeyChar();
+        
+        rxReg.set(c);
+        rxWrite(c);
     }
 
     /** Handle the key-released event from the text field. */
     public void keyReleased(KeyEvent e) {
-        displayInfo(e, "KEY RELEASED: ");
+        //displayInfo(e, "KEY RELEASED: ");
     }
     
     private void displayInfo(KeyEvent e, String keyStatus) {     
         //You should only rely on the key char if the event
         //is a key typed event.
         int id = e.getID();
+        
+        _logger.logInfo(keyStatus);
+        
         String keyString;
         if (id == KeyEvent.KEY_TYPED) {
             char c = e.getKeyChar();

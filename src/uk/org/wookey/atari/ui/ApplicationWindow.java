@@ -90,6 +90,7 @@ public class ApplicationWindow extends JFrame implements ActionListener {
         
 		tabs.add("Console", new DebugTab());
 		tabs.add("Simulator", new Simulator(new SymonMachine()));
+		tabs.addTab("Assembler",  new AssemblerTab());
 		
 		gbc.gridy = 1;
 		gbc.weighty = 1.0;

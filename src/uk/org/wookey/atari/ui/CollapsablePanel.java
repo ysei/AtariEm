@@ -85,7 +85,7 @@ public class CollapsablePanel extends JPanel {
             text_ = text;
             font = new Font("sans-serif", Font.PLAIN, 12);
             // setRequestFocusEnabled(true);
-            setPreferredSize(new Dimension(200, 28));
+            setPreferredSize(new Dimension(200, 32));
             int w = getWidth();
             int h = getHeight();
             
