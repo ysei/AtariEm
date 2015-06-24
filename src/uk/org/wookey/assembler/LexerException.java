@@ -1,13 +1,14 @@
 package uk.org.wookey.assembler;
 
-
 /**
 *	A error exception thrown by a Lexer when it encounters Lexical errors.
-*	Theese are errors that concern the vocabulary of the programming language.
+*	These are errors that concern the vocabulary of the programming language.
 *
 *	@author David Schager 2006
 */
 public class LexerException extends Exception {
+	private static final long serialVersionUID = 1L;
+
 	/**
 	*	Constructor
 	*	@param error Error message describing what the lexical error was

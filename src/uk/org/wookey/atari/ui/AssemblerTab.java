@@ -1,14 +1,22 @@
 package uk.org.wookey.atari.ui;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 
 import javax.swing.JPanel;
 
-public class AssemblerTab extends JPanel{
+import uk.org.wookey.atari.editor.AssemblyCodeEditor;
+
+public class AssemblerTab extends JPanel {
+	private static final long serialVersionUID = 1L;
 
 	public AssemblerTab() {
 		super();
 		
-		this.setBackground(new Color(200, 100, 50));
+		setBackground(new Color(200, 100, 50));
+		setLayout(new BorderLayout());
+		
+		AssemblyCodeEditor textArea = new AssemblyCodeEditor();
+		add(textArea, BorderLayout.CENTER);
 	}
 }
