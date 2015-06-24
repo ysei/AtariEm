@@ -1,7 +1,6 @@
 package uk.org.wookey.atari.editor;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Rectangle;
@@ -22,10 +21,11 @@ import javax.swing.text.StyledEditorKit;
 import javax.swing.text.View;
 import javax.swing.text.ViewFactory;
 
+import uk.org.wookey.atari.sim.Simulator;
 import uk.org.wookey.atari.utils.Logger;
 
 public class GenericEditor extends JTextPane {
-	private Logger _logger = new Logger("GenericEditor");
+	private static Logger _logger = new Logger(GenericEditor.class.getName());
 	private static final long serialVersionUID = 1L;
 	protected SimpleAttributeSet normalAttributes;
 	protected SimpleAttributeSet reservedWordAttributes;
@@ -111,6 +111,7 @@ public class GenericEditor extends JTextPane {
 					startingIndex = i;
 				}
 				else {
+
 					int match = reservedWords.isReservedWord(text[i]);
 					int j = i;
 					while (match == ReservedWordList.MAYBE) {
@@ -135,15 +136,6 @@ public class GenericEditor extends JTextPane {
 		append(content.substring(startingIndex), normalAttributes);
 	}
 	
-	public String sanitizeMOOName(String target) {
-		target = target.replaceAll("^Verb: ", "");
-		target = target.replaceAll("[: ]", "-");
-		
-		_logger.logInfo("Sanitised name: '" + target + "'");
-		
-		return target;
-	}
-	
 	class NumberedEditorKit extends StyledEditorKit {
 		private static final long serialVersionUID = 1L;
 
@@ -153,7 +145,6 @@ public class GenericEditor extends JTextPane {
 	}
 	
 	class NumberedViewFactory implements ViewFactory {
-
 		public View create(Element elem) {
 	        String kind = elem.getName();
 	        if (kind != null) {

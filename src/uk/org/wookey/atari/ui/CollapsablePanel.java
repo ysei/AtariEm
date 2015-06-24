@@ -13,18 +13,17 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.font.FontRenderContext;
 import java.awt.font.LineMetrics;
-import java.awt.image.BufferedImage;
-import java.net.URL;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import uk.org.wookey.atari.sim.Simulator;
 import uk.org.wookey.atari.utils.Logger;
 
 public class CollapsablePanel extends JPanel {
-	private final static Logger _logger = new Logger(Simulator.class.getName());
+	private static final long serialVersionUID = 1L;
+
+	private final static Logger _logger = new Logger(CollapsablePanel.class.getName());
 
 	private boolean selected;
     private JPanel contentPanel_;

@@ -35,7 +35,7 @@ import com.loomcom.symon.exceptions.MemoryRangeException;
  */
 
 public abstract class Acia extends Device {
-	private final static Logger _logger = new Logger(Simulator.class.getName());
+	private final static Logger _logger = new Logger(Acia.class.getName());
 
     boolean receiveIrqEnabled = false;
     boolean transmitIrqEnabled = false;

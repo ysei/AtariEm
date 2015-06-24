@@ -51,7 +51,7 @@ import com.loomcom.symon.exceptions.MemoryRangeException;
  * writing / reading.
  */
 public class Acia6551 extends Acia implements KeyListener {
-	private final static Logger _logger = new Logger(Simulator.class.getName());
+	private final static Logger _logger = new Logger(Acia.class.getName());
 
 	public static final int ACIA_SIZE = 4;
 
