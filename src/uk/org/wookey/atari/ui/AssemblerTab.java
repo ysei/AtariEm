@@ -5,7 +5,7 @@ import java.awt.Color;
 
 import javax.swing.JPanel;
 
-import uk.org.wookey.atari.editor.AssemblyCodeEditor;
+import uk.org.wookey.atari.editor.CodeEditor;
 
 public class AssemblerTab extends JPanel {
 	private static final long serialVersionUID = 1L;
@@ -16,7 +16,7 @@ public class AssemblerTab extends JPanel {
 		setBackground(new Color(200, 100, 50));
 		setLayout(new BorderLayout());
 		
-		AssemblyCodeEditor textArea = new AssemblyCodeEditor();
+		CodeEditor textArea = new CodeEditor();
 		add(textArea, BorderLayout.CENTER);
 	}
 }
