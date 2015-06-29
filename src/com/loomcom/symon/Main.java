@@ -29,6 +29,7 @@ import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 
 import uk.org.wookey.atari.ui.ApplicationWindow;
+import uk.org.wookey.atari.ui.DebugWindow;
 
 public class Main {
     
@@ -51,6 +52,7 @@ public class Main {
 		}
 		
 
+        //new DebugWindow();
         ApplicationWindow app = new ApplicationWindow();
     }
 }

@@ -1,6 +1,7 @@
 package uk.org.wookey.atari.editor;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -10,13 +11,13 @@ import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.InputMap;
 import javax.swing.JTextArea;
+import javax.swing.JTextPane;
 import javax.swing.KeyStroke;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
-import javax.swing.text.Element;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 
@@ -24,7 +25,6 @@ import uk.org.wookey.atari.utils.Logger;
 
 public class AssemblyCodeEditor extends GenericEditor {
 	private static final long serialVersionUID = 1L;
-	
 	private final static Logger _logger = new Logger(AssemblyCodeEditor.class.getName());
 	
 	private final static int COMMENT = 1;
@@ -53,7 +53,15 @@ public class AssemblyCodeEditor extends GenericEditor {
 
 	protected SimpleAttributeSet labelAttributes;
 	protected SimpleAttributeSet commentAttributes;
-	
+	protected SimpleAttributeSet normalAttributes;
+	protected SimpleAttributeSet reservedWordAttributes;
+	protected SimpleAttributeSet seperatorAttributes;
+	protected SimpleAttributeSet stringAttributes;
+	protected ReservedWordList reservedWords;
+	protected String wordSeperators;
+	protected String quoteCharacters;
+	protected String myName;
+
 	private boolean startOfLine;
 	private boolean inComment;
 	
@@ -71,7 +79,20 @@ public class AssemblyCodeEditor extends GenericEditor {
 		
 		wordSeperators = " ;.+-*/=!\n";
 		quoteCharacters = "\"'";
-		reservedWords.add(instructions);
+		
+		normalAttributes = new SimpleAttributeSet();
+		StyleConstants.setForeground(normalAttributes, Color.black);
+		
+		reservedWordAttributes = new SimpleAttributeSet();
+		StyleConstants.setForeground(reservedWordAttributes, new Color(0x73, 0x04, 0x73));
+		StyleConstants.setBold(reservedWordAttributes, true);
+		
+		seperatorAttributes = new SimpleAttributeSet();
+		StyleConstants.setForeground(seperatorAttributes, Color.red);
+		
+		stringAttributes = new SimpleAttributeSet();
+		StyleConstants.setForeground(stringAttributes, Color.blue);
+		StyleConstants.setItalic(stringAttributes, true);
 		
 		labelAttributes = new SimpleAttributeSet();
 		StyleConstants.setForeground(labelAttributes, new Color(0xdf, 0x01, 0x3a));
@@ -80,6 +101,14 @@ public class AssemblyCodeEditor extends GenericEditor {
 		commentAttributes = new SimpleAttributeSet();
 		StyleConstants.setForeground(commentAttributes, new Color(0xff, 0x00, 0x00));
 		StyleConstants.setItalic(commentAttributes, true);
+		
+		reservedWords = new ReservedWordList(reservedWordAttributes);
+
+		wordSeperators = " \n";
+		quoteCharacters = "";
+
+		setBackground(new Color(0xe0, 0xff, 0xf0));
+		setFont(new Font("Courier", Font.PLAIN, 12));
 		
 	    InputMap im = getInputMap();
 	    KeyStroke tab = KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0);
@@ -93,10 +122,9 @@ public class AssemblyCodeEditor extends GenericEditor {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Document doc = getDocument();
-				JTextArea editor = (JTextArea) e.getSource();
+				GenericEditor editor = (GenericEditor) e.getSource();
 				
-				int pos = editor.getCaretPosition();
+				_logger.logInfo("Action (Enter);");
 				
 				insertText("\n", editor.getCaretPosition(), normalAttributes);
 				statusBar.debugMessage("LABEL");
@@ -142,41 +170,36 @@ public class AssemblyCodeEditor extends GenericEditor {
 		}		
 	}
 	
-	private void colouriseLine(int lineNum) {
-		
-	}
-	
 	private class TextHandler extends AbstractAction implements KeyListener, DocumentListener, ActionListener {
 		private static final long serialVersionUID = 1L;
 		
-		private AssemblyCodeEditor editor;
-		
 		public TextHandler(AssemblyCodeEditor editor) {
 			super();
-			
-			this.editor = editor;
 		}
 		
 		@Override
 		public void keyReleased(KeyEvent e) {
+			_logger.logInfo("Release");
 		}
 
 		@Override
 		public void keyPressed(KeyEvent e) {
+			_logger.logInfo("Press");
 		}
 
 		@Override
 		public void keyTyped(KeyEvent e) {
+			AssemblyCodeEditor editor = (AssemblyCodeEditor) e.getSource();
 			char c = e.getKeyChar();
-			
+						
+			_logger.logInfo("Typed");
+
 			if (c == ';') {
 				if (!inComment) {
 					inComment = true;
 					
 					editor.insertText(";", editor.getCaretPosition(), commentAttributes);
 					e.consume();
-					
-					statusBar.debugMessage("COMMENT");
 				}
 			}
 		}
@@ -184,43 +207,22 @@ public class AssemblyCodeEditor extends GenericEditor {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			String command = e.getActionCommand();
+			_logger.logInfo("Action");
 		}
 
 		@Override
 		public void changedUpdate(DocumentEvent e) {
-			printIt(e);
+			_logger.logInfo("Changed");
 		}
 
 		@Override
 		public void insertUpdate(DocumentEvent e) {
-			printIt(e);
+			_logger.logInfo("Inserted");
 		}
 
 		@Override
 		public void removeUpdate(DocumentEvent e) {
-			printIt(e);
-		}
-		
-		private void printIt(DocumentEvent documentEvent) {
-			DocumentEvent.EventType type = documentEvent.getType();
-			String typeString = null;
-			if (type.equals(DocumentEvent.EventType.CHANGE)) {
-				typeString = "Change";
-			}  else if (type.equals(DocumentEvent.EventType.INSERT)) {
-				typeString = "Insert";
-			}  else if (type.equals(DocumentEvent.EventType.REMOVE)) {
-				typeString = "Remove";
-			}
-			_logger.logInfo("Type : " + typeString);
-			Document source = documentEvent.getDocument();
-			int length = source.getLength();
-			_logger.logInfo("Length: " + length);
-			
-			Document documentSource = documentEvent.getDocument();
-		    Element rootElement = documentSource.getDefaultRootElement();
-		    DocumentEvent.ElementChange change = documentEvent
-		        .getChange(rootElement);
-		    _logger.logInfo("Change: " + change);
+			_logger.logInfo("Removed");
 		}
 	}
 }
