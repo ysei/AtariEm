@@ -8,6 +8,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.ActionMap;
 import javax.swing.InputMap;
 import javax.swing.JTextArea;
@@ -27,12 +28,6 @@ public class AssemblyCodeEditor extends GenericEditor {
 	private static final long serialVersionUID = 1L;
 	private final static Logger _logger = new Logger(AssemblyCodeEditor.class.getName());
 	
-	private final static int COMMENT = 1;
-	private final static int LABEL = 2;
-	private final static int TEXT = 3;
-	private final static int INSTRUCTION = 4;
-	private final static int DIRECTIVE = 5;
-
 	private final static String instructions[] = {
 		"bcc", "bcs", "beq", "bmi", "bne", "bpl", "bvc", "bvs",
 		"adc", "and", "asl", "bit", "brk", "clc", "cld", "cli",
@@ -49,8 +44,6 @@ public class AssemblyCodeEditor extends GenericEditor {
 		".endproc", "endproc", ".endscope", "endscope", "include", "include", "#include"
 	}; 
 	
-	private final static int TAB_COLUMN = 24;
-
 	protected SimpleAttributeSet labelAttributes;
 	protected SimpleAttributeSet commentAttributes;
 	protected SimpleAttributeSet normalAttributes;
@@ -62,18 +55,8 @@ public class AssemblyCodeEditor extends GenericEditor {
 	protected String quoteCharacters;
 	protected String myName;
 
-	private boolean startOfLine;
-	private boolean inComment;
-	
-	private int lineNumber;
-	
-	EditorStatusBar statusBar;
-	
 	public AssemblyCodeEditor(EditorStatusBar sb) {
-		super();
-		
-		statusBar = sb;
-		lineNumber = 1;
+		super(sb);
 		
 		myName = "Code";		
 		
@@ -110,119 +93,5 @@ public class AssemblyCodeEditor extends GenericEditor {
 		setBackground(new Color(0xe0, 0xff, 0xf0));
 		setFont(new Font("Courier", Font.PLAIN, 12));
 		
-	    InputMap im = getInputMap();
-	    KeyStroke tab = KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0);
-	    KeyStroke enter = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0);
-	    
-	    TextHandler textHandler = new TextHandler(this);
-	    
-	    ActionMap aMap = getActionMap();
-	    aMap.put(im.get(enter), new AbstractAction() {
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				GenericEditor editor = (GenericEditor) e.getSource();
-				
-				_logger.logInfo("Action (Enter);");
-				
-				insertText("\n", editor.getCaretPosition(), normalAttributes);
-				statusBar.debugMessage("LABEL");
-				try {
-					statusBar.setLineNum(editor.getLineOfOffset(editor.getCaretPosition()));
-				} catch (BadLocationException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-			}	
-	    });
-	    
-	    aMap.put(im.get(tab), textHandler);
-	    
-	    addKeyListener(textHandler);
-	    getDocument().addDocumentListener(textHandler);
-	    
-	    startOfLine = true;
-	    inComment = false;
-	    
-	    statusBar.setLineNum(lineNumber);
-	    this.setText("");
-	}
-
-	private void appendText(String s) {
-		appendText(s, normalAttributes);
-	}
-	
-	private void appendText(String s, AttributeSet attributes) {
-		Document doc = getDocument();
-		
-		insertText(s, doc.getLength(), attributes);
-	}
-	
-	private void insertText(String s, int pos, AttributeSet attributes) {
-		Document doc = getDocument();
-		
-		try {
-			doc.insertString(pos, s, attributes);
-			setCaretPosition(pos+s.length());		
-		} catch (BadLocationException e) {
-			_logger.logError("Failed to insert into code doc", e);
-		}		
-	}
-	
-	private class TextHandler extends AbstractAction implements KeyListener, DocumentListener, ActionListener {
-		private static final long serialVersionUID = 1L;
-		
-		public TextHandler(AssemblyCodeEditor editor) {
-			super();
-		}
-		
-		@Override
-		public void keyReleased(KeyEvent e) {
-			_logger.logInfo("Release");
-		}
-
-		@Override
-		public void keyPressed(KeyEvent e) {
-			_logger.logInfo("Press");
-		}
-
-		@Override
-		public void keyTyped(KeyEvent e) {
-			AssemblyCodeEditor editor = (AssemblyCodeEditor) e.getSource();
-			char c = e.getKeyChar();
-						
-			_logger.logInfo("Typed");
-
-			if (c == ';') {
-				if (!inComment) {
-					inComment = true;
-					
-					editor.insertText(";", editor.getCaretPosition(), commentAttributes);
-					e.consume();
-				}
-			}
-		}
-		
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			String command = e.getActionCommand();
-			_logger.logInfo("Action");
-		}
-
-		@Override
-		public void changedUpdate(DocumentEvent e) {
-			_logger.logInfo("Changed");
-		}
-
-		@Override
-		public void insertUpdate(DocumentEvent e) {
-			_logger.logInfo("Inserted");
-		}
-
-		@Override
-		public void removeUpdate(DocumentEvent e) {
-			_logger.logInfo("Removed");
-		}
 	}
 }
