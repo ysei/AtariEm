@@ -19,7 +19,8 @@ public class CodeEditor extends JPanel {
 		editor = new AssemblyCodeEditor(statusBar);
 		
 		JScrollPane scroller = new JScrollPane(editor);
-		scroller.setRowHeaderView(new TextLineNumber(editor));
+		//scroller.setRowHeaderView(new TextLineNumber(editor));
+		scroller.setRowHeaderView(new AssemblerOutput(editor));
 
 		add(statusBar, BorderLayout.SOUTH);
 		add(scroller, BorderLayout.CENTER);

@@ -131,14 +131,6 @@ public class GenericEditor extends JTextPane implements KeyListener {
 		attributeSet = attributes;
 	}
 	
-	protected String getLine(int lineNum) throws BadLocationException {
-		if ((lineNum < 1) || (lineNum > getLineCount())) {
-			throw new BadLocationException("Line number out of range", lineNum);
-		}
-		
-		return null;
-	}
-	
 	public int getLineOfOffset(int offset) throws BadLocationException {
 		if ((offset < 0) || (offset > getDocument().getLength())) {
 			throw new BadLocationException("Offset out of range", offset);
@@ -196,14 +188,14 @@ public class GenericEditor extends JTextPane implements KeyListener {
 	    statusBar.setLineCount(getLineCount());
 	}
 	
-	private int getCurrentLineNumber() {
+	private int getCurrentLineNumber() throws BadLocationException {
 		try {
 			return getLineOfOffset(getCaretPosition());
 		} catch (BadLocationException e) {
 			_logger.logError("Caret position must be corrupt!", e);
 		}
 		
-		return 1;
+		return getLineOfOffset(getCaretPosition());
 	}
 	
 	protected void colorizeCurrentLine() {
@@ -273,6 +265,28 @@ public class GenericEditor extends JTextPane implements KeyListener {
 	public void keyReleased(KeyEvent e) {
 	}
 	
+	protected String getLine(int lineNum) throws BadLocationException {
+		if ((lineNum < 1) || (lineNum > getLineCount())) {
+			throw new BadLocationException("Line number out of range", lineNum);
+		}
+
+		String str = getText();
+		int startPos = skipLines(str, lineNum-1);
+		
+		if (startPos == -1) {
+			throw new BadLocationException("Couldn't find start of line ", lineNum);
+		}
+		
+		str = str.substring(startPos);
+		int endPos = skipLines(str, 1);
+		
+		if (endPos != -1) {
+			str = str.substring(0, endPos-1);
+		}
+		
+		return str;
+	}
+	
 	private int countLines(String str) {
 	    if (str == null || str.length() == 0) {
 	        return 0;
@@ -339,5 +353,43 @@ public class GenericEditor extends JTextPane implements KeyListener {
         } else {
             throw new IOException("Cannot open file " + file);
         }
+    }
+    
+    private int skipLines(String str, int lines) {
+    	if (lines == 0) {
+    		return 0;
+    	}
+    	
+    	int offset = 0;
+    	int len = str.length();
+    	
+    	for (int pos=0; pos<len; pos++) {
+    		if (lines == 0) {
+    			return offset;
+    		}
+    		
+	        char c = str.charAt(pos);
+	        if (c == '\r') {
+	            lines--;
+	            offset = pos+1;
+	            
+	            if ((pos+1 < len) && (str.charAt(pos+1) == '\n')) {
+	                pos++;
+	                offset++;
+	            }
+	        } else if (c == '\n') {
+	            lines--;
+	            offset = pos+1;
+	        }
+    	}
+    	
+    	_logger.logInfo("Fell out of loop in skipLines() - offset=" + offset + ", lines=" + lines);
+    	
+    	if (lines == 0) {
+    		// just in time!
+    		return offset;
+    	}
+    	
+    	return -1;
     }
 }
