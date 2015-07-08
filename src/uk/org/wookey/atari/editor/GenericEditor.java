@@ -10,12 +10,14 @@ import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.InputMap;
 import javax.swing.JTextPane;
 import javax.swing.KeyStroke;
+import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import javax.swing.text.SimpleAttributeSet;
@@ -23,21 +25,26 @@ import javax.swing.text.StyleConstants;
 
 import com.loomcom.symon.exceptions.MemoryRangeException;
 
+import uk.org.wookey.assembler.AssemblerInput;
 import uk.org.wookey.atari.utils.Logger;
 
 public class GenericEditor extends JTextPane implements KeyListener {
 	private static final long serialVersionUID = 1L;
 	private static Logger _logger = new Logger(GenericEditor.class.getName());
 	
-	private static char TAB = '\t';
-	private static char ENTER = '\n';
+	protected static final int NO_CONTEXT = -1;
 	
-	private int lineNumber;
+	private static final char TAB = '\t';
+	private static final char ENTER = '\n';
 	
-	private SimpleAttributeSet attributeSet;
+	protected int lineNumber;
+	protected String wordSeperators;
+	protected String quoteCharacters;
+
+	protected SimpleAttributeSet attributeSet;
 	
 	protected EditorStatusBar statusBar;
-
+	
 	public GenericEditor(EditorStatusBar sb) {
 		super();
 
@@ -51,6 +58,7 @@ public class GenericEditor extends JTextPane implements KeyListener {
 
 		addKeyListener(this);
 		setActionMap();
+		setupContexts();
 	    
 	    setText("");
 	    lineNumber = 1;
@@ -63,7 +71,6 @@ public class GenericEditor extends JTextPane implements KeyListener {
 		}
 
 	    statusBar.setLineNum(lineNumber);
-	    statusBar.setLineCount(getLineCount());
 	}
 	
 	private void setActionMap() {
@@ -127,94 +134,54 @@ public class GenericEditor extends JTextPane implements KeyListener {
 	    });
 	}
 	
-	public void setAttributeSet(SimpleAttributeSet attributes) {
-		attributeSet = attributes;
-	}
-	
-	public int getLineOfOffset(int offset) throws BadLocationException {
-		if ((offset < 0) || (offset > getDocument().getLength())) {
-			throw new BadLocationException("Offset out of range", offset);
+	protected void insertChar(char c) {
+		_logger.logInfo("Inserting char '" + c + "' at position " + getCaretPosition());
+		
+		int offset = getCaretPosition();
+		int contextId = getContextId(offset);
+		
+		SimpleAttributeSet attr = getAttributeSet(contextId);
+		//setCharacterAttributes(attr, true);
+		try {
+			getDocument().insertString(offset, "" + c,  attr);
+		} catch (BadLocationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-
-		_logger.logInfo("What line # is at offset " + offset + "?");
+		setCaretPosition(offset+1);
+	}
+	
+	protected void insertText(String text) {
+		int len = text.length();
 		
-		String str = getText();
-		
-		str = str.substring(0, offset);
-		
-		int line = 1;
-		if (offset > 0) {
-			line = countLines(str);
+		for (int i=0; i<len; i++) {
+			insertChar(text.charAt(i));
 		}
-		
-		_logger.logInfo("  it is line " + line);
-		
-		return line;
 	}
 	
-	public int getLineEndOffset(int line) throws BadLocationException {
-		// TODO: Write some code
-		return 0;
-	}
-	
-	public int getLineStartOffset(int line) throws BadLocationException {
-		// TODO: Write some code
-		return 0;
-	}
-	
-	public int getLineCount() {
-		return countLines(getText());
-	}
-
 	protected void handleActionKey(int keyCode, String keyName) {
 		_logger.logInfo("ActionKey: " + keyName);
 		
 		if (keyCode == KeyEvent.VK_UP) {
+			_logger.logInfo("UP");
 			if (lineNumber > 1) {
 				lineNumber--;
 			}
 		}
 		else if (keyCode == KeyEvent.VK_DOWN) {
+			_logger.logInfo("UP");
 			if (lineNumber < (getLineCount()-1)) {
 				lineNumber++;
 			}
 		}
 		else if (keyCode == KeyEvent.VK_ENTER) {
+			_logger.logInfo("UP");
 			insertText("\n");
 			lineNumber++;
 		}
 
 	    statusBar.setLineNum(lineNumber);
 	    statusBar.setLineCount(getLineCount());
-	}
-	
-	private int getCurrentLineNumber() throws BadLocationException {
-		try {
-			return getLineOfOffset(getCaretPosition());
-		} catch (BadLocationException e) {
-			_logger.logError("Caret position must be corrupt!", e);
-		}
-		
-		return getLineOfOffset(getCaretPosition());
-	}
-	
-	protected void colorizeCurrentLine() {
-		try {
-			colorizeLine(getCurrentLineNumber());
-		} catch (BadLocationException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	protected void colorizeLine(int lineNum) throws BadLocationException {
-		if ((lineNum < 1) || (lineNum > getLineCount())) {
-			throw new BadLocationException("Line number out of range", lineNum);
-		}
-		
-		_logger.logInfo("Colorize line " + lineNum);
-		
-		String line = getLine(lineNum);
-		_logger.logInfo("Line is: '" + line + "'");
 	}
 	
 	@Override
@@ -225,36 +192,13 @@ public class GenericEditor extends JTextPane implements KeyListener {
 			return;
 		}
 		
+		this.insertChar(c);
+		e.consume();
+		
 		_logger.logInfo("Key Typed: '" + c + "' (" + (int)c + ")");
-		colorizeCurrentLine();
 		
 	    statusBar.setLineNum(lineNumber);
 	    statusBar.setLineCount(getLineCount());
-	}
-
-	protected void insertText(String text) {
-		insertText(text, attributeSet);
-	}
-	
-	protected void insertText(String text, SimpleAttributeSet attributes) {
-		_logger.logInfo("Inserting text '" + text + "' at position " + getCaretPosition());
-		int caretPos = getCaretPosition();
-		
-		try {
-			Document doc = getDocument();
-			doc.insertString(caretPos, text, attributeSet);
-			setCaretPosition(caretPos + text.length());				
-		} catch (BadLocationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-	    statusBar.setLineNum(lineNumber);
-	    statusBar.setLineCount(getLineCount());
-	}
-	
-	public void setCaretAtEnd() {
-		setCaretPosition(getDocument().getLength());
 	}
 
 	@Override
@@ -264,66 +208,6 @@ public class GenericEditor extends JTextPane implements KeyListener {
 	@Override
 	public void keyReleased(KeyEvent e) {
 	}
-	
-	protected String getLine(int lineNum) throws BadLocationException {
-		if ((lineNum < 1) || (lineNum > getLineCount())) {
-			throw new BadLocationException("Line number out of range", lineNum);
-		}
-
-		String str = getText();
-		int startPos = skipLines(str, lineNum-1);
-		
-		if (startPos == -1) {
-			throw new BadLocationException("Couldn't find start of line ", lineNum);
-		}
-		
-		str = str.substring(startPos);
-		int endPos = skipLines(str, 1);
-		
-		if (endPos != -1) {
-			str = str.substring(0, endPos-1);
-		}
-		
-		return str;
-	}
-	
-	private int countLines(String str) {
-	    if (str == null || str.length() == 0) {
-	        return 0;
-	    }
-	    
-	    int lines = 1;
-	    int len = str.length();
-	    
-	    for(int pos=0; pos < len; pos++) {
-	        char c = str.charAt(pos);
-	        if (c == '\r') {
-	            lines++;
-	            
-	            if ((pos+1 < len) && (str.charAt(pos+1) == '\n' )) {
-	                pos++;
-	            }
-	        } else if( c == '\n' ) {
-	            lines++;
-	        }
-	    }
-	 
-	    return lines;
-	}
-	
-	private int getLineStartOffset(String str, int offset) {
-		for (int pos=offset; pos >= 0; pos--) {
-			char c = str.charAt(pos);
-			
-			if ((c == '\r') || (c == '\n')) {
-				return pos+1;
-			}
-		}
-		
-		// No preceding \r or \n found - must be the first line
-		return 0;
-	}
-	
 	public void loadFromFile(String filename) throws IOException {
 		File f = new File("code/" + filename);
 		
@@ -333,63 +217,76 @@ public class GenericEditor extends JTextPane implements KeyListener {
     public void loadFromFile(File file) throws IOException {
         if (file.canRead()) {
             FileInputStream fis = new FileInputStream(file);
-            StringBuilder builder = new StringBuilder();
             
             int ch;
             while((ch = fis.read()) != -1){
-                builder.append((char)ch);
+                insertChar((char)ch);
             }
             
-            setText(builder.toString());
-            
-            for (int i=1; i<=getLineCount(); i++) {
-            	try {
-					colorizeLine(i);
-				} catch (BadLocationException e) {
-					_logger.logError("Something wrong with linecount after reading from file", e);
-					e.printStackTrace();
-				}
-            }
+            fis.close();
         } else {
             throw new IOException("Cannot open file " + file);
         }
     }
     
-    private int skipLines(String str, int lines) {
-    	if (lines == 0) {
-    		return 0;
-    	}
-    	
-    	int offset = 0;
+    protected int getContextId(int offset) {
+    	return NO_CONTEXT;
+    }
+    
+    protected int getContextId() {
+    	return getContextId(getCaretPosition());
+    }
+    
+    protected SimpleAttributeSet getAttributeSet(int contextId) {
+    	return attributeSet;
+    }
+    
+    public int getLineCount() {
+    	//TODO:
+    	return 4;
+    }
+    
+    protected void setupContexts() {   	
+    }
+    
+    protected int getLineStart(int offset) {
+    	int pos = offset;
+    	String str = getText();
     	int len = str.length();
     	
-    	for (int pos=0; pos<len; pos++) {
-    		if (lines == 0) {
-    			return offset;
+    	if ((len == 0) || (offset >= len)) {
+    		return len;
+    	}
+    	
+    	while (pos >= 0) {
+    		char c = str.charAt(pos);
+    		
+    		if (c == '\n') {
+    			return pos+1;
     		}
     		
-	        char c = str.charAt(pos);
-	        if (c == '\r') {
-	            lines--;
-	            offset = pos+1;
-	            
-	            if ((pos+1 < len) && (str.charAt(pos+1) == '\n')) {
-	                pos++;
-	                offset++;
-	            }
-	        } else if (c == '\n') {
-	            lines--;
-	            offset = pos+1;
-	        }
+    		pos--;
     	}
     	
-    	_logger.logInfo("Fell out of loop in skipLines() - offset=" + offset + ", lines=" + lines);
+    	return 0;
+    }
+    
+    protected int getLineEnd(int offset) {
+    	int pos = offset;
+    	String str = getText();
+    	int len = str.length();
     	
-    	if (lines == 0) {
-    		// just in time!
-    		return offset;
+    	while (pos < len) {
+    		char c = str.charAt(pos);
+    		
+    		if (c == '\n') {
+    			return pos;
+    		}
+    		
+    		pos++;
     	}
     	
-    	return -1;
+    	return len;
+    	
     }
 }

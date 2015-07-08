@@ -11,29 +11,20 @@ public interface AbstractAssembler {
 	*	@return The @see AbstractLexer
 	*/
 	public abstract AbstractLexer getLexer ();
+	
 	/**
 	*	Returns the parser object that this assembler is using
 	*	@return The @see AbstractParser
 	*/
 	public abstract AbstractParser getParser ();
+	
 	/**
 	*	Assembles a source file
-	*	@param filename	File name of source file to assemble
+	*	@param source object to get source code lines from
+	*   @param output object to write assembled code to
 	*	@return Error code indicating level of success of assembly. 
 	*	A 1 indicates error, and a 0 indicates success.
-	*	@throws IOException on error while reading file
+	*	@throws IOException on error while reading source
 	*/
-	public abstract int assemble (String sourceFile, String outFileName) throws IOException;
-	/**
-	*	Sets a mode
-	*	0 = output to screen
-	*	1 = output to disk in raw binary format
-	*	2 = output to .prg file
-	*	1 is default
-	*/
-	public abstract void setMode (int mode);
-	/**
-	*	Sets an ascii translation mode for the target architecture
-	*/
-	public abstract void setAsciiTranslation (int mode);
+	public abstract int assemble (AssemblerInput source, AssemblerOutput output) throws IOException;
 }

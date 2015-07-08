@@ -42,8 +42,6 @@ public class Parser6502 implements SymbolConstant6502, AbstractParser {
 	private int mNewOrigin = 0x0000;
 	private int mIp = 0;
 	private int mPass = 1;
-	private boolean mC64UpperCase = false;
-	private boolean mC64LowerCase = false;
 	private int mValReloc = ABSOLUTE;
 	private Vector mTempLabels = new Vector ();
 	
@@ -580,19 +578,9 @@ public class Parser6502 implements SymbolConstant6502, AbstractParser {
 		}
 		else if (symbol.getType () == CHARSEQUENCE) {
 			String str = mLexer.getCharSequence ();
-			AsciiTranslator translator = null;
 
-			if (mC64UpperCase) {
-				translator = new C64UpperCaseTranslator ();
-			}
-			else if (mC64LowerCase) {
-				translator = new C64LowerCaseTranslator ();
-			}
 			for (int i = 0; i < str.length (); ++i) {
 				int c = (int) str.charAt (i);
-				if (translator != null) {
-					c = translator.translate (c);
-				}
 				mSequence.addElement (new Integer (c));
 			}
 		}
@@ -925,22 +913,6 @@ public class Parser6502 implements SymbolConstant6502, AbstractParser {
 	public void setTempLabels (Vector tempLabels)
 	{
 		mTempLabels = tempLabels;
-	}
-	
-	/**
-	*	Tells the parser to translate text strings in source to Commodore 64 ascii upper case.
-	*/
-	public void setC64UpperCaseMode (boolean mode)
-	{
-		mC64UpperCase = mode;
-	}
-	
-	/**
-	*	Tells parser to translate text strings in source to Commodore 64 ascii lower case.
-	*/
-	public void setC64LowerCaseMode (boolean mode)
-	{
-		mC64LowerCase = mode;
 	}
 	
 	/**

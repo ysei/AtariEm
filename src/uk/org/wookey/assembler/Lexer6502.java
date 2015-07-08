@@ -26,7 +26,6 @@ public class Lexer6502 implements SymbolConstant6502, AbstractLexer {
 	private boolean mEOF = false;
 	private boolean mLinefeed = false;
 	private Symbol mSymbol = null;
-	private String mFilename = "";
 	private String mCharSequence = "";
 	private int mRadix = 10;
 	private SymbolTable mKeywords = null;
@@ -34,8 +33,8 @@ public class Lexer6502 implements SymbolConstant6502, AbstractLexer {
 	private boolean mCaseInsensitive = true;
 	private int mRembLine = 1;
 	
-	private RandomAccessFile mFile = null;
-
+	private AssemblerInput source = null;
+	
 	/**
 	*	Constructor
 	*	@param keywords A symbol table filled with Reserved symbols for the language
@@ -64,36 +63,14 @@ public class Lexer6502 implements SymbolConstant6502, AbstractLexer {
 	*/
 	private char getChar () 
 	{
-		int c = 0;
-		try {
-			c = mFile.read ();
-			// try handle non-unix linefeeds..
-			if (c == 0x0d) {
-				// mac or windows linefeed, check next char and see (dont selfrecurse, will cause endless loop)
-				long fp = mFile.getFilePointer ();
-				int d = mFile.read ();
-				if (d == 0x0a) {
-					// windows linebreak
-					c = d;
-				}
-				else {
-					// mac linebreak, putback character, and transform \r into \n
-					mFile.seek (fp);
-					c = 0x0a;
-				}
-			}
-		}
-		catch (IOException e) {
-			errorExit ("Lexer: " + e);
-		}
-		
+		char c = source.getChar();
 		
 		// check eof or linefeed..
 		if (c == -1) {
 			mEOF = true;
 			// EOF
 		}
-		else if (c == 0x0a) {
+		else if (c == '\n') {
 			++mLine;
 			mCol = mLastCol = 1;
 		}
@@ -104,7 +81,8 @@ public class Lexer6502 implements SymbolConstant6502, AbstractLexer {
 		if (mCaseInsensitive) {
 			// case insensitive mode is set at all times, EXCEPT when reading a character string
 			// withint double quotes..
-			if (c >= 65 && c <= 90) c += 32;	// to lower case
+			
+			if (c >= 'A' && c <= 'Z') c += 32;	// to lower case
 		}
 		mLastChar = (char) c;
 
@@ -118,14 +96,13 @@ public class Lexer6502 implements SymbolConstant6502, AbstractLexer {
 	private void putBack ()
 	{
 		try {
-			long fp = mFile.getFilePointer ();
-			mFile.seek (fp - 1);
+			source.unGetChar();
 		}
 		catch (IOException e) {
 			errorExit ("Lexer: " + e);
 		}
 		
-		if (mLastChar == 0x0a) {
+		if (mLastChar == '\n') {
 			--mLine;
 			mCol = mLastCol;
 		}
@@ -321,7 +298,7 @@ public class Lexer6502 implements SymbolConstant6502, AbstractLexer {
 				value = Integer.parseInt (buffer, mRadix);
 			}
 			catch (NumberFormatException e) {
-				throw new LexerException ("Integer error", mFilename, mLine, xtractLine (mLine));
+				throw new LexerException ("Integer error", source.getName(), mLine, xtractLine (mLine));
 			}
 			mSymbol = new Symbol ("", CONSTANT, value);
 			success = true;
@@ -418,7 +395,7 @@ public class Lexer6502 implements SymbolConstant6502, AbstractLexer {
 			else {
 				if (!isAlpha (first)) {
 					throw new LexerException ("Illegal char '" + first + "' at start of identifier ",
-						mFilename, mLine, xtractLine (mLine));
+						source.getName(), mLine, xtractLine (mLine));
 				}
 				else if (next == ':') {
 					mSymbol = new Symbol (buffer, LABEL, NULL);
@@ -474,8 +451,6 @@ public class Lexer6502 implements SymbolConstant6502, AbstractLexer {
 	*/
 	public Symbol getNext () throws LexerException
 	{
-		//storePutbackPos ();
-		if (mFile == null) errorExit ("Lexer: trying to call getNext with null mFile");
 		if (linefeedFollows ()) {
 			setLinefeed (false);
 			return new Symbol ("", LINEFEED, NULL);
@@ -516,7 +491,7 @@ public class Lexer6502 implements SymbolConstant6502, AbstractLexer {
 			// is it a constant?
 			if (mSymbol.getType () != CONSTANT) {
 				throw new LexerException ("Constant must follow hexadecimal radix ",
-					mFilename, mLine, xtractLine (mLine));
+					source.getName(), mLine, xtractLine (mLine));
 			}
 		}
 		else if (mSymbol.getType () == OPERATOR && mSymbol.getValue () == '%') {
@@ -526,7 +501,7 @@ public class Lexer6502 implements SymbolConstant6502, AbstractLexer {
 			// is it a constant?
 			if (mSymbol.getType () != CONSTANT) {
 				throw new LexerException ("Constant must follow binary radix ",
-					mFilename, mLine, xtractLine (mLine));
+					source.getName(), mLine, xtractLine (mLine));
 			}
 		}
 		else if (mSymbol.getType () == DOUBLEQUOTES) {
@@ -543,11 +518,11 @@ public class Lexer6502 implements SymbolConstant6502, AbstractLexer {
 			if (eof () && c != '"') {
 				System.err.println ("char : " + c);
 				throw new LexerException ("Unterminated character sequence", 
-					mFilename, startLine, xtractLine (startLine));
+					source.getName(), startLine, xtractLine (startLine));
 			}
 			else if (mCharSequence.length () == 0) 
 				throw new LexerException ("Empty character sequence", 
-					mFilename, startLine, xtractLine (startLine));
+					source.getName(), startLine, xtractLine (startLine));
 					
 			mSymbol = new Symbol ("", CHARSEQUENCE, NULL);
 			stateSkipWhite ();
@@ -569,7 +544,6 @@ public class Lexer6502 implements SymbolConstant6502, AbstractLexer {
 	*/
 	public Symbol peekNext () throws LexerException
 	{
-		if (mFile == null) errorExit ("Lexer: trying to call peekNext with null mFile");
 		// save all dynamic member vars (except Symbol tables)
 		String tempBuffer = mBuffer;
 		boolean tempEOF = mEOF;
@@ -578,16 +552,16 @@ public class Lexer6502 implements SymbolConstant6502, AbstractLexer {
 		int tempLine = mLine;
 		int tempCol = mCol;
 		boolean tempLinefeed = mLinefeed;
-		long fp = 0;
+		int fp = 0;
 		Symbol peekSymbol = null;
 		int tempState = mState;
 		String tempCharSequence = mCharSequence;
 		char tempLastChar = mLastChar;
 		int tempLastCol = mLastCol;
 		try {
-			fp = mFile.getFilePointer ();
+			fp = source.getPosition();
 			peekSymbol = getNext ();
-			mFile.seek (fp);
+			source.setPosition(fp);
 					
 			// restore member vars
 			mLinefeed = tempLinefeed;
@@ -619,19 +593,9 @@ public class Lexer6502 implements SymbolConstant6502, AbstractLexer {
 	/**
 	*	@see AbstractLexer.attachInput
 	*/
-	public void attachInput (String filename)
+	public void attachSource(AssemblerInput source)
 	{
-		mFilename = filename;
-		try {
-			if (mFile != null) mFile.close ();
-			mFile = new RandomAccessFile (filename, "r");
-		}
-		catch (FileNotFoundException e) {
-			errorExit ("Cannot open file " + filename);
-		}
-		catch (IOException e) {
-			errorExit ("Lexer: " + e);
-		}
+		this.source = source;
 		reset ();
 	}
 	
@@ -647,25 +611,17 @@ public class Lexer6502 implements SymbolConstant6502, AbstractLexer {
 		mBuffer = "";
 		mEOF = false;
 		mSymbol = null;
-		try {
-			mFile.seek (0);
-		}
-		catch (IOException e) {
-			errorExit ("Lexer reset " + e);
-		}
-		skipWhiteSpace ();
-		setLinefeed (false);
+		
+		source.reset();
 	}
 
 	/**
 	*	@see AbstractLexer.xtractLine
 	*/
 	public String xtractLine (int lineNum) {
-		
-		int p = 0;
 		int line = 1;
 		String str = "";
-		long fp = 0;
+		int fp = 0;
 		int tempLastCol = mLastCol;
 		char tempLastChar = mLastChar;
 		int tempLine = mLine;
@@ -676,8 +632,8 @@ public class Lexer6502 implements SymbolConstant6502, AbstractLexer {
 			mLine = 1;
 			mEOF = false;
 			// save current filepointer and then reset to beginning of file
-			fp = mFile.getFilePointer ();
-			mFile.seek (0);
+			fp = source.getPosition();
+			source.setPosition(0);
 			// find line
 			char c;
 			while (!eof () && line != lineNum) {
@@ -693,7 +649,7 @@ public class Lexer6502 implements SymbolConstant6502, AbstractLexer {
 				while (!eof () && '\n' != (c = getChar ())) str += c;
 			}
 			// restore filepointer again
-			mFile.seek (fp);
+			source.setPosition(fp);
 		}
 		catch (IOException e) {
 			errorExit ("Lexer: " + e);
@@ -725,19 +681,11 @@ public class Lexer6502 implements SymbolConstant6502, AbstractLexer {
 	}
 	
 	/**
-	*	@see AbstractLexer.getFilename
-	*/
-	public String getFilename ()
-	{
-		return mFilename;
-	}
-	
-	/**
 	*	@see AbstractLexer.toString
 	*/
 	public String toString ()
 	{
-		return "Lexer6502 file " + mFilename + ", line " + mLine + ", column " + mCol;
+		return "Lexer6502 file " + source.getName() + ", line " + mLine + ", column " + mCol;
 	}
 	
 	/**
@@ -778,5 +726,9 @@ public class Lexer6502 implements SymbolConstant6502, AbstractLexer {
 	public SymbolTable getSymbolTable ()
 	{
 		return mSymbolTable;
+	}
+
+	public String getFilename() {
+		return source.getName();
 	}
 }

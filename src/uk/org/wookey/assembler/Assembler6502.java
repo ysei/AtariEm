@@ -18,32 +18,8 @@ public class Assembler6502 implements SymbolConstant6502, AbstractAssembler {
 	private SymbolTable mKeywords = null;
 	private SymbolTable mIdentifiers = null;
 	private String mCommentChars = "!;";
-	private RandomAccessFile mFile = null;
 	private int mPass = 1;
-	private int mAsciiMode = 0;
 	
-	/*
-	// variables for object files (Not supported yet)
-	private int mObjectOffset = 0;
-	private Vector mReloc = null;
-	// Exported symbols table	(Not implemented)
-	private Vector mExports = null;
-	// Unresolved references table	(Not implemented)
-	private Vector mUnresolved = null;
-	// pointer to current Segment
-	private Vector mSegment = null;
-	*/
-
-	/**
-	*	Output format mode.
-	*	Valid values are:
-	*	0 = output assembly to screen for debugging
-	*	1 = raw output to disk (no file format)
-	*	2 = Commodore 64 .prg file (16bit header with start address)
-	*	99 = Secret test mode for evaluator (Only Accept expressions on each line and output them on screen)
-	*/
-	private int mMode = MODE_SCREEN;
-
 	/**
 	*	Constructor
 	*	Creates instances of the member objects Lexer6502 and Parser6502, 
@@ -319,8 +295,7 @@ public class Assembler6502 implements SymbolConstant6502, AbstractAssembler {
 				}
 			}
 
-			if (mMode == MODE_SCREEN) {
-				// output to screen
+//TODO:
 				printHexWord (ip);
 				System.out.print (" ");
 				printHexByte (op);
@@ -329,81 +304,11 @@ public class Assembler6502 implements SymbolConstant6502, AbstractAssembler {
 				System.out.print (" ");
 				if (mcLen == 3) printHexByte ((operand >> 8) & 0xFF);
 				System.out.print ("\n");
-			}
-			/*
-			else if (mMode == MODE_OBJECT) {
-				// output to object file
-				toObjectFile (op, mcLen, operand, mParser.getRelocatable ());
-			}
-			*/
-			else {
-				try {
-					// output to executable binary
-					mFile.writeByte (op);
-					if (mcLen == 2) {
-						mFile.writeByte (operand & 0xFF);
-					}
-					else if (mcLen == 3) {
-						// little endian
-						mFile.writeByte (operand & 0xFF);
-						mFile.writeByte ((operand >> 8) & 0xFF);
-					}
-				}
-				catch (IOException e) {
-					System.out.println (e);
-				}
-			}
 		}
-		
-		/*
-		System.out.println ("addr mode: " + addrToString [index]);
-		System.out.println ("opcode: " +  typeToString [opcode.getType ()]);
-		System.out.println ("operand: " + Integer.toHexString (operand));
-		System.out.println ("len: " + mcLen);
-		*/
-		/*
-					int reloc = mParser.getRelocatable ();
-			if (reloc == 0) System.out.println ("Abs");
-			else if (reloc == 1) System.out.println ("Rel");
-			else if (reloc == 2) System.out.println ("Rel lo");
-			else if (reloc == 3) System.out.println ("Rel hi");
-		System.out.println ("");
-		*/
 		
 		return mcLen;
 	}
 	
-	
-	/*
-	// Not implemented
-	private void toObjectFile (int op, int mcLen, int operand, int reloc)
-	{
-		mSegment.addElement (new Integer (op));
-		if (mcLen == 2) {
-			mSegment.addElement (new Integer (operand & 0xFF));
-		}
-		else if (mcLen == 3) {
-			// little endian
-			mSegment.addElement (new Integer (operand & 0xFF));
-			mSegment.addElement (new Integer ((operand >> 8) & 0xFF));
-		}
-		
-		if (reloc == RELOC) {
-			mReloc.addElement (new Integer (mObjectOffset + 1));
-			mReloc.addElement (new Integer (RELOC));
-		}
-		else if (reloc == RELOC_LOBYTE) {
-			mReloc.addElement (new Integer (mObjectOffset + 1));
-			mReloc.addElement (new Integer (RELOC_LOBYTE));
-		}
-		else if (reloc == RELOC_HIBYTE) {
-			mReloc.addElement (new Integer (mObjectOffset + 1));
-			mReloc.addElement (new Integer (RELOC_HIBYTE));
-		}
-
-		mObjectOffset += mcLen;
-	}
-	*/
 	
 	/**
 	*	Write sequence of bytes to machine code
@@ -552,7 +457,7 @@ public class Assembler6502 implements SymbolConstant6502, AbstractAssembler {
 	/**
 	*	@see AbstractAssembler.assemble
 	*/
-	public int assemble (String filename, String outFileName) throws IOException
+	public int assemble (AssemblerInput source, AssemblerOutput output) throws IOException
 	{
 		int error = 0;
 		int numOpcodes = 0;
@@ -563,26 +468,7 @@ public class Assembler6502 implements SymbolConstant6502, AbstractAssembler {
 
 
 		// pass reader to lexer
-		mLexer.attachInput (filename);
-		
-		if (mMode == MODE_SECRET) {
-			// secret test mode for evaluator
-			try {
-				int ip = 0;	// fake instruction pointer, just add one per line
-				Evaluator eval = new Evaluator (mLexer);
-				while (!mLexer.eof ()) {
-					Symbol result = eval.evaluate (2, ip++, LINEFEED);
-					System.out.println ("line " + (mLexer.getLineNum () - 1) + ": " + result.getValue ());
-					// eat linefeed
-					mLexer.getNext ();
-				}
-			}
-			catch (Exception e) {
-				System.err.println (e.getMessage ());
-				System.exit (0);
-			}
-			System.exit (0);
-		}
+		mLexer.attachInput(filename);
 		
 		// Use 0x1000 as default start address when assembling
 		int ip = 0x1000;
@@ -714,24 +600,8 @@ public class Assembler6502 implements SymbolConstant6502, AbstractAssembler {
 		mPass = 2;
 		mParser.setPass (mPass);
 		
-		if (mAsciiMode == 1) mParser.setC64UpperCaseMode (true);
-		else if (mAsciiMode == 2) mParser.setC64LowerCaseMode (true);
-		
 		ip = 0x1000;
 		numOpcodes = 0;
-		
-		
-		if (mFile != null) mFile.close ();
-		File remove = new File (outFileName);
-		if (remove.exists ()) remove.delete ();
-		remove = null;
-
-		mFile = new RandomAccessFile (outFileName, "rw");
-		if (mMode == MODE_C64) {
-			// write start address header, for .prg (commodore 64)
-			mFile.writeByte (startAddress & 0xFF);
-			mFile.writeByte ((startAddress >> 8) & 0xFF);
-		}
 		
 		while (true) {
 			try {
@@ -818,36 +688,6 @@ public class Assembler6502 implements SymbolConstant6502, AbstractAssembler {
 			}
 		}
 
-		mFile.close ();
-		mFile = null;
-		if (error != 0) {
-			// delete output file if errors were encountered.
-			File file = new File (outFileName);
-			file.delete ();
-		}
-
 		return error;
-	}
-	/**
-	*	Sets output mode.
-	*	@param mode to set, can be one of following:
-	*		0 = output to screen
-	*		1 = output to raw binary to disk
-	*/
-	public void setMode (int mode)
-	{
-		mMode = mode;
-	}
-	
-	/**
-	*	Sets ascii translation mode when assembling for Commodore 64.
-	*	@param asciiMode Determines the mode, can be one of the following:
-	*	0 = no translation
-	*	1 = translate to upper case
-	*	2 = translate to lower case
-	*/
-	public void setAsciiTranslation (int asciiMode)
-	{
-		mAsciiMode = asciiMode;
 	}
 }

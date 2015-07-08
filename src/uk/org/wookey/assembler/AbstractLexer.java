@@ -10,12 +10,12 @@ import java.util.Vector;
 */
 public interface AbstractLexer {
 	/**
-	*	Attachs a source file to Lexer.
-	*	@param filename of the source file to attach
+	*	Attaches a source file to Lexer.
+	*	@param source object supplying the source code
 	*/
-	public abstract void attachInput (String filename);
+	public abstract void attachSource(AssemblerInput source);
 	/**
-	*	Restarts the lexicalical analysis from beginning of source file.
+	*	Restarts the lexical analysis from beginning of source file.
 	*/
 	public abstract void reset ();
 	/**
