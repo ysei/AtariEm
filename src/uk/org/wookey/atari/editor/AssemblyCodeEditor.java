@@ -1,28 +1,8 @@
 package uk.org.wookey.atari.editor;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.ActionMap;
-import javax.swing.InputMap;
-import javax.swing.JTextArea;
-import javax.swing.JTextPane;
-import javax.swing.KeyStroke;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.text.AttributeSet;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.Document;
-import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.StyleConstants;
-
+import org.fife.ui.rsyntaxtextarea.AbstractTokenMakerFactory;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
+import org.fife.ui.rsyntaxtextarea.TokenMakerFactory;
 
 import uk.org.wookey.atari.utils.Logger;
 
@@ -41,20 +21,16 @@ public class AssemblyCodeEditor extends RSyntaxTextArea {
 	};
 	
 	private final static String directives[] = {
-		".org", "org", ".byt", "byt", ".byte", "byte", ".asc", "asc", ".db", "db", 
-		".word", "word", ".dw", "dw", ".proc", "proc", ".scope", "scope", 
-		".endproc", "endproc", ".endscope", "endscope", "include", "include", "#include"
+		"org", "byt", "byte", "asc", "db", 
+		"word", "dw", "include"
 	}; 
-	
-	protected SimpleAttributeSet labelAttributes;
-	protected SimpleAttributeSet commentAttributes;
-	protected SimpleAttributeSet normalAttributes;
-	protected SimpleAttributeSet reservedWordAttributes;
-	protected SimpleAttributeSet seperatorAttributes;
-	protected SimpleAttributeSet stringAttributes;
-	protected ReservedWordList reservedWords;
 	
 	public AssemblyCodeEditor(EditorStatusBar sb) {
 		super();
+		AbstractTokenMakerFactory atmf = (AbstractTokenMakerFactory)TokenMakerFactory.getDefaultInstance();
+		
+		atmf.putMapping("text/as65", "uk.org.wookey.atari.editor.AssemblerTokenMaker");
+		
+		setSyntaxEditingStyle("text/as65");
 	}
 }
