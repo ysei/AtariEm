@@ -10,8 +10,9 @@ public class AssemblyCodeEditor extends RSyntaxTextArea {
 	private static final long serialVersionUID = 1L;
 	private final static Logger _logger = new Logger(AssemblyCodeEditor.class.getName());
 	
-	public AssemblyCodeEditor(EditorStatusBar sb) {
+	public AssemblyCodeEditor() {
 		super();
+		
 		AbstractTokenMakerFactory atmf = (AbstractTokenMakerFactory)TokenMakerFactory.getDefaultInstance();
 		
 		atmf.putMapping("text/as65", "uk.org.wookey.atari.editor.AssemblerTokenMaker");
