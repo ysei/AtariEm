@@ -7,15 +7,42 @@ import org.fife.ui.rsyntaxtextarea.RSyntaxUtilities;
 import org.fife.ui.rsyntaxtextarea.Token;
 import org.fife.ui.rsyntaxtextarea.TokenMap;
 
+import uk.org.wookey.atari.utils.Logger;
+
 public class AssemblerTokenMaker extends AbstractTokenMaker {
+	private final static Logger _logger = new Logger(AssemblerTokenMaker.class.getName());
+
+	private final static String instructions[] = {
+		"bcc", "bcs", "beq", "bmi", "bne", "bpl", "bvc", "bvs",
+		"adc", "and", "asl", "bit", "brk", "clc", "cld", "cli",
+		"clv", "cmp", "cpx", "cpy", "dec", "dex", "dey", "eor",
+		"inc", "inx", "iny", "jmp", "jsr", "lda", "ldx", "ldy",
+		"lsr", "nop", "ora", "pha", "php", "pla", "plp", "rol",
+		"ror", "rti", "rts", "sbc", "sec", "sed", "sei", "sta", 
+		"stx", "sty", "tax", "tay", "tsx", "txa", "txs", "tya"
+	};
+	
+	private final static String directives[] = {
+		"org", "byt", "byte", "asc", "db", 
+		"word", "dw", "include"
+	}; 
+	
 	private int currentTokenStart;
 	private int currentTokenType;
+	
+	private int lineStart;
 	
 	@Override
 	public TokenMap getWordsToHighlight() {
 		TokenMap tokenMap = new TokenMap();
 	
-		tokenMap.put("rts",  Token.RESERVED_WORD);
+		for(String instruction: instructions) {
+			tokenMap.put(instruction,  Token.RESERVED_WORD);			
+		}
+		
+		for(String directive: directives) {
+			tokenMap.put(directive,  Token.RESERVED_WORD_2);			
+		}
 		
 		return tokenMap;
 	}
@@ -35,6 +62,8 @@ public class AssemblerTokenMaker extends AbstractTokenMaker {
 	   int offset = text.offset;
 	   int count = text.count;
 	   int end = offset + count;
+	   
+	   lineStart = startOffset;
 
 	   // Token starting offsets are always of the form:
 	   // 'startOffset + (currentTokenStart-offset)', but since startOffset and
@@ -57,11 +86,11 @@ public class AssemblerTokenMaker extends AbstractTokenMaker {
 	                  currentTokenType = Token.WHITESPACE;
 	                  break;
 
-	               case '"':
+	               case '\'':
 	                  currentTokenType = Token.LITERAL_STRING_DOUBLE_QUOTE;
 	                  break;
 
-	               case '#':
+	               case ';':
 	                  currentTokenType = Token.COMMENT_EOL;
 	                  break;
 
@@ -70,7 +99,7 @@ public class AssemblerTokenMaker extends AbstractTokenMaker {
 	                     currentTokenType = Token.LITERAL_NUMBER_DECIMAL_INT;
 	                     break;
 	                  }
-	                  else if (RSyntaxUtilities.isLetter(c) || c=='/' || c=='_') {
+	                  else if (RSyntaxUtilities.isLetter(c) || c=='_') {
 	                     currentTokenType = Token.IDENTIFIER;
 	                     break;
 	                  }
@@ -93,8 +122,8 @@ public class AssemblerTokenMaker extends AbstractTokenMaker {
 	                  currentTokenType = Token.LITERAL_STRING_DOUBLE_QUOTE;
 	                  break;
 
-	               case '#':
-	                  addToken(text, currentTokenStart,i-1, Token.WHITESPACE, newStartOffset+currentTokenStart);
+	               case ';':
+	                  addToken(text, currentTokenStart, i-1, Token.WHITESPACE, newStartOffset+currentTokenStart);
 	                  currentTokenStart = i;
 	                  currentTokenType = Token.COMMENT_EOL;
 	                  break;
@@ -179,7 +208,7 @@ public class AssemblerTokenMaker extends AbstractTokenMaker {
 	            break;
 
 	         case Token.LITERAL_STRING_DOUBLE_QUOTE:
-	            if (c=='"') {
+	            if (c=='\'') {
 	               addToken(text, currentTokenStart,i, Token.LITERAL_STRING_DOUBLE_QUOTE, newStartOffset+currentTokenStart);
 	               currentTokenType = Token.NULL;
 	            }
@@ -213,10 +242,18 @@ public class AssemblerTokenMaker extends AbstractTokenMaker {
 	public void addToken(Segment segment, int start, int end, int tokenType, int startOffset) {
 	   // This assumes all keywords, etc. were parsed as "identifiers."
 	   if (tokenType==Token.IDENTIFIER) {
-	      int value = wordsToHighlight.get(segment, start, end);
-	      if (value != -1) {
-	         tokenType = value;
-	      }
+		   _logger.logInfo("IDENTIFIER: start=" + start + ", end=" + end + ", startOffset=" + startOffset);
+
+		   if (lineStart != startOffset) {
+			   int value = wordsToHighlight.get(segment, start, end);
+			   if (value != -1) {
+				   tokenType = value;
+			   }
+		   }
+		   else {
+			   // label
+			   tokenType = Token.VARIABLE;
+		   }
 	   }
 	   
 	   super.addToken(segment, start, end, tokenType, startOffset);
