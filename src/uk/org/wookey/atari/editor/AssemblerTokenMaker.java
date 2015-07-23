@@ -1,5 +1,7 @@
 package uk.org.wookey.atari.editor;
 
+import java.util.Hashtable;
+
 import javax.swing.text.Segment;
 
 import org.fife.ui.rsyntaxtextarea.AbstractTokenMaker;
@@ -7,21 +9,13 @@ import org.fife.ui.rsyntaxtextarea.RSyntaxUtilities;
 import org.fife.ui.rsyntaxtextarea.Token;
 import org.fife.ui.rsyntaxtextarea.TokenMap;
 
+import com.loomcom.symon.InstructionTable;
+
 import uk.org.wookey.atari.utils.Logger;
 
 public class AssemblerTokenMaker extends AbstractTokenMaker {
 	private final static Logger _logger = new Logger(AssemblerTokenMaker.class.getName());
 
-	private final static String instructions[] = {
-		"bcc", "bcs", "beq", "bmi", "bne", "bpl", "bvc", "bvs",
-		"adc", "and", "asl", "bit", "brk", "clc", "cld", "cli",
-		"clv", "cmp", "cpx", "cpy", "dec", "dex", "dey", "eor",
-		"inc", "inx", "iny", "jmp", "jsr", "lda", "ldx", "ldy",
-		"lsr", "nop", "ora", "pha", "php", "pla", "plp", "rol",
-		"ror", "rti", "rts", "sbc", "sec", "sed", "sei", "sta", 
-		"stx", "sty", "tax", "tay", "tsx", "txa", "txs", "tya"
-	};
-	
 	private final static String directives[] = {
 		"org", "byt", "byte", "asc", "db", 
 		"word", "dw", "include"
@@ -34,11 +28,20 @@ public class AssemblerTokenMaker extends AbstractTokenMaker {
 	
 	@Override
 	public TokenMap getWordsToHighlight() {
-		TokenMap tokenMap = new TokenMap();
-	
-		for(String instruction: instructions) {
-			tokenMap.put(instruction,  Token.RESERVED_WORD);			
+		TokenMap tokenMap = new TokenMap(true);
+		
+		Hashtable<String, Integer> opcodes = new Hashtable<String, Integer>();
+		
+		for (String instr: InstructionTable.opcodeNames) {
+			if (instr != null && !opcodes.containsKey(instr)) {
+				tokenMap.put(instr,  Token.RESERVED_WORD);
+				opcodes.put(instr,  0);
+			}
 		}
+	
+//		for(Instruction instr: Instruction.values()) {
+//			tokenMap.put(instr.name(),  Token.RESERVED_WORD);			
+//		}
 		
 		for(String directive: directives) {
 			tokenMap.put(directive,  Token.RESERVED_WORD_2);			
