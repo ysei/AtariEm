@@ -2,24 +2,50 @@ package uk.org.wookey.atari.utils.lexer;
 
 
 public class LexerToken {
-	public final LexerTokenType t;
-    public final String c;
+	public final LexerTokenType type;
+    public final String value;
+    
+    public int lineNumber;
+    public int column;
     
     // could have column and line number fields too, for reporting errors later
 
+    public LexerToken(LexerTokenType t) {
+    	this(t, "");
+    }
+
     public LexerToken(LexerTokenType t, String c) {
-        this.t = t;
-        this.c = c;
+    	this(t, c, 0, 0);
+    }
+
+    public LexerToken(LexerTokenType t, int lineNum, int col) {
+    	this(t, "", lineNum, col);
+    }
+
+    public LexerToken(LexerTokenType t, String c, int lineNum, int col) {
+        type = t;
+        value = c;
+        
+        lineNumber = lineNum;
+        column = col;
     }
 
     public String toString() {
-        if (t == LexerTokenType.ATOM) {
-            return "ATOM<" + c + ">";
+    	String inf = "(" + lineNumber + ":" + column + ") ";
+    	
+        if (type == LexerTokenType.ATOM) {
+            return inf + "ATOM<" + value + ">";
         }
-        else if (t == LexerTokenType.COMMENT) {
-        	return "COMMENT<" + c + ">";
+        else if (type == LexerTokenType.COMMENT) {
+        	return inf + "COMMENT<" + value + ">";
+        }
+        else if (type == LexerTokenType.DECIMAL) {
+        	return inf + "DECIMAL<" + value + ">";
+        }
+        else if (type == LexerTokenType.HEX) {
+        	return inf + "HEX<" + value + ">";
         }
         
-        return t.toString();
+        return inf + type.toString();
     }
 }

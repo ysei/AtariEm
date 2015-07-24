@@ -12,15 +12,11 @@ import org.fife.ui.rsyntaxtextarea.TokenMap;
 import com.loomcom.symon.InstructionTable;
 
 import uk.org.wookey.atari.utils.Logger;
+import uk.org.wookey.atari.utils.assembler.Parser;
 
 public class AssemblerTokenMaker extends AbstractTokenMaker {
 	private final static Logger _logger = new Logger(AssemblerTokenMaker.class.getName());
 
-	private final static String directives[] = {
-		"org", "byt", "byte", "asc", "db", 
-		"word", "dw", "include"
-	}; 
-	
 	private int currentTokenStart;
 	private int currentTokenType;
 	
@@ -39,11 +35,7 @@ public class AssemblerTokenMaker extends AbstractTokenMaker {
 			}
 		}
 	
-//		for(Instruction instr: Instruction.values()) {
-//			tokenMap.put(instr.name(),  Token.RESERVED_WORD);			
-//		}
-		
-		for(String directive: directives) {
+		for(String directive: Parser.directives) {
 			tokenMap.put(directive,  Token.RESERVED_WORD_2);			
 		}
 		
@@ -245,7 +237,7 @@ public class AssemblerTokenMaker extends AbstractTokenMaker {
 	public void addToken(Segment segment, int start, int end, int tokenType, int startOffset) {
 	   // This assumes all keywords, etc. were parsed as "identifiers."
 	   if (tokenType==Token.IDENTIFIER) {
-		   _logger.logInfo("IDENTIFIER: start=" + start + ", end=" + end + ", startOffset=" + startOffset);
+		   //_logger.logInfo("IDENTIFIER: start=" + start + ", end=" + end + ", startOffset=" + startOffset);
 
 		   if (lineStart != startOffset) {
 			   int value = wordsToHighlight.get(segment, start, end);

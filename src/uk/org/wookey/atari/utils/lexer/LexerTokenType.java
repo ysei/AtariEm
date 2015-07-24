@@ -2,14 +2,19 @@ package uk.org.wookey.atari.utils.lexer;
 
 public enum LexerTokenType {
 	EOL,
+	EOF,
+	WHITESPACE,
+	DECIMAL,
 	LPAREN, 
 	RPAREN,
 	COMMA,
 	PLUS,
 	MINUS,
-	DOLLAR,
+	HEX,
 	HASH,
 	PERCENT,
 	COMMENT,
+	LSBOF,
+	MSBOF,
 	ATOM
 }

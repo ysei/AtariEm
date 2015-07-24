@@ -1,0 +1,18 @@
+package uk.org.wookey.atari.utils.assembler;
+
+public class ExprNode {
+	public ExprNode lhs;
+	public ExprNode rhs;
+
+	public ExprNode() {
+		lhs = rhs = null;
+	}
+	
+	public int eval() {
+		return 0;
+	}
+	
+	public String toString() {
+		return "()";
+	}
+}
