@@ -64,22 +64,26 @@ public class Lexer {
                 break;
                 
             case '$':
-            	{
-            		String num = getHexNumber(input, i+1);
-            		_logger.logInfo("Hex: " + num);
-            		i += num.length() + 1;
-            		col += num.length() + 1;
-            		result.add(new LexerToken(LexerTokenType.HEX, num, lineNum, col));          	
-            	}
-                break;
-                
+        	{
+        		String num = getHexNumber(input, i+1);
+        		i += num.length() + 1;
+        		col += num.length() + 1;
+        		result.add(new LexerToken(LexerTokenType.HEX, num, lineNum, col));          	
+        	}
+            break;
+            
+            case '%':
+        	{
+        		String num = getBinNumber(input, i+1);
+        		_logger.logInfo("Bin: " + num);
+        		i += num.length() + 1;
+        		col += num.length() + 1;
+        		result.add(new LexerToken(LexerTokenType.BINARY, num, lineNum, col));          	
+        	}
+            break;
+            
             case '#':
                 result.add(new LexerToken(LexerTokenType.HASH, lineNum, col));
-                i++;
-                break;
-                
-            case '%':
-                result.add(new LexerToken(LexerTokenType.PERCENT, lineNum, col));
                 i++;
                 break;
                 
@@ -168,6 +172,19 @@ public class Lexer {
         return s.substring(i, j);
     }
     
+    private String getBinNumber(String s, int i) {
+        int j = i;
+        
+        while (j < s.length()) {
+            if (isBinChar(s.charAt(j))) {
+                j++;
+            } else {
+                return s.substring(i, j);
+            }
+        }
+        return s.substring(i, j);
+    }
+    
     private String gobbleLine(String s, int i) {
     	int eol = i;
     	
@@ -220,6 +237,14 @@ public class Lexer {
     	}
     	
     	if (c >= 'A' && c <= 'F') {
+    		return true;
+    	}
+
+    	return false;
+    }
+
+    private boolean isBinChar(char c) {
+    	if (c >= '0' && c <= '1') {
     		return true;
     	}
 

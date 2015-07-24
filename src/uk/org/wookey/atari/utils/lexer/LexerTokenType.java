@@ -12,7 +12,7 @@ public enum LexerTokenType {
 	MINUS,
 	HEX,
 	HASH,
-	PERCENT,
+	BINARY,
 	COMMENT,
 	LSBOF,
 	MSBOF,

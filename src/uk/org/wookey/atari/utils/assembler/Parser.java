@@ -13,8 +13,8 @@ public class Parser extends SimpleParser {
 	private final static Logger _logger = new Logger(Parser.class.getName());
 
 	public final static String directives[] = {
-		"org", "byt", "byte", "asc", "db", 
-		"word", "dw", "include", "processor"
+		"org", "processor", "=",
+		".word", ".byte"
 	}; 
 	
 	private int errors;	
@@ -42,78 +42,82 @@ public class Parser extends SimpleParser {
 	}
 	
 	public void pass() {
-		_logger.logInfo("Down to the real work");
-		
 		LexerToken t = peekToken();
 		errors = 0;
 		pc = 0;
 		
-		while (t.type != LexerTokenType.EOF) {
-			parseLine();
-			_logger.logInfo("On to the next line");
-			t = peekToken();
-	    }
-		
-		_logger.logInfo("All done.");
+		try {
+			while (t.type != LexerTokenType.EOF) {
+				try {
+					parseLine();
+				} catch (SyntaxException e) {
+					t = currentToken();
+					
+					_logger.logError("Syntax error on line " + t.lineNumber + ", column " + t.column + ": " + e.getMessage(), e);
+					if (t.type != LexerTokenType.EOL) {
+						gobble(LexerTokenType.EOL);
+					}
+					
+					errors++;
+				} catch (RuntimeAssemblyException e) {
+					t = currentToken();
+					
+					_logger.logError("Runtime error on line " + t.lineNumber + ", column " + t.column + ": " + e.getMessage(), e);
+					if (t.type != LexerTokenType.EOL) {
+						gobble(LexerTokenType.EOL);
+					}
+					
+					errors++;
+				}
+
+				t = peekToken();
+			}
+		}
+		catch (EOFException e) {
+			_logger.logInfo("End of file exception.");
+		}
 	}
 	
-	public void parseLine() {
-		LexerToken t = getToken();
-		
-		_logger.logInfo("Processing " + t.toString());
+	public void parseLine() throws SyntaxException, EOFException, RuntimeAssemblyException {
+		LexerToken t = getToken(LexerTokenType.COMMENT);
 		
 		if (t.type == LexerTokenType.EOF) {
-			_logger.logInfo("End of file - stop parsing.");
+			throw new EOFException();
 		}
-		else if (t.type == LexerTokenType.EOL) {
-			_logger.logInfo("Blank line.");
+		
+		if (t.type == LexerTokenType.EOL) {
+			return;
 		}
-		else if (t.type == LexerTokenType.COMMENT) {
-			_logger.logInfo("Comment - skip to end of line.");
-			t = getToken();
-			if (t.type != LexerTokenType.EOL) {
-				_logger.logError("Expected next token to be an EOL - got: " + t.toString());
-				errors++;
-				gobble(LexerTokenType.EOL);
-			}
-		}		
-		else if (t.type == LexerTokenType.WHITESPACE) {
-			_logger.logInfo("Something without a label");
-			//gobble(LexerTokenType.EOL);
-			instructionOrDirective(getToken());
-		}
-		else if (t.type == LexerTokenType.ATOM) {
-			_logger.logInfo("An atom of some sort: " + t.toString());
 
-			t = getToken();
-			if (t.type != LexerTokenType.WHITESPACE) {
-				_logger.logError("Unexpected token: " + t.toString());
-				gobble(LexerTokenType.EOL);
-				errors++;
-			}
-			else {
-				instructionOrDirective(getToken(), t);
-			}
+		if (t.type == LexerTokenType.WHITESPACE) {
+			instructionOrDirective(getToken(LexerTokenType.COMMENT, LexerTokenType.WHITESPACE));
+			return;
 		}
-		else {
-			_logger.logError("Unexpected token: " + t.toString());
-			gobble(LexerTokenType.EOL);
-			errors++;
+		
+		if (t.type == LexerTokenType.ATOM) {
+			instructionOrDirective(getToken(LexerTokenType.COMMENT, LexerTokenType.WHITESPACE), t);
+			return;
 		}
+		
+		errors++;
+		throw new SyntaxException("Unexpected token: " + t.toString());
 	}
 	
-	public void instructionOrDirective(LexerToken t, LexerToken label) {
-		instructionOrDirective(t);	
+	public void instructionOrDirective(LexerToken t) throws SyntaxException, RuntimeAssemblyException {
+		instructionOrDirective(t, null);	
 	}
 
-	public void instructionOrDirective(LexerToken t) {
+	public void instructionOrDirective(LexerToken t, LexerToken label) throws SyntaxException, RuntimeAssemblyException {
 		if (isInstruction(t)) {
 			_logger.logInfo("Instruction: " + t.value);
 			gobble(LexerTokenType.EOL);
 		}
 		else if (isDirective(t)) {
-			_logger.logInfo("Directive: " + t.value);
-			directive(t);	
+			directive(t, label);	
+		}
+		else if (t.type == LexerTokenType.EOL) {
+			// just another blank line;
+			return;
 		}
 		else {
 			_logger.logInfo("Unexpected token: " + t.toString());
@@ -122,14 +126,87 @@ public class Parser extends SimpleParser {
 		}
 	}
 	
-	private void directive(LexerToken directive) {
+	private void directive(LexerToken directive, LexerToken label) throws SyntaxException, RuntimeAssemblyException {
 		if (directive.value.equalsIgnoreCase("org")) {
-			int org = evalExp();
-			_logger.logSuccess("ORG set to " + org);
+			pc = evalExp();
+			_logger.logSuccess("ORG set to " + pc);
+			
+			LexerToken t = getToken(LexerTokenType.COMMENT, LexerTokenType.WHITESPACE);
+			if (t.type != LexerTokenType.EOL) {
+				throw new SyntaxException("Unexpected token found: " + t.toString());
+			}
+		}
+		else if (directive.value.equalsIgnoreCase("processor")) {
+			LexerToken t = getToken(LexerTokenType.WHITESPACE);
+			_logger.logInfo("PROCESSOR set to " + t.value);
+			
+			t = getToken(LexerTokenType.COMMENT, LexerTokenType.WHITESPACE);
+			if (t.type != LexerTokenType.EOL) {
+				throw new SyntaxException("Badly formed PROCESSOR directive");
+			}
+		}
+		else if (directive.value.equalsIgnoreCase("=")) {
+			if (label == null) {
+				throw new SyntaxException("= directive without label");
+			}
+			
+			int val = evalExp();
+			
+			_logger.logInfo("LABEL '" + label.value + "' set to " + val);
+			
+			LexerToken t = getToken(LexerTokenType.COMMENT, LexerTokenType.WHITESPACE);
+			if (t.type != LexerTokenType.EOL) {
+				throw new SyntaxException("Badly formed = directive");
+			}
+		}
+		else if (directive.value.equalsIgnoreCase(".byte")) {
+			boolean scanning = true;
+			
+			while (scanning) {
+				int byt = evalExp();
+			
+				if ((byt & 0xff) != byt) {
+					throw new RuntimeAssemblyException("Overflow in .BYTE directive");
+				}
+			
+				_logger.logSuccess(".BYTE " + byt);
+			
+				LexerToken t = getToken(LexerTokenType.COMMENT, LexerTokenType.WHITESPACE);
+				
+				if (t.type != LexerTokenType.COMMA) {
+					scanning = false;
+				}
+			}
+			
+			if (currentToken().type != LexerTokenType.EOL) {
+				throw new SyntaxException("Unexpected token found: " + currentToken().toString());
+			}
+		}
+		else if (directive.value.equalsIgnoreCase(".word")) {
+			boolean scanning = true;
+			
+			while (scanning) {
+				int byt = evalExp();
+			
+				if ((byt & 0xffff) != byt) {
+					throw new RuntimeAssemblyException("Overflow in .WORD directive");
+				}
+			
+				_logger.logSuccess(".WORD " + byt);
+			
+				LexerToken t = getToken(LexerTokenType.COMMENT, LexerTokenType.WHITESPACE);
+				
+				if (t.type != LexerTokenType.COMMA) {
+					scanning = false;
+				}
+			}
+			
+			if (currentToken().type != LexerTokenType.EOL) {
+				throw new SyntaxException("Unexpected token found: " + currentToken().toString());
+			}
 		}
 		else {
-			_logger.logError("unimplemented directive: '" + directive.value.toLowerCase() + "'");
-			gobble(LexerTokenType.EOL);
+			throw new SyntaxException("unimplemented directive: '" + directive.value.toLowerCase() + "'");
 		}
 	}
 	
@@ -151,76 +228,46 @@ public class Parser extends SimpleParser {
 		return errors;
 	}
 	
-	private int evalExp() {
-		_logger.logInfo("evalExp();");
-		
+	private int evalExp() throws SyntaxException {
 		ExprNode exp = expr();
 		
 		if (exp == null) {
-			_logger.logError("Null (empty); expression");
-			return 0;
+			throw new SyntaxException("Null (empty); expression");
 		}
 		
 		return exp.eval();
 	}
 
-	private ExprNode expr() {
+	private ExprNode expr() throws SyntaxException {
 		ExprNode res = null;
-		boolean parsing = true;
 		
 		LexerToken t = peekToken();
 		
-		_logger.logInfo("Parsing expression");
-		
-		while (parsing) {
-			_logger.logInfo("Look at " + t.toString());
+		while (t.type == LexerTokenType.WHITESPACE) {
+			t = getToken();
+			t = peekToken();
+		}
 			
-			if (isSimple(t)) {
-				res = simple();
-				
-				if (res == null) {
-					_logger.logError("Simple(); returned null");
-					return null;
-				}
+		if (isSimple(t)) {
+			res = simple();
+			
+			if (res == null) {
+				_logger.logError("Simple(); returned null");
+				return null;
 			}
-			else if (isOper(t)) {
-				t = getToken();
-				_logger.logInfo("Parsing operator: " + t.toString());
-				res = new OpNode(t.type, res, expr());
-				parsing = false;
-			}
-			else if (t.type == LexerTokenType.WHITESPACE) {
-				// ignore it
-				_logger.logInfo("Skipping whitespace");
-				t = getToken();
+			
+			t = getToken(LexerTokenType.WHITESPACE);
+			
+			if (isOper(t)) {
+				return new OpNode(t.type, res, expr());
 			}
 			else {
-				_logger.logInfo("Non expression token found: " + t.toString());
-				parsing = false;
-			}
-			
-			t = peekToken();
-			_logger.logInfo("Next token is: " + t.toString());
-			try {
-				Thread.sleep(500);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				unGetToken();
+				return res;
 			}
 		}
 		
-		t = currentToken();
-		if (typeIs(t, LexerTokenType.COMMENT, LexerTokenType.EOL)) {
-			_logger.logInfo("Finished parsing expression successfully:" + res.toString());
-		}
-		else {
-			_logger.logError("Unexpected token found: " + t.toString());
-			res = null;
-		}
-
-		gobble(LexerTokenType.EOL);
-		
-		return res;
+		throw new SyntaxException("THING HAPPENED");
 	}
 
 	private ExprNode simple() {
@@ -234,6 +281,9 @@ public class Parser extends SimpleParser {
 		else if (t.type == LexerTokenType.HEX) {
 			exp = new SimpleNode(Integer.parseInt(t.value, 16));
 		}
+		else if (t.type == LexerTokenType.BINARY) {
+			exp = new SimpleNode(Integer.parseInt(t.value, 2));
+		}
 		else if (t.type == LexerTokenType.ATOM) {
 			exp = new LabelNode(t.value);
 		}
@@ -245,7 +295,7 @@ public class Parser extends SimpleParser {
 	}
 	
 	private boolean isSimple(LexerToken t) {
-		return typeIs(t, LexerTokenType.DECIMAL, LexerTokenType.HEX, LexerTokenType.ATOM);
+		return typeIs(t, LexerTokenType.DECIMAL, LexerTokenType.HEX, LexerTokenType.BINARY, LexerTokenType.ATOM);
 	}
 	
 	private boolean isOper(LexerToken t) {
@@ -258,6 +308,7 @@ public class Parser extends SimpleParser {
 				return true;
 			}
 		}
+		
 		return false;
 	}
 }

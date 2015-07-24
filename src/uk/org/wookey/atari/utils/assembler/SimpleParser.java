@@ -46,22 +46,37 @@ public class SimpleParser {
 		return tokens.get(tokenIndex-1);
 	}
 
-	protected LexerToken getToken() {
-		if (tokenIndex >= tokens.size()) {
-			_logger.logInfo("Out of LexerTokens!");
-			return new LexerToken(LexerTokenType.EOF);
+	protected boolean unGetToken() {
+		if (tokenIndex == 0) {
+			_logger.logError("Call to unGetToken() but no token to unget!");
+			return false;
 		}
 		
-		LexerToken t = tokens.get(tokenIndex);
-		tokenIndex++;
+		tokenIndex--;
+		return true;
+	}
+	
+	protected LexerToken getToken(LexerTokenType... ignoreTokens) {
+		boolean skipping = true;
+		LexerToken t = null;
 		
-		try {
-			Thread.sleep(100);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		while (skipping) {
+			if (tokenIndex >= tokens.size()) {
+				_logger.logInfo("Out of LexerTokens!");
+				return new LexerToken(LexerTokenType.EOF);
+			}
+			
+			t = tokens.get(tokenIndex);
+			tokenIndex++;
+			
+			skipping = false;
+			for (LexerTokenType skip: ignoreTokens) {
+				if (t.type == skip) {
+					skipping = true;
+				}
+			}
 		}
-		
+				
 		return t;
 	}
 }

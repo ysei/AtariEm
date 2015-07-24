@@ -45,6 +45,9 @@ public class LexerToken {
         else if (type == LexerTokenType.HEX) {
         	return inf + "HEX<" + value + ">";
         }
+        else if (type == LexerTokenType.BINARY) {
+        	return inf + "BIN<" + value + ">";
+        }
         
         return inf + type.toString();
     }
