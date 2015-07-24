@@ -185,7 +185,9 @@ public class Parser extends SimpleParser {
 			}
 			else if (isOper(t)) {
 				t = getToken();
+				_logger.logInfo("Parsing operator: " + t.toString());
 				res = new OpNode(t.type, res, expr());
+				parsing = false;
 			}
 			else if (t.type == LexerTokenType.WHITESPACE) {
 				// ignore it
@@ -193,6 +195,7 @@ public class Parser extends SimpleParser {
 				t = getToken();
 			}
 			else {
+				_logger.logInfo("Non expression token found: " + t.toString());
 				parsing = false;
 			}
 			
@@ -206,6 +209,7 @@ public class Parser extends SimpleParser {
 			}
 		}
 		
+		t = currentToken();
 		if (typeIs(t, LexerTokenType.COMMENT, LexerTokenType.EOL)) {
 			_logger.logInfo("Finished parsing expression successfully:" + res.toString());
 		}

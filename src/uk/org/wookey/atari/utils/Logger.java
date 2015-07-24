@@ -107,7 +107,7 @@ public class Logger {
 			_msgBuffer.add(item);
 			
 			System.out.println(_logName + ' ' +msg);
-		}
+		}		
 	}
 	
 	private void logMsg(String msg, SimpleAttributeSet attribs) {
