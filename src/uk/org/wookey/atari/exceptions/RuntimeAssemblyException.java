@@ -1,4 +1,4 @@
-package uk.org.wookey.atari.utils.assembler;
+package uk.org.wookey.atari.exceptions;
 
 public class RuntimeAssemblyException extends Exception {
 	private static final long serialVersionUID = 1L;

@@ -70,12 +70,14 @@ public class CodeEditor extends JPanel {
 	private void doAssemble() {
 		Lexer lex = new Lexer();
 		
-		_logger.logInfo("Assembline...");
+		_logger.logInfo("Assembling...");
 		List<LexerToken> tokens = lex.lex(editor.getText());
 		
+		/*
 		for (LexerToken tok: tokens) {
 			_logger.logInfo(tok.toString());
 		}
+		*/
 		
 		Parser p = new Parser(tokens);
 		p.pass();

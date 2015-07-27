@@ -23,6 +23,8 @@
 
 package com.loomcom.symon;
 
+import uk.org.wookey.atari.utils.assembler.Instruction;
+
 public interface InstructionTable {
 
     /**
@@ -306,4 +308,90 @@ public interface InstructionTable {
         2, 5, 0, 0, 0, 4, 6, 0, 2, 4, 0, 0, 0, 4, 7, 0
     };
 
+    public static Instruction[] instructions = {
+    	new Instruction("adc", 0x69, 0x65, 0x75, 0x6d, 0x7d, 0x79, 0x61, 0x71),
+    	new Instruction("and", 0x29, 0x25, 0x35, 0x2d, 0x3d, 0x39, 0x21, 0x31),
+    	
+    	new Instruction("asl", 0x0a, 0x06, 0x16, 0x0e, 0x1e),
+    	
+    	new Instruction("bcc", 0x90),
+    	new Instruction("bcs", 0xb0),
+    	new Instruction("beq", 0xf0),
+    	
+    	new Instruction("bit", 0x24, 0x2c),
+    	
+    	new Instruction("bmi", 0x30),
+    	new Instruction("bne", 0xd0),
+    	new Instruction("bpl", 0x10),
+    	
+    	new Instruction("brk", 0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1),
+    	
+    	new Instruction("bvc", 0x50),
+    	new Instruction("bvs", 0x70),
+
+    	new Instruction("clc", 0x18, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1),
+    	new Instruction("cld", 0xd8, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1),
+    	new Instruction("cli", 0x58, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1),
+    	new Instruction("clv", 0xb8, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1),
+    	
+    	new Instruction("cmp", 0xc9, 0xc5, 0xd5, 0xcd, 0xdd, 0xd9, 0xc1, 0xd1),
+    	
+    	new Instruction("cpx", 0xe0, 0xe4, 0xec),
+    	new Instruction("cpy", 0xc0, 0xc4, 0xcc),
+    	
+    	new Instruction("dec", 0xc6, 0xd6, 0xce, 0xde),
+    	
+    	new Instruction("dex", 0xca, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1),
+    	new Instruction("dey", 0x88, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1),
+    	
+    	new Instruction("eor", 0x49, 0x45, 0x55, 0x4d, 0x5d, 0x59, 0x41, 0x51),
+
+    	new Instruction("inc", 0xe6, 0xf6, 0xee, 0xfe),
+
+    	new Instruction("inx", 0xe8, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1),
+    	new Instruction("iny", 0xc8, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1),
+    	new Instruction("jmp", -1, -1, -1, -1, -1, -1, -1, 0x4c, -1, -1, 0x6c, -1, -1),
+    	new Instruction("jsr", -1, -1, -1, -1, -1, -1, -1, 0x20, -1, -1, -1, -1, -1),
+
+    	new Instruction("lda", 0xa9, 0xa5, 0xb5, 0xad, 0xbd, 0xb9, 0xa1, 0xb1),
+    	
+    	// int imp, int acc, int imm, int zp, int zpx, int zpy, int rel, int abs, int absx, int absy, int ind, int indx, int indy
+    	
+    	new Instruction("ldx", -1, -1, 0xa2, 0xa6, -1, 0xb6, -1, 0xae, -1, 0xbe, -1, -1, -1),
+    	new Instruction("ldy", -1, -1, 0xa0, 0xa4, 0xb4, -1, -1, 0xac, 0xbc, -1, -1, -1, -1),
+    	
+    	new Instruction("lsr", 0x4a, 0x46, 0x56, 0x4e, 0x5e),
+    	
+    	new Instruction("nop", 0xea, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1),
+    	
+    	new Instruction("ora", 0x09, 0x05, 0x15, 0x0d, 0x1d, 0x19, 0x01, 0x11),
+    	
+    	new Instruction("pha", 0x48, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1),
+    	new Instruction("php", 0x88, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1),
+    	new Instruction("pla", 0x68, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1),
+    	new Instruction("plp", 0x28, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1),
+    	
+    	new Instruction("rol", 0x2a, 0x26, 0x36, 0x2e, 0x3e),
+    	new Instruction("ror", 0x6a, 0x66, 0x76, 0x6e, 0x7e),
+
+    	new Instruction("rti", 0x40, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1),
+    	new Instruction("rts", 0x60, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1),
+
+    	new Instruction("sbc", 0xe9, 0xe5, 0xf5, 0xed, 0xfd, 0xf9, 0xe1, 0xf1),
+    	
+    	new Instruction("sec", 0x38, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1),
+    	new Instruction("sed", 0xf8, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1),
+    	new Instruction("sei", 0x78, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1),
+    	
+    	new Instruction("sta", -1, -1, -1, 0x85, 0x95, -1, -1, 0x8d, 0x9d, 0x99, -1, 0x81, 0x91),
+    	new Instruction("stx", -1, -1, -1, 0x86, -1, 0x96, -1, 0x8e, -1, -1, -1, -1, -1),
+    	new Instruction("sty", -1, -1, -1, 0x84, -1, 0x94, 0x8c, -1, -1, -1, -1, -1, -1),
+
+    	new Instruction("tax", 0xaa, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1),
+    	new Instruction("tay", 0xa8, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1),
+    	new Instruction("tsx", 0xba, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1),
+    	new Instruction("txa", 0x8a, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1),
+    	new Instruction("txs", 0x9a, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1),
+    	new Instruction("tya", 0x98, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1)
+    };
 }

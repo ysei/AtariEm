@@ -1,10 +1,17 @@
 package uk.org.wookey.atari.utils.assembler;
 
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import com.loomcom.symon.InstructionTable;
 
+import uk.org.wookey.atari.exceptions.EOFException;
+import uk.org.wookey.atari.exceptions.LabelExistsException;
+import uk.org.wookey.atari.exceptions.RuntimeAssemblyException;
+import uk.org.wookey.atari.exceptions.SyntaxException;
+import uk.org.wookey.atari.utils.LabelTable;
 import uk.org.wookey.atari.utils.Logger;
 import uk.org.wookey.atari.utils.lexer.LexerToken;
 import uk.org.wookey.atari.utils.lexer.LexerTokenType;
@@ -14,13 +21,15 @@ public class Parser extends SimpleParser {
 
 	public final static String directives[] = {
 		"org", "processor", "=",
-		".word", ".byte"
+		".word", ".byte", ".byt"
 	}; 
 	
 	private int errors;	
 	private int pc;
 	
-	private Hashtable<String, Integer> instructions;	
+	private Hashtable<String, Integer> instructions;
+	
+	private LabelTable labels;
 	
 	public Parser(List<LexerToken> tokens) {
 		super(tokens);
@@ -28,6 +37,7 @@ public class Parser extends SimpleParser {
 		errors = 0;
 		pc = 0;
 		
+		labels = new LabelTable();
 		instructions = new Hashtable<String, Integer>();
 		
 		for (String op: InstructionTable.opcodeNames) {
@@ -76,6 +86,8 @@ public class Parser extends SimpleParser {
 		catch (EOFException e) {
 			_logger.logInfo("End of file exception.");
 		}
+		
+		dumpLabels();
 	}
 	
 	public void parseLine() throws SyntaxException, EOFException, RuntimeAssemblyException {
@@ -109,8 +121,7 @@ public class Parser extends SimpleParser {
 
 	public void instructionOrDirective(LexerToken t, LexerToken label) throws SyntaxException, RuntimeAssemblyException {
 		if (isInstruction(t)) {
-			_logger.logInfo("Instruction: " + t.value);
-			gobble(LexerTokenType.EOL);
+			instruction(t, label);
 		}
 		else if (isDirective(t)) {
 			directive(t, label);	
@@ -123,6 +134,67 @@ public class Parser extends SimpleParser {
 			_logger.logInfo("Unexpected token: " + t.toString());
 			gobble(LexerTokenType.EOL);
 			errors++;
+		}
+	}
+	
+	private void instruction(LexerToken instruction, LexerToken label) throws SyntaxException, RuntimeAssemblyException {
+		if (label != null) {
+			try {
+				labels.add(label.value, pc);
+			} catch (LabelExistsException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		_logger.logInfo("Instruction: " + instruction.value);
+		
+		Instruction inst = lookup(instruction.value);
+		if (inst == null) {
+			throw new SyntaxException("Unknown instruction '" + instruction.value + "'");
+		}
+		
+		LexerToken t = getToken(LexerTokenType.COMMENT, LexerTokenType.WHITESPACE);
+		if (t.type == LexerTokenType.EOL) {
+			if (inst.implicit != -1) {
+				_logger.logSuccess("CODE: $" + Integer.toHexString(inst.implicit));
+				pc++;
+			}
+			else {
+				throw new SyntaxException("Missing operand.");
+			}
+		}
+		else if (t.type == LexerTokenType.HASH) {
+			if (inst.immediate != -1) {
+				int val = evalExp();
+				if ((val & 0xff) != val) {
+					throw new SyntaxException("Immediate value " + val + " too big.");
+				}
+				_logger.logSuccess("CODE $" + Integer.toHexString(inst.immediate) + " $" + Integer.toHexString(val));
+				pc += 2;
+			}
+			else {
+				throw new SyntaxException("Immediate mode not supported by this instruction");
+			}
+		}
+		else {
+			_logger.logInfo("Token is: " + t.toString());
+			
+			if (inst.relative != -1) {
+				int val = evalExp();
+
+				pc += 2;
+				int displacement = val - pc;
+				_logger.logSuccess("CODE $" + Integer.toHexString(inst.relative) + " $" + Integer.toHexString(displacement));
+			}
+			else {
+				_logger.logError("??????");
+				pc += 2;
+			}
+		}
+		
+		if (currentToken().type != LexerTokenType.EOL) {
+			gobble(LexerTokenType.EOL);
 		}
 	}
 	
@@ -152,14 +224,26 @@ public class Parser extends SimpleParser {
 			
 			int val = evalExp();
 			
-			_logger.logInfo("LABEL '" + label.value + "' set to " + val);
+			if (label.value.equals("*")) {
+				pc = val;
+				_logger.logInfo("PC set to " + val + " via '=' directive");
+			}
+			else {
+				try {
+					labels.add(label.value, val);
+				} catch (LabelExistsException e) {
+					// TODO Auto-generated catch block
+					_logger.logError("Failed to add label cos one already exists!", e);
+				}
+				_logger.logInfo("LABEL '" + label.value + "' set to " + val);
+			}
 			
 			LexerToken t = getToken(LexerTokenType.COMMENT, LexerTokenType.WHITESPACE);
 			if (t.type != LexerTokenType.EOL) {
 				throw new SyntaxException("Badly formed = directive");
 			}
 		}
-		else if (directive.value.equalsIgnoreCase(".byte")) {
+		else if (directive.value.equalsIgnoreCase(".byte") || directive.value.equalsIgnoreCase(".byt")) {
 			boolean scanning = true;
 			
 			while (scanning) {
@@ -267,10 +351,10 @@ public class Parser extends SimpleParser {
 			}
 		}
 		
-		throw new SyntaxException("THING HAPPENED");
+		throw new SyntaxException("At bottom of Expr() - token is: " + t.toString());
 	}
 
-	private ExprNode simple() {
+	private ExprNode simple() throws SyntaxException {
 		ExprNode exp = null;
 		
 		LexerToken t = getToken();
@@ -285,10 +369,10 @@ public class Parser extends SimpleParser {
 			exp = new SimpleNode(Integer.parseInt(t.value, 2));
 		}
 		else if (t.type == LexerTokenType.ATOM) {
-			exp = new LabelNode(t.value);
+			exp = new LabelNode(t.value, labels);
 		}
 		else {
-			_logger.logError("Unexpected item in Simple() - " + t.toString());
+			throw new SyntaxException("Unexpected item in Simple() - " + t.toString());
 		}
 		
 		return exp;
@@ -310,5 +394,27 @@ public class Parser extends SimpleParser {
 		}
 		
 		return false;
+	}
+	
+	private void dumpLabels() {
+		Iterator<Map.Entry<String, Integer>> it = labels.getSet().iterator();
+
+		_logger.logInfo("Labels:");
+		
+		while (it.hasNext()) {
+			Map.Entry<String, Integer> entry = it.next();
+
+			_logger.logInfo(entry.getKey() + " -> " + Integer.toHexString(entry.getValue()));
+		}
+	}
+	
+	private Instruction lookup(String inst) {
+		for (Instruction i: InstructionTable.instructions) {
+			if (inst.equalsIgnoreCase(i.name)) {
+				return i;
+			}
+		}
+		
+		return null;
 	}
 }
