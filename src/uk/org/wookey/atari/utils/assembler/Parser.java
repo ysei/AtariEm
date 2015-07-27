@@ -160,6 +160,10 @@ public class Parser extends SimpleParser {
 				_logger.logSuccess("CODE: $" + Integer.toHexString(inst.implicit));
 				pc++;
 			}
+			else if (inst.accumulator != -1) {
+				_logger.logSuccess("CODE: $" + Integer.toHexString(inst.accumulator));
+				pc++;
+			}
 			else {
 				throw new SyntaxException("Missing operand.");
 			}
@@ -202,10 +206,19 @@ public class Parser extends SimpleParser {
 				}
 				else {
 					int val = evalExp();
+					int bytes = 3;
 					
 					LexerToken after = peekToken();
 					_logger.logInfo("Token after expression: " + after.toString());
 					
+					if (val < 256) {
+						// zero page - if instruction supports it
+						if ((inst.zeroPage != -1) || 
+								(inst.zeroPageX != -1) || 
+								(inst.zeroPageY != -1)) {
+							bytes = 2;
+						}
+					}
 					/*
 					public int accumulator;
 					public int zeroPage;
@@ -216,7 +229,7 @@ public class Parser extends SimpleParser {
 					public int absoluteY;
 					*/
 					
-					pc += 3;
+					pc += bytes;
 				}
 			}
 		}
