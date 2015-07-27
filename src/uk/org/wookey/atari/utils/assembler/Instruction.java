@@ -20,19 +20,19 @@ public class Instruction {
 	public Instruction() {
 		name = "???";
 		
-		implicit = 0;
-		accumulator = 0;
-		immediate = 0;
-		zeroPage = 0;
-		zeroPageX = 0;
-		zeroPageY = 0;
-		relative = 0;
-		absolute = 0;
-		absoluteX = 0;
-		absoluteY = 0;
-		indirect = 0;
-		indirectX = 0;
-		indirectY = 0;
+		implicit = -1;
+		accumulator = -1;
+		immediate = -1;
+		zeroPage = -1;
+		zeroPageX = -1;
+		zeroPageY = -1;
+		relative = -1;
+		absolute = -1;
+		absoluteX = -1;
+		absoluteY = -1;
+		indirect = -1;
+		indirectX = -1;
+		indirectY = -1;
 	}
 	
 	public Instruction(String name, int imp, int acc, int imm, int zp, int zpx, int zpy, int rel, int abs, int absx, int absy, int ind, int indx, int indy) {

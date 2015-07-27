@@ -179,7 +179,7 @@ public class Parser extends SimpleParser {
 		}
 		else {
 			_logger.logInfo("Token is: " + t.toString());
-			
+			unGetToken();
 			if (inst.relative != -1) {
 				int val = evalExp();
 
@@ -188,8 +188,36 @@ public class Parser extends SimpleParser {
 				_logger.logSuccess("CODE $" + Integer.toHexString(inst.relative) + " $" + Integer.toHexString(displacement));
 			}
 			else {
-				_logger.logError("??????");
-				pc += 2;
+				if (t.type == LexerTokenType.LPAREN) {
+					_logger.logInfo("Some kind of indirect");
+
+					t = getToken();
+					
+					int val = evalExp();
+					LexerToken after = peekToken();
+					
+					_logger.logInfo("Token after expression: " + after.toString());
+
+					pc += 3;
+				}
+				else {
+					int val = evalExp();
+					
+					LexerToken after = peekToken();
+					_logger.logInfo("Token after expression: " + after.toString());
+					
+					/*
+					public int accumulator;
+					public int zeroPage;
+					public int zeroPageX;
+					public int zeroPageY;
+					public int absolute;
+					public int absoluteX;
+					public int absoluteY;
+					*/
+					
+					pc += 3;
+				}
 			}
 		}
 		
@@ -340,7 +368,7 @@ public class Parser extends SimpleParser {
 				return null;
 			}
 			
-			t = getToken(LexerTokenType.WHITESPACE);
+			t = getToken(LexerTokenType.WHITESPACE, LexerTokenType.COMMENT);
 			
 			if (isOper(t)) {
 				return new OpNode(t.type, res, expr());
@@ -349,6 +377,9 @@ public class Parser extends SimpleParser {
 				unGetToken();
 				return res;
 			}
+		}
+		else {
+			_logger.logInfo("Was expecting a Simple() - got: " + t.toString());
 		}
 		
 		throw new SyntaxException("At bottom of Expr() - token is: " + t.toString());

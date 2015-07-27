@@ -81,6 +81,7 @@ public class CodeEditor extends JPanel {
 		
 		Parser p = new Parser(tokens);
 		p.pass();
+		p.pass();
 		
 		_logger.logInfo("Errors: " + p.errors());
 	}
