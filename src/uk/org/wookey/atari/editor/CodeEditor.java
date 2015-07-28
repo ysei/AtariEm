@@ -44,7 +44,7 @@ public class CodeEditor extends JPanel {
 		
 		JTextPane logPane = new JTextPane();
 		logPane.setBackground(Color.BLACK);
-		new Logger(logPane);
+		//new Logger(logPane);
 		
 		//Create a split pane with the two scroll panes in it.
 		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
@@ -72,16 +72,15 @@ public class CodeEditor extends JPanel {
 		
 		_logger.logInfo("Assembling...");
 		List<LexerToken> tokens = lex.lex(editor.getText());
-		
-		/*
-		for (LexerToken tok: tokens) {
+				
+		/*for (LexerToken tok: tokens) {
 			_logger.logInfo(tok.toString());
-		}
-		*/
+		}*/
 		
 		Parser p = new Parser(tokens);
 		p.pass();
 		p.pass();
+		p.dumpLabels();
 		
 		_logger.logInfo("Errors: " + p.errors());
 	}

@@ -16,5 +16,7 @@ public enum LexerTokenType {
 	COMMENT,
 	LSBOF,
 	MSBOF,
-	ATOM
+	ATOM,
+	EQUALS,
+	UNKNOWN
 }

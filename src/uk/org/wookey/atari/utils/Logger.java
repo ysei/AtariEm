@@ -21,8 +21,6 @@ public class Logger {
 	private SimpleAttributeSet _warnAttribs;
 	private SimpleAttributeSet _errAttribs;
 	
-	private ArrayList<String[]> _msgBuffer;
-	
 	public Logger(JTextPane log) {
 		initialise("");
 
@@ -50,14 +48,14 @@ public class Logger {
 			_logName = "[" + tag + "]:";
 		}
 		
+		/*
 		if (_out == null) {
 			try {
 				_out = new PrintWriter("debug.txt");
 			} catch (FileNotFoundException e) {
 			}
 		}
-		
-		_msgBuffer = new ArrayList<String[]>();
+		*/
 		
 		_labAttribs = new SimpleAttributeSet();
 		StyleConstants.setForeground(_labAttribs, Color.blue);
@@ -87,15 +85,6 @@ public class Logger {
 		}
 	
 		if (logPanes.size() > 0) {
-			if (_msgBuffer.size() > 0) {
-				for (int i=0; i<_msgBuffer.size(); i++) {
-					String bits[] = _msgBuffer.get(i);
-					append(bits[0], labAttribs);
-					append(bits[1], msgAttribs);
-				}
-				_msgBuffer.clear();
-			}
-			
 			append(_logName, labAttribs);
 			append(' ' + msg + '\n', msgAttribs);
 		}
@@ -104,9 +93,8 @@ public class Logger {
 			String item[] = new String[2];
 			item[0] = _logName;
 			item[1] = msg;
-			_msgBuffer.add(item);
 			
-			System.out.println(_logName + ' ' +msg);
+			System.out.println(_logName + ' ' + msg);
 		}		
 	}
 	

@@ -17,18 +17,14 @@ public class LabelTable {
 		labels = new Hashtable<String, Integer>();
 	}
 	
-	public void add(String label, int val) throws LabelExistsException {
+	public void add(String label, int val, boolean silentReplace) throws LabelExistsException {
 		// Do we already have a label with that name?
-		if (labels.containsKey(label)) {
+		if (labels.containsKey(label) && !silentReplace) {
 			throw new LabelExistsException("Label '" + label + "' already in table");
 		}
 		else {
 			labels.put(label, val);
 		}
-	}
-	
-	public void replace(String label, int val) {
-		labels.put(label, val);
 	}
 	
 	public boolean labelExists(String label) {

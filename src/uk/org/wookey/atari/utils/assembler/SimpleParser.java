@@ -2,6 +2,7 @@ package uk.org.wookey.atari.utils.assembler;
 
 import java.util.List;
 
+import uk.org.wookey.atari.exceptions.SyntaxException;
 import uk.org.wookey.atari.utils.Logger;
 import uk.org.wookey.atari.utils.lexer.LexerToken;
 import uk.org.wookey.atari.utils.lexer.LexerTokenType;
@@ -16,6 +17,38 @@ public class SimpleParser {
 		tokens = tokList;
 		tokenIndex = 0;
 	}
+
+	protected boolean tokensAre(LexerTokenType... expected) {
+		return expect(1, expected);
+	}
+	
+	protected LexerToken skipUpto(LexerTokenType expected, LexerTokenType... uninteresting) throws SyntaxException {
+		if (currentToken().type == expected) {
+			return currentToken();
+		}
+		
+		LexerToken t = getToken(uninteresting);
+		
+		if ((t.type == expected) || (t.type == LexerTokenType.EOF)) {
+			return t;
+		}
+		
+		throw new SyntaxException("Unexpected token found: " + t.toString());
+	}
+	
+	protected boolean expect(int lookAhead, LexerTokenType... expected) {
+		for (LexerTokenType t: expected) {
+			LexerToken la = peekToken(lookAhead);
+			
+			if (t != la.type) {
+				return false;
+			}
+
+			lookAhead++;
+		}
+		
+		return true;
+	}
 	
 	protected void gobble(LexerTokenType type) {
 		LexerToken t = getToken();
@@ -29,12 +62,16 @@ public class SimpleParser {
 	}
 	
 	protected LexerToken peekToken() {
-		if (tokenIndex >= tokens.size()) {
+		return peekToken(1);
+	}
+	
+	protected LexerToken peekToken(int numAhead) {
+		if (tokenIndex+numAhead-1 >= tokens.size()) {
 			_logger.logInfo("Out of LexerTokens!");
 			return new LexerToken(LexerTokenType.EOF);
 		}
 		
-		return tokens.get(tokenIndex);
+		return tokens.get(tokenIndex+numAhead-1);
 	}
 	
 	protected LexerToken currentToken() {
@@ -78,5 +115,20 @@ public class SimpleParser {
 		}
 				
 		return t;
+	}
+	
+	protected LexerToken getToken(int skip) {
+		LexerToken res = currentToken();
+		
+		for (int i=0; i<skip; i++) {
+			res = getToken();
+			_logger.logSuccess("Got token: " + res.toString());
+		}
+		
+		return res;
+	}
+	
+	protected void rewindTokens() {
+		tokenIndex = 0;
 	}
 }

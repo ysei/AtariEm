@@ -11,55 +11,61 @@ import uk.org.wookey.atari.utils.Logger;
  */
 public class Lexer {
 	private final static Logger _logger = new Logger(Lexer.class.getName());
+	
+	private boolean startOfLine;
 
     public List<LexerToken> lex(String input) {
         List<LexerToken> result = new ArrayList<LexerToken>();
         int lineNum = 1;
         int col = 0;
         
+        startOfLine = true;
+        
         for (int i = 0; i < input.length(); ) {
         	col++;
         	//_logger.logInfo("Examining '" + input.charAt(i) + "'");
             switch (input.charAt(i)) {
             case '\n':
-                result.add(new LexerToken(LexerTokenType.EOL, lineNum, col));
+                add(new LexerToken(LexerTokenType.EOL, lineNum, col), result);
                 i++;
                 lineNum++;
                 col = 0;
+                startOfLine = true;
                 break;
                 
             case '(':
-                result.add(new LexerToken(LexerTokenType.LPAREN, lineNum, col));
+                add(new LexerToken(LexerTokenType.LPAREN, lineNum, col), result);
+               
                 i++;
                 break;
                 
             case ')':
-                result.add(new LexerToken(LexerTokenType.RPAREN, lineNum, col));
+                add(new LexerToken(LexerTokenType.RPAREN, lineNum, col), result);
                 i++;
                 break;
                 
             case ',':
-                result.add(new LexerToken(LexerTokenType.COMMA, lineNum, col));
+                add(new LexerToken(LexerTokenType.COMMA, lineNum, col), result);
                 i++;
                 break;
                 
             case '+':
-                result.add(new LexerToken(LexerTokenType.PLUS, lineNum, col));
+                add(new LexerToken(LexerTokenType.PLUS, lineNum, col), result);
                 i++;
                 break;
                 
             case '-':
-                result.add(new LexerToken(LexerTokenType.MINUS, lineNum, col));
+                add(new LexerToken(LexerTokenType.MINUS, lineNum, col), result);
                 i++;
                 break;
                 
             case '<':
-                result.add(new LexerToken(LexerTokenType.LSBOF, lineNum, col));
+                add(new LexerToken(LexerTokenType.LSBOF, lineNum, col), result);
                 i++;
                 break;
                 
             case '>':
-                result.add(new LexerToken(LexerTokenType.MSBOF, lineNum, col));
+                add(new LexerToken(LexerTokenType.MSBOF, lineNum, col), result);
                 i++;
                 break;
                 
@@ -68,7 +74,7 @@ public class Lexer {
         		String num = getHexNumber(input, i+1);
         		i += num.length() + 1;
         		col += num.length() + 1;
-        		result.add(new LexerToken(LexerTokenType.HEX, num, lineNum, col));          	
+        		add(new LexerToken(LexerTokenType.HEX, num, lineNum, col), result);          	
         	}
             break;
             
@@ -78,12 +84,17 @@ public class Lexer {
         		_logger.logInfo("Bin: " + num);
         		i += num.length() + 1;
         		col += num.length() + 1;
-        		result.add(new LexerToken(LexerTokenType.BINARY, num, lineNum, col));          	
+        		add(new LexerToken(LexerTokenType.BINARY, num, lineNum, col), result);          	
         	}
             break;
             
             case '#':
-                result.add(new LexerToken(LexerTokenType.HASH, lineNum, col));
+                add(new LexerToken(LexerTokenType.HASH, lineNum, col), result);
+                i++;
+                break;
+                
+            case '=':
+                add(new LexerToken(LexerTokenType.EQUALS, lineNum, col), result);
                 i++;
                 break;
                 
@@ -94,7 +105,7 @@ public class Lexer {
             	
             	comment = comment.substring(1);
             	
-            	result.add(new LexerToken(LexerTokenType.COMMENT, comment, lineNum, col));
+            	add(new LexerToken(LexerTokenType.COMMENT, comment, lineNum, col), result);
             	break;
             	
             case ' ':
@@ -102,7 +113,7 @@ public class Lexer {
             	String white = gobbleWhitespace(input, i);
             	i += white.length();
             	col += white.length();
-            	result.add(new LexerToken(LexerTokenType.WHITESPACE, white, lineNum, col));
+            	add(new LexerToken(LexerTokenType.WHITESPACE, white, lineNum, col), result);
             	break;
             	
             case '0': case '1': case '2': case '3': case '4':
@@ -111,15 +122,22 @@ public class Lexer {
             		String num = getNumber(input, i);
             		i += num.length();
             		col += num.length();
-            		result.add(new LexerToken(LexerTokenType.DECIMAL, num, lineNum, col));
+            		add(new LexerToken(LexerTokenType.DECIMAL, num, lineNum, col), result);
             	}
                 break;
                 
             default:
-            	String atom = getAtom(input, i);
-            	i += atom.length();
-            	col += atom.length();
-            	result.add(new LexerToken(LexerTokenType.ATOM, atom, lineNum, col));
+            	if (isAtomChar(input.charAt(i))) {
+            		String atom = getAtom(input, i);
+            		i += atom.length();
+            		col += atom.length();
+            		add(new LexerToken(LexerTokenType.ATOM, atom, lineNum, col), result);
+            	}
+            	else {
+            		add(new LexerToken(LexerTokenType.UNKNOWN, input.substring(i,  i), lineNum, col), result);
+            		i++;
+            		col++;
+            	}
                 break;
             }
         }
@@ -127,10 +145,26 @@ public class Lexer {
         // Make sure that the last token is an EOL token
         LexerToken lastTok = result.get(result.size()-1);
         if (lastTok.type != LexerTokenType.EOL) {
-            result.add(new LexerToken(LexerTokenType.EOL, "<EOL>"));
+            add(new LexerToken(LexerTokenType.EOL, "<EOL>"), result);
         }
         
         return result;
+    }
+    
+    private void add(LexerToken t, List<LexerToken> result) {
+    	if ((t.type == LexerTokenType.WHITESPACE) && !startOfLine) {
+    		return;
+    	}
+    	
+    	startOfLine = false;
+
+    	if (t.type == LexerTokenType.COMMENT) {
+    		return;
+    	}
+    	
+    	_logger.logInfo("Add tok " + t.toString());
+    	
+    	result.add(t);
     }
 
     private String getAtom(String s, int i) {
@@ -216,7 +250,23 @@ public class Lexer {
     		return false;
     	}
 
-    	return true;
+    	if ((c >= 'a') && (c <= 'z')) {
+    		return true;
+    	}
+
+    	if ((c >= 'A') && (c <= 'Z')) {
+    		return true;
+    	}
+
+    	if (isDecimalChar(c)) {
+    		return true;
+    	}
+    	
+    	if (c == '_' || c == '.' || c == '*' || c == ':') {
+    		return true;
+    	}
+    	
+    	return false;
     }
     
     private boolean isDecimalChar(char c) {
