@@ -14,6 +14,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextPane;
 
 import uk.org.wookey.atari.utils.Logger;
+import uk.org.wookey.atari.utils.assembler.Assembler;
 import uk.org.wookey.atari.utils.assembler.Parser;
 import uk.org.wookey.atari.utils.lexer.Lexer;
 import uk.org.wookey.atari.utils.lexer.LexerToken;
@@ -68,20 +69,6 @@ public class CodeEditor extends JPanel {
 	}
 	
 	private void doAssemble() {
-		Lexer lex = new Lexer();
-		
-		_logger.logInfo("Assembling...");
-		List<LexerToken> tokens = lex.lex(editor.getText());
-				
-		/*for (LexerToken tok: tokens) {
-			_logger.logInfo(tok.toString());
-		}*/
-		
-		Parser p = new Parser(tokens);
-		p.pass();
-		p.pass();
-		p.dumpLabels();
-		
-		_logger.logInfo("Errors: " + p.errors());
+		Assembler asm = new Assembler(editor.getText());	
 	}
 }

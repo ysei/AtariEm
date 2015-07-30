@@ -162,7 +162,7 @@ public class Lexer {
     		return;
     	}
     	
-    	_logger.logInfo("Add tok " + t.toString());
+    	//_logger.logInfo("Add tok " + t.toString());
     	
     	result.add(t);
     }

@@ -2,13 +2,14 @@ package uk.org.wookey.atari.utils.assembler;
 
 import java.util.List;
 
+import uk.org.wookey.atari.exceptions.EOFException;
 import uk.org.wookey.atari.exceptions.SyntaxException;
 import uk.org.wookey.atari.utils.Logger;
 import uk.org.wookey.atari.utils.lexer.LexerToken;
 import uk.org.wookey.atari.utils.lexer.LexerTokenType;
 
 public class SimpleParser {
-	private final static Logger _logger = new Logger(Parser.class.getName());
+	private final static Logger _logger = new Logger("SimpleParser");
 
 	private List<LexerToken> tokens;
 	private int tokenIndex;
@@ -18,49 +19,10 @@ public class SimpleParser {
 		tokenIndex = 0;
 	}
 
-	protected boolean tokensAre(LexerTokenType... expected) {
-		return expect(1, expected);
+	protected void rewindTokens() {
+		tokenIndex = 0;
 	}
-	
-	protected LexerToken skipUpto(LexerTokenType expected, LexerTokenType... uninteresting) throws SyntaxException {
-		if (currentToken().type == expected) {
-			return currentToken();
-		}
-		
-		LexerToken t = getToken(uninteresting);
-		
-		if ((t.type == expected) || (t.type == LexerTokenType.EOF)) {
-			return t;
-		}
-		
-		throw new SyntaxException("Unexpected token found: " + t.toString());
-	}
-	
-	protected boolean expect(int lookAhead, LexerTokenType... expected) {
-		for (LexerTokenType t: expected) {
-			LexerToken la = peekToken(lookAhead);
-			
-			if (t != la.type) {
-				return false;
-			}
 
-			lookAhead++;
-		}
-		
-		return true;
-	}
-	
-	protected void gobble(LexerTokenType type) {
-		LexerToken t = getToken();
-		
-		while (t.type != type) {
-			t = getToken();
-			if (t.type == LexerTokenType.EOF) {
-				_logger.logError("Unexpected EOF while gobbling up to " + type);
-			}
-		}
-	}
-	
 	protected LexerToken peekToken() {
 		return peekToken(1);
 	}
@@ -83,6 +45,28 @@ public class SimpleParser {
 		return tokens.get(tokenIndex-1);
 	}
 
+	protected LexerToken getToken() throws EOFException {
+		if (tokenIndex >= tokens.size()) {
+			throw new EOFException("Ran out of tokens");
+		}
+			
+		LexerToken t = tokens.get(tokenIndex);
+		tokenIndex++;
+				
+		return t;
+	}
+	
+	protected LexerToken getToken(int skip) throws EOFException {
+		LexerToken res = currentToken();
+		
+		for (int i=0; i<skip; i++) {
+			res = getToken();
+			//_logger.logSuccess("Got token: " + res.toString());
+		}
+		
+		return res;
+	}
+	
 	protected boolean unGetToken() {
 		if (tokenIndex == 0) {
 			_logger.logError("Call to unGetToken() but no token to unget!");
@@ -93,42 +77,69 @@ public class SimpleParser {
 		return true;
 	}
 	
-	protected LexerToken getToken(LexerTokenType... ignoreTokens) {
-		boolean skipping = true;
-		LexerToken t = null;
-		
-		while (skipping) {
-			if (tokenIndex >= tokens.size()) {
-				_logger.logInfo("Out of LexerTokens!");
-				return new LexerToken(LexerTokenType.EOF);
-			}
-			
-			t = tokens.get(tokenIndex);
-			tokenIndex++;
-			
-			skipping = false;
-			for (LexerTokenType skip: ignoreTokens) {
-				if (t.type == skip) {
-					skipping = true;
-				}
-			}
-		}
-				
-		return t;
-	}
-	
-	protected LexerToken getToken(int skip) {
-		LexerToken res = currentToken();
-		
-		for (int i=0; i<skip; i++) {
-			res = getToken();
-			_logger.logSuccess("Got token: " + res.toString());
+	protected LexerToken skipTo(LexerTokenType wanted) throws EOFException {
+		if (currentToken().type == wanted) {
+			return currentToken();
 		}
 		
-		return res;
+		LexerToken t = getToken();
+		
+		while (true) {
+			if (t.type == wanted) {
+				return t;
+			}
+			else if (t.type == LexerTokenType.EOF) {
+				throw new EOFException("Hit EOF while skipping to " + wanted.toString());
+			}
+
+			t = getToken();
+		}
 	}
 	
-	protected void rewindTokens() {
-		tokenIndex = 0;
+	protected void expectEOL(String exceptionMessage) throws SyntaxException {
+		if (currentToken().type != LexerTokenType.EOL) {
+			throw new SyntaxException(exceptionMessage + " [" + currentToken().toString() + "]");
+		}
+	}
+	
+	protected boolean tokensAre(LexerTokenType... expected) {
+		return expect(0, expected);
+	}
+	
+	protected boolean expect(int lookAhead, LexerTokenType... expected) {
+		for (LexerTokenType t: expected) {
+			LexerToken la = peekToken(lookAhead);
+			
+			//_logger.logInfo("Looking for: " + t.toString() + ", got " + la.toString());
+			
+			if (t != la.type) {
+				return false;
+			}
+
+			lookAhead++;
+		}
+		
+		return true;
+	}
+	
+	protected void lookAround() {
+		int start = tokenIndex - 5;
+		int end = tokenIndex + 8;
+		
+		if (start < 0) {
+			start = 0;
+		}
+		
+		if (end > tokens.size()) {
+			end = tokens.size() - 1;
+		}
+		
+		for (int i=start; i<end; i++) {
+			if (i == tokenIndex) {
+				System.out.print("*");
+			}
+			System.out.print(tokens.get(i).toString() + "   ");
+		}
+		System.out.println();
 	}
 }

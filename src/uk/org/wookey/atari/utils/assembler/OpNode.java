@@ -29,17 +29,23 @@ public class OpNode extends ExprNode {
 		rhs = r;
 	}
 	
-	public int eval() {
+	public int eval() throws NoValueException {
+		int res = 0;
+		
 		switch (op) {
 		case '+':
-			return lhs.eval() + rhs.eval();
+			res = lhs.eval() + rhs.eval();
+			break;
 			
 		case '-':
-			return lhs.eval() - rhs.eval();
+			res = lhs.eval() - rhs.eval();
+			break;
+			
+		default:
+			throw new NoValueException("Unknown operator '" + op + "' when evaluating expression");
 		}
-		
-		_logger.logError("Unknown operator '" + op + "' when evaluating expression");
-		return 0;
+
+		return res;
 	}
 	
 	

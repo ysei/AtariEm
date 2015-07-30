@@ -385,7 +385,7 @@ public interface InstructionTable {
     	
     	new Instruction("sta", -1, -1, -1, 0x85, 0x95, -1, -1, 0x8d, 0x9d, 0x99, -1, 0x81, 0x91),
     	new Instruction("stx", -1, -1, -1, 0x86, -1, 0x96, -1, 0x8e, -1, -1, -1, -1, -1),
-    	new Instruction("sty", -1, -1, -1, 0x84, -1, 0x94, 0x8c, -1, -1, -1, -1, -1, -1),
+    	new Instruction("sty", -1, -1, -1, 0x84, 0x94, -1, -1, 0x8c, -1, -1, -1, -1, -1),
 
     	new Instruction("tax", 0xaa, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1),
     	new Instruction("tay", 0xa8, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1),

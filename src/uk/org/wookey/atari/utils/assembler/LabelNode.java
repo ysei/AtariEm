@@ -17,14 +17,14 @@ public class LabelNode extends ExprNode {
 		labels = t;
 	}
 	
-	public int eval() {
+	public int eval() throws NoValueException {
 		int val = 0;
 		try {
 			val = labels.get(labelName);
-			_logger.logInfo("Label '" + labelName + "' => " + val);
+			//_logger.logInfo("Label '" + labelName + "' => " + val);
 		} catch (NosuchLabelException e) {
-			_logger.logError("No such label '" + labelName + "' assuming value of 0");
-			val = 0;
+			//_logger.logError("No such label '" + labelName + "' assuming value of 0");
+			throw new NoValueException("Unknown label '" + labelName + "' in expression");
 		}
 		
 		return val;

@@ -8,7 +8,7 @@ public class ExprNode {
 		lhs = rhs = null;
 	}
 	
-	public int eval() {
+	public int eval() throws NoValueException {
 		return 0;
 	}
 	

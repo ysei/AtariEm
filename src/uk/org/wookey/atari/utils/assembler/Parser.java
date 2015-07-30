@@ -9,8 +9,10 @@ import com.loomcom.symon.InstructionTable;
 
 import uk.org.wookey.atari.exceptions.EOFException;
 import uk.org.wookey.atari.exceptions.LabelExistsException;
+import uk.org.wookey.atari.exceptions.NosuchLabelException;
 import uk.org.wookey.atari.exceptions.RuntimeAssemblyException;
 import uk.org.wookey.atari.exceptions.SyntaxException;
+import uk.org.wookey.atari.utils.Formatter;
 import uk.org.wookey.atari.utils.LabelTable;
 import uk.org.wookey.atari.utils.Logger;
 import uk.org.wookey.atari.utils.lexer.LexerToken;
@@ -25,11 +27,13 @@ public class Parser extends SimpleParser {
 		".word", ".byte", ".byt"
 	}; 
 	
-	private int errors;	
 	private int pc;
 	
 	private int passNumber;
+	private boolean generatingCode;
 	private boolean silentReplace;
+	private int numHardErrors;
+	private int numSoftErrors;
 	
 	private Hashtable<String, Integer> instructions;
 	
@@ -38,7 +42,8 @@ public class Parser extends SimpleParser {
 	public Parser(List<LexerToken> tokens) {
 		super(tokens);
 
-		errors = 0;
+		numHardErrors = 0;
+		numSoftErrors = 0;
 		pc = 0;
 		
 		labels = new LabelTable();
@@ -46,6 +51,7 @@ public class Parser extends SimpleParser {
 		
 		passNumber = 0;
 		silentReplace = false;
+		generatingCode = false;
 		
 		for (String op: InstructionTable.opcodeNames) {
 			if (op != null) {
@@ -58,7 +64,15 @@ public class Parser extends SimpleParser {
 		}
 	}
 	
+	public void pass(boolean generate) {
+		generatingCode = generate;
+		
+		pass();
+	}
+	
 	public void pass() {
+		boolean eof = false;
+		
 		passNumber++;
 		rewindTokens();
 		
@@ -67,89 +81,84 @@ public class Parser extends SimpleParser {
 		silentReplace = (passNumber > 1);
 		
 		LexerToken t = peekToken();
-		errors = 0;
 		pc = 0;
 		
 		try {
-			while (t.type != LexerTokenType.EOF) {
+			while (!eof) {
 				try {
 					parseLine();
 				} catch (SyntaxException e) {
 					t = currentToken();
 					
 					_logger.logError("Syntax error on line " + t.lineNumber + ", column " + t.column + ": " + e.getMessage(), e);
-					if (t.type != LexerTokenType.EOL) {
-						gobble(LexerTokenType.EOL);
-					}
+					skipTo(LexerTokenType.EOL);
 					
-					errors++;
+					numHardErrors++;
 				} catch (RuntimeAssemblyException e) {
 					t = currentToken();
 					
 					_logger.logError("Runtime error on line " + t.lineNumber + ", column " + t.column + ": " + e.getMessage(), e);
-					if (t.type != LexerTokenType.EOL) {
-						gobble(LexerTokenType.EOL);
-					}
+					skipTo(LexerTokenType.EOL);
 					
-					errors++;
+					numSoftErrors++;
 				}
 
 				t = peekToken();
+				if (t.type == LexerTokenType.EOF) {
+					eof = true;
+				}
 			}
 		}
 		catch (EOFException e) {
-			_logger.logInfo("End of file exception.");
+			_logger.logInfo("End of file.");
 		}
 	}
 	
 	public void parseLine() throws SyntaxException, EOFException, RuntimeAssemblyException {
 		LexerToken t = getToken();
 		
-		if (t.type == LexerTokenType.EOF) {
-			throw new EOFException();
-		}
-		
 		if (t.type == LexerTokenType.EOL) {
 			return;
 		}
-
-		if (t.type == LexerTokenType.WHITESPACE) {
+		else if (t.type == LexerTokenType.WHITESPACE) {
 			instructionOrDirective(getToken());
 		}
 		else if (t.type == LexerTokenType.ATOM) {
 			instructionOrDirective(getToken(), t);
 		}
 		else {
-			errors++;
 			throw new SyntaxException("Unexpected token: " + t.toString());
 		}
 		
-		gobble(LexerTokenType.EOL);
+		expectEOL("Unexpected token found - was expecting EOL");
 	}
 	
-	public void instructionOrDirective(LexerToken t) throws SyntaxException, RuntimeAssemblyException {
+	public void instructionOrDirective(LexerToken t) throws SyntaxException, RuntimeAssemblyException, EOFException {
 		instructionOrDirective(t, null);	
 	}
 
-	public void instructionOrDirective(LexerToken t, LexerToken label) throws SyntaxException, RuntimeAssemblyException {
-		if (isInstruction(t)) {
-			instruction(t, label);
-		}
-		else if (isDirective(t) || (t.type == LexerTokenType.EQUALS)) {
+	public void instructionOrDirective(LexerToken t, LexerToken label) throws SyntaxException, RuntimeAssemblyException, EOFException {
+		if (isDirective(t) || (t.type == LexerTokenType.EQUALS)) {
 			directive(t, label);	
 		}
 		else if (t.type == LexerTokenType.EOL) {
-			// just another blank line;
+			// just a blank line - or maybe a label all by itself
+			if (label != null) {
+				try {
+					labels.add(label.value, pc, silentReplace);
+				} catch (LabelExistsException e) {
+					throw new RuntimeAssemblyException("Label '" + label.value + "' already defined");
+				}				
+			}
 			return;
 		}
 		else {
-			_logger.logInfo("Unexpected token: " + t.toString());
-			t = skipUpto(LexerTokenType.EOL, LexerTokenType.COMMENT, LexerTokenType.WHITESPACE);
-			errors++;
+			// Assume its an instruction
+			instruction(t, label);
 		}
 	}
 	
-	private void instruction(LexerToken instruction, LexerToken label) throws SyntaxException, RuntimeAssemblyException {
+	private void instruction(LexerToken instruction, LexerToken label) throws SyntaxException, RuntimeAssemblyException, EOFException {
 		if (label != null) {
 			try {
 				labels.add(label.value, pc, silentReplace);
@@ -158,15 +167,15 @@ public class Parser extends SimpleParser {
 			}
 		}
 		
-		_logger.logInfo("Instruction: " + instruction.value);
+		//_logger.logInfo("Instruction: " + instruction.value);
 		
 		Instruction inst = lookup(instruction.value);
 		if (inst == null) {
-			throw new SyntaxException("Unknown instruction '" + instruction.value + "'");
+			throw new SyntaxException("Unknown instruction or directive '" + instruction.value + "'");
 		}
 
 		// Make some simple choices about what sort of instruction it is
-		LexerToken t = getToken(LexerTokenType.COMMENT, LexerTokenType.WHITESPACE);
+		LexerToken t = getToken();
 		
 		if (t.type == LexerTokenType.EOL) {
 			implicitOrAccumulatorInstruction(inst);
@@ -191,21 +200,18 @@ public class Parser extends SimpleParser {
 					
 					emit(inst.accumulator);
 					
-					getToken();
+					getToken(2);
 				}
 				else {		
 					unGetToken();
 					
 					int val = evalExp();
 					
-					LexerToken after = peekToken();
-					_logger.logSuccess("Token after expression: " + after.toString());
-					
 					if (tokensAre(LexerTokenType.COMMA, LexerTokenType.ATOM)) {
-						LexerToken atom = peekToken(2);
+						LexerToken atom = peekToken();
 						
 						if (atom.value.equalsIgnoreCase("x")) {
-							_logger.logInfo("X-VAL=" + val);
+							//_logger.logInfo("X-VAL=" + val);
 							if (val > 255) {
 								// Non zero page
 								if (inst.absoluteX == -1) {
@@ -231,7 +237,7 @@ public class Parser extends SimpleParser {
 							t = getToken(2);
 						}
 						else if (atom.value.equalsIgnoreCase("y")) {
-							_logger.logInfo("Y-VAL=" + val);
+							//_logger.logInfo("Y-VAL=" + val);
 							if (val > 255) {
 								// Non zero page
 								if (inst.absoluteY == -1) {
@@ -258,8 +264,6 @@ public class Parser extends SimpleParser {
 						}
 					}
 					else {
-						_logger.logInfo("VAL=" + val);
-
 						if (val > 255) {
 							// absolute
 							if (inst.absolute == -1) {
@@ -285,11 +289,6 @@ public class Parser extends SimpleParser {
 				}
 			}
 		}
-		
-		t = skipUpto(LexerTokenType.EOL, LexerTokenType.COMMENT, LexerTokenType.WHITESPACE);
-/*		if (currentToken().type != LexerTokenType.EOL) {
-			gobble(LexerTokenType.EOL);
-		} */
 	}
 	
 	private void implicitOrAccumulatorInstruction(Instruction inst) throws SyntaxException {
@@ -305,7 +304,7 @@ public class Parser extends SimpleParser {
 		}
 	}
 	
-	private void immediateInstruction(Instruction inst) throws SyntaxException, RuntimeAssemblyException {
+	private void immediateInstruction(Instruction inst) throws SyntaxException, RuntimeAssemblyException, EOFException {
 		if (inst.immediate == -1) {
 			throw new SyntaxException("Immediate mode not supported by this instruction");
 		}
@@ -318,24 +317,33 @@ public class Parser extends SimpleParser {
 		emit(inst.immediate, val);
 	}
 	
-	private void relativeInstruction(Instruction inst) throws SyntaxException {
-		_logger.logSuccess("RELATIVE. Token is " + currentToken().toString());
+	private void relativeInstruction(Instruction inst) throws SyntaxException, EOFException, RuntimeAssemblyException {
 		unGetToken();
 		
 		int val = evalExp();
-
-		int displacement = val - pc;
-		emit(inst.relative, displacement);
+		int delta = 0;
+		int nextpc = pc+2;
+		
+		//_logger.logInfo("RELATIVE. PC=" + pc + ", VAL=" + val);
+		
+		if (val > nextpc) {
+			delta = val - nextpc;
+			//_logger.logInfo("Forwards displacement: " + delta);
+		}
+		else {
+			delta = -(nextpc - val);
+			//_logger.logInfo("Backwards displacement: " + delta);
+		}
+		
+		emit(inst.relative, delta);
 	}
 	
-	private void indirectTypeInstruction(Instruction inst) throws SyntaxException, RuntimeAssemblyException {
-		_logger.logWarn("An indirect instruction of some sort");
-		
+	private void indirectTypeInstruction(Instruction inst) throws SyntaxException, RuntimeAssemblyException, EOFException {
 		int val = evalExp();
-		LexerToken t = peekToken();
+		LexerToken t = currentToken();
 		
 		if (tokensAre(LexerTokenType.COMMA, LexerTokenType.ATOM, LexerTokenType.RPAREN)) {
-			LexerToken atom = peekToken(2);
+			LexerToken atom = peekToken(1);
 			
 			if (!atom.value.equalsIgnoreCase("x")) {
 				throw new SyntaxException("Unknown indirection");
@@ -355,7 +363,7 @@ public class Parser extends SimpleParser {
 			getToken(3);		
 		}
 		else if (tokensAre(LexerTokenType.RPAREN, LexerTokenType.COMMA, LexerTokenType.ATOM)) {
-			LexerToken atom = peekToken(3);
+			LexerToken atom = peekToken(2);
 			
 			if (!atom.value.equalsIgnoreCase("y")) {
 				throw new SyntaxException("Unknown indirection");
@@ -384,13 +392,11 @@ public class Parser extends SimpleParser {
 			getToken();
 		}
 		else {
-			_logger.logError("unexpected token: " + t.toString());
+			throw new SyntaxException("unexpected token: " + t.toString());
 		}
-		
-		t = skipUpto(LexerTokenType.EOL, LexerTokenType.COMMENT, LexerTokenType.WHITESPACE);
 	}
 	
-	private void directive(LexerToken directive, LexerToken label) throws SyntaxException, RuntimeAssemblyException {
+	private void directive(LexerToken directive, LexerToken label) throws SyntaxException, RuntimeAssemblyException, EOFException {
 		if (directive.value.equalsIgnoreCase("org")) {
 			orgDirective(directive.value);
 		}
@@ -401,40 +407,36 @@ public class Parser extends SimpleParser {
 			equalsDirective(directive.value, label);
 		}
 		else if (directive.value.equalsIgnoreCase(".byte") || directive.value.equalsIgnoreCase(".byt")) {
-			byteDirective(directive.value);
+			byteDirective(directive.value, label);
 		}
 		else if (directive.value.equalsIgnoreCase(".word")) {
-			wordDirective(directive.value);
+			wordDirective(directive.value, label);
 		}
 		else {
 			throw new SyntaxException("unimplemented directive: '" + directive.value.toLowerCase() + "'");
 		}
-		
-		LexerToken t = skipUpto(LexerTokenType.EOL, LexerTokenType.COMMENT, LexerTokenType.WHITESPACE);
 	}
 	
-	private void processorDirective(String dName) throws SyntaxException {
-		LexerToken t = getToken(LexerTokenType.WHITESPACE);
+	private void processorDirective(String dName) throws SyntaxException, EOFException {
+		LexerToken t = getToken();
 		_logger.logInfo("PROCESSOR set to " + t.value);
 
 		if ((t.type != LexerTokenType.ATOM) || (!t.value.equals("6502"))) {
 			throw new SyntaxException("Unknown processor type: " + t.value);
 		}
 		
-		t = getToken(LexerTokenType.COMMENT, LexerTokenType.WHITESPACE);
+		t = getToken();
 		if (t.type != LexerTokenType.EOL) {
 			throw new SyntaxException("Badly formed PROCESSOR directive");
 		}
 	}
 	
-	private void equalsDirective(String dName, LexerToken label) throws SyntaxException, RuntimeAssemblyException {
+	private void equalsDirective(String dName, LexerToken label) throws SyntaxException, RuntimeAssemblyException, EOFException {
 		if (label == null) {
 			throw new SyntaxException(dName + " directive without label");
 		}
 		
 		int val = evalExp();
-		
-		_logger.logSuccess("EQU: " + label.value + "=" + val);
 		
 		if (label.value.equals("*")) {
 			pc = val;
@@ -446,22 +448,28 @@ public class Parser extends SimpleParser {
 				throw new RuntimeAssemblyException("Label '" + label.value + "' already defined");
 			}
 		}
-
-		LexerToken t = skipUpto(LexerTokenType.EOL, LexerTokenType.COMMENT, LexerTokenType.WHITESPACE);
 	}
 	
-	private void orgDirective(String dName) throws SyntaxException {
+	private void orgDirective(String dName) throws SyntaxException, EOFException, RuntimeAssemblyException {
 		pc = evalExp();
-		_logger.logSuccess("ORG set to " + pc);
 		
-		LexerToken t = getToken(LexerTokenType.COMMENT, LexerTokenType.WHITESPACE);
+		LexerToken t = getToken();
 		if (t.type != LexerTokenType.EOL) {
 			throw new SyntaxException("Unexpected token found: " + t.toString());
 		}
 	}
 	
-	private void byteDirective(String dName) throws SyntaxException, RuntimeAssemblyException {
+	private void byteDirective(String dName, LexerToken label) throws SyntaxException, RuntimeAssemblyException, EOFException {
 		boolean scanning = true;
+		
+		//lookAround();
+		if (label != null) {
+			try {
+				labels.add(label.value, pc, silentReplace);
+			} catch (LabelExistsException e) {
+				throw new RuntimeAssemblyException("Label '" + label.value + "' already defined");
+			}
+		}
 		
 		while (scanning) {
 			int byt = evalExp();
@@ -472,20 +480,25 @@ public class Parser extends SimpleParser {
 		
 			emit(byt);
 		
-			LexerToken t = getToken(LexerTokenType.COMMENT, LexerTokenType.WHITESPACE);
-			
-			if (t.type != LexerTokenType.COMMA) {
+			//lookAround();
+			if (currentToken().type != LexerTokenType.COMMA) {
 				scanning = false;
 			}
 		}
 		
-		if (currentToken().type != LexerTokenType.EOL) {
-			throw new SyntaxException("Unexpected token found: " + currentToken().toString());
-		}
+		//lookAround();
 	}
 
-	private void wordDirective(String dName) throws SyntaxException, RuntimeAssemblyException {
+	private void wordDirective(String dName, LexerToken label) throws SyntaxException, RuntimeAssemblyException, EOFException {
 		boolean scanning = true;
+		
+		if (label != null) {
+			try {
+				labels.add(label.value, pc, silentReplace);
+			} catch (LabelExistsException e) {
+				throw new RuntimeAssemblyException("Label '" + label.value + "' already defined");
+			}
+		}
 		
 		while (scanning) {
 			int wrd = evalExp();
@@ -496,20 +509,10 @@ public class Parser extends SimpleParser {
 		
 			emit(lsb(wrd), msb(wrd));
 		
-			LexerToken t = getToken(LexerTokenType.COMMENT, LexerTokenType.WHITESPACE);
-			
-			if (t.type != LexerTokenType.COMMA) {
+			if (currentToken().type != LexerTokenType.COMMA) {
 				scanning = false;
 			}
 		}
-		
-		if (currentToken().type != LexerTokenType.EOL) {
-			throw new SyntaxException("Unexpected token found: " + currentToken().toString());
-		}
-	}
-	
-	private boolean isInstruction(LexerToken t) {
-		return instructions.containsKey(t.value.toLowerCase());
 	}
 	
 	private boolean isDirective(LexerToken t) {
@@ -523,20 +526,37 @@ public class Parser extends SimpleParser {
 	}	
 	
 	public int errors() {
-		return errors;
+		return numHardErrors + numSoftErrors;
 	}
 	
-	private int evalExp() throws SyntaxException {
+	public int hardErrors() {
+		return numHardErrors;
+	}
+	
+	public int softErrors() {
+		return numSoftErrors;
+	}
+	
+	private int evalExp() throws SyntaxException, EOFException, RuntimeAssemblyException {
 		ExprNode exp = expr();
+		int res = 0;
 		
 		if (exp == null) {
 			throw new SyntaxException("Null (empty); expression");
 		}
 		
-		return exp.eval();
+		try {
+			res = exp.eval();
+		} catch (NoValueException e) {
+			if (generatingCode) {
+				throw new RuntimeAssemblyException(e.getMessage());
+			}
+		}
+		
+		return res;
 	}
 
-	private ExprNode expr() throws SyntaxException {
+	private ExprNode expr() throws SyntaxException, EOFException {
 		ExprNode res = null;
 		
 		LexerToken t = peekToken();
@@ -554,13 +574,12 @@ public class Parser extends SimpleParser {
 				return null;
 			}
 			
-			t = getToken(LexerTokenType.WHITESPACE, LexerTokenType.COMMENT);
+			t = getToken();
 			
 			if (isOper(t)) {
 				return new OpNode(t.type, res, expr());
 			}
 			else {
-				unGetToken();
 				return res;
 			}
 		}
@@ -571,7 +590,7 @@ public class Parser extends SimpleParser {
 		throw new SyntaxException("At bottom of Expr() - token is: " + t.toString());
 	}
 
-	private ExprNode simple() throws SyntaxException {
+	private ExprNode simple() throws SyntaxException, EOFException {
 		ExprNode exp = null;
 		
 		LexerToken t = getToken();
@@ -614,14 +633,15 @@ public class Parser extends SimpleParser {
 	}
 	
 	public void dumpLabels() {
-		Iterator<Map.Entry<String, Integer>> it = labels.getSet().iterator();
-
 		_logger.logInfo("Labels:");
 		
-		while (it.hasNext()) {
-			Map.Entry<String, Integer> entry = it.next();
-
-			_logger.logInfo(entry.getKey() + " -> " + Integer.toHexString(entry.getValue()));
+		for (String lab: labels.getSet()) {
+			try {
+				_logger.logInfo(lab + " -> " + Formatter.toHexString(labels.get(lab), 4));
+			} catch (NosuchLabelException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 	
@@ -639,7 +659,9 @@ public class Parser extends SimpleParser {
 		for (int b: bytes) {
 			b = b & 0xff;
 			
-			_logger.logSuccess(Integer.toHexString(pc) + ": " + Integer.toHexString(b));
+			if (generatingCode) {
+				//_logger.logSuccess(Integer.toHexString(pc) + ": " + Formatter.toHexString(b,  2));
+			}
 			pc++;
 		}
 	}

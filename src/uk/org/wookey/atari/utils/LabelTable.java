@@ -1,9 +1,8 @@
 package uk.org.wookey.atari.utils;
 
-import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.TreeMap;
 
 import uk.org.wookey.atari.exceptions.LabelExistsException;
 import uk.org.wookey.atari.exceptions.NosuchLabelException;
@@ -11,10 +10,10 @@ import uk.org.wookey.atari.exceptions.NosuchLabelException;
 public class LabelTable {
 	private final static Logger _logger = new Logger(LabelTable.class.getName());
 
-	Hashtable<String, Integer> labels;
+	TreeMap<String,Integer> labels;
 	
 	public LabelTable() {
-		labels = new Hashtable<String, Integer>();
+		labels = new TreeMap<String, Integer>();
 	}
 	
 	public void add(String label, int val, boolean silentReplace) throws LabelExistsException {
@@ -23,6 +22,7 @@ public class LabelTable {
 			throw new LabelExistsException("Label '" + label + "' already in table");
 		}
 		else {
+			//_logger.logInfo("add label '" + label + "'=" + val);
 			labels.put(label, val);
 		}
 	}
@@ -50,7 +50,7 @@ public class LabelTable {
 		return val;
 	}
 	
-	public Set<Entry<String, Integer>> getSet() {
-		return labels.entrySet();
+	public Set<String> getSet() {
+		return labels.keySet();
 	}
 }
