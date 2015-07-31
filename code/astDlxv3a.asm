@@ -92,6 +92,8 @@ VROM506A		= $506a
 VROM506B		= $506b
 VROM53BC		= $53bc
 VROM56F6		= $56f6
+VROM56F8		= $56f8
+VROM56F9		= $56f9
 
 RomBase         = $6000
 
@@ -2495,93 +2497,27 @@ L07278		.byt $9b, $64, $09, $02, $3d, $92
 			.byt $5c, $48, $52, $be, $0a, $0a, $64, $c5, $92, $0c
 
 
+			.byt $26, $b8, $50, $6a, $7c, $0c, $52, $74, $ec, $4d
+			.byt $c0, $a4, $ec, $0a, $8a, $d4, $ec, $0a, $64, $c5
+			.byt $92, $0d, $f2, $b8, $5a, $93, $4e, $69, $60, $4d
+			.byt $c0, $9d, $2c, $6c, $4a, $0d, $a6, $c1, $70, $48
+
+
+			.byt $68, $2d, $8a, $0d, $d2, $82, $4e, $4b
+			.byt $66, $91, $6c, $0c, $0a, $0c, $12, $c5
+			.byt $8b, $9d, $2c, $6c, $4a, $0d, $d8, $6a
+			.byt $60, $40, $00, $a6, $60, $b9, $6c, $0d
+			.byt $f0, $2d, $b1, $76, $52, $5c, $c2, $c2
+			.byt $6c, $8b, $64, $2a, $27, $18, $54, $69
+			.byt $d8, $28, $48, $0b, $b2, $4a, $e6, $b8
+			.byt $00, $18, $54, $69, $d8, $28, $46, $0b
+			.byt $b2, $4a, $e7, $20, $54, $69, $d8, $2d
+			.byt $c2, $18, $5c, $ca, $56, $98, $00, $3d
+			.byt $92, $43, $70, $9d, $c3, $20, $5c, $ca
+			.byt $56, $2d, $c2, $8b, $64, $6c, $67
 
 
 
-            rol $00B8         ; 7460 26 B8 
-L07462      bvc L074CE         ; 7462 50 6A 
-            .byt $7C	; 7464 7C 
-            .byt $0C	; 7465 0C 
-            .byt $52	; 7466 52 
-            .byt $74	; 7467 74 
-            cpx L0C04D         ; 7468 EC 4D C0 
-            ldy $00EC         ; 746B A4 EC 
-            asl                ; 746D 0A 
-            txa                ; 746E 8A 
-            .byt $D4	; 746F D4 
-            cpx L0640A         ; 7470 EC 0A 64 
-            cmp $0092         ; 7473 C5 92 
-            ora L0B8F2         ; 7475 0D F2 B8 
-            .byt $5A	; 7478 5A 
-L07479      .byt $93	; 7479 93 
-            lsr L06069         ; 747A 4E 69 60 
-            eor L09DC0         ; 747D 4D C0 9D 
-            bit $4A6C         ; 7480 2C 6C 4A 
-            ora L0C1A6         ; 7483 0D A6 C1 
-            bvs L074D0         ; 7486 70 48 
-            pla                ; 7488 68 
-            and L00D8A         ; 7489 2D 8A 0D 
-            .byt $D2	; 748C D2 
-            .byt $82	; 748D 82 
-            lsr L0663B         ; 748E 4E 3B 66 
-            sta ($006C),y     ; 7491 91 6C 
-            .byt $0C	; 7493 0C 
-            asl                ; 7494 0A 
-            .byt $0C	; 7495 0C 
-            .byt $12	; 7496 12 
-            cmp $008B         ; 7497 C5 8B 
-            sta L06C2C,x       ; 7499 9D 2C 6C 
-            lsr                ; 749C 4A 
-            ora L06AD8         ; 749D 0D D8 6A 
-            rts                ; 74A0 60 
-            rti                ; 74A1 40 
-            brk                ; 74A2 00 
-            ldx $0060         ; 74A3 A6 60 
-            lda L00D6C,y       ; 74A5 B9 6C 0D 
-            beq L074D7         ; 74A8 F0 2D 
-            lda ($0076),y     ; 74AA B1 76 
-            .byt $52	; 74AC 52 
-            .byt $5C	; 74AD 5C 
-            .byt $C2	; 74AE C2 
-            .byt $C2	; 74AF C2 
-            jmp (L0648B)       ; 74B0 6C 8B 64 
-            rol                ; 74B3 2A 
-            .byt $27	; 74B4 27 
-            clc                ; 74B5 18 
-            .byt $54	; 74B6 54 
-            adc #$D8           ; 74B7 69 D8 
-            plp                ; 74B9 28 
-            pha                ; 74BA 48 
-            .byt $0B	; 74BB 0B 
-            .byt $B2	; 74BC B2 
-            lsr                ; 74BD 4A 
-            inc $00B8         ; 74BE E6 B8 
-            brk                ; 74C0 00 
-            clc                ; 74C1 18 
-            .byt $54	; 74C2 54 
-            adc #$D8           ; 74C3 69 D8 
-            plp                ; 74C5 28 
-            lsr $000B         ; 74C6 46 0B 
-            .byt $B2	; 74C8 B2 
-            lsr                ; 74C9 4A 
-            .byt $E7	; 74CA E7 
-            jsr L06954         ; 74CB 20 54 69 
-L074CE      cld                ; 74CE D8 
-            and L018C2         ; 74CF 2D C2 18 
-            .byt $5C	; 74D2 5C 
-            dex                ; 74D3 CA 
-            lsr $0098,x       ; 74D4 56 98 
-            brk                ; 74D6 00 
-L074D7      and $4392,x       ; 74D7 3D 92 43 
-            bvs L07479         ; 74DA 70 9D 
-            .byt $C3	; 74DC C3 
-            jsr L0CA5C         ; 74DD 20 5C CA 
-            lsr $002D,x       ; 74E0 56 2D 
-            .byt $C2	; 74E2 C2 
-            .byt $8B	; 74E3 8B 
-            .byt $64	; 74E4 64 
-			.byt $6c, $67
-			
 			
 L074E7		bit $73
             bpl L07514         ; 74E9 10 29 
@@ -2684,162 +2620,48 @@ L075AB      ldx $0011         ; 75AB A6 11
             sta $023A,x       ; 75AD 9D 3A 02 
             rts                ; 75B0 60 
 L075B1      lda $02A5,y       ; 75B1 B9 A5 02 
-            cmp $02BE,x       ; 75B4 DD BE 02 
+            cmp $02BE,x       ; 75B4 DD BE 02
+
+
+; -------------------------------------------------------------------------------------------
+ 
 L075B7      lda $0263,y       ; 75B7 B9 63 02 
             sbc $027C,x       ; 75BA FD 7C 02 
             rts                ; 75BD 60 
-            .byt $1F	; 75BE 1F 
-            cpy $0009         ; 75BF C4 09 
-            bvs L075F0         ; 75C1 70 2D 
-            txs                ; 75C3 9A 
-            .byt $0B	; 75C4 0B 
-            .byt $64	; 75C5 64 
-            sec                ; 75C6 38 
-            brk                ; 75C7 00 
-L075C8      brk                ; 75C8 00 
-            brk                ; 75C9 00 
-            brk                ; 75CA 00 
-            brk                ; 75CB 00 
-            brk                ; 75CC 00 
-            brk                ; 75CD 00 
-L075CE      ora ($0008,x)     ; 75CE 01 08 
-            brk                ; 75D0 00 
-            brk                ; 75D1 00 
-            brk                ; 75D2 00 
-            brk                ; 75D3 00 
-            brk                ; 75D4 00 
-            brk                ; 75D5 00 
-            .byt $0F	; 75D6 0F 
-            php                ; 75D7 08 
-            brk                ; 75D8 00 
-            brk                ; 75D9 00 
-            brk                ; 75DA 00 
-            brk                ; 75DB 00 
-            asl $0021,x       ; 75DC 16 21 
-            brk                ; 75DE 00 
-            brk                ; 75DF 00 
-            brk                ; 75E0 00 
-            brk                ; 75E1 00 
-            .byt $2F	; 75E2 2F 
-            rol ScratchRam,x   ; 75E3 36 00 
-            brk                ; 75E5 00 
-            brk                ; 75E6 00 
-            brk                ; 75E7 00 
-            and $0044,x       ; 75E8 3D 44 00 
-            brk                ; 75EB 00 
-            brk                ; 75EC 00 
-            brk                ; 75ED 00 
-            brk                ; 75EE 00 
-            brk                ; 75EF 00 
-L075F0      brk                ; 75F0 00 
-            brk                ; 75F1 00 
-            brk                ; 75F2 00 
-            brk                ; 75F3 00 
-            brk                ; 75F4 00 
-            brk                ; 75F5 00 
-            .byt $4B	; 75F6 4B 
-            .byt $52	; 75F7 52 
-            brk                ; 75F8 00 
-            brk                ; 75F9 00 
-            brk                ; 75FA 00 
-            brk                ; 75FB 00 
-            plp                ; 75FC 28 
-            and (ScratchRam,x) ; 75FD 21 00 
-            brk                ; 75FF 00 
-            brk                ; 7600 00 
-            brk                ; 7601 00 
-            eor $0064,x       ; 7602 5D 64 00 
-            brk                ; 7605 00 
-            brk                ; 7606 00 
-            brk                ; 7607 00 
-            brk                ; 7608 00 
-            brk                ; 7609 00 
-            brk                ; 760A 00 
-            brk                ; 760B 00 
-            .byt $6F	; 760C 6F 
-            .byt $7A	; 760D 7A 
-            sta $007A         ; 760E 85 7A 
-            bcc L075B7         ; 7610 90 A5 
-            brk                ; 7612 00 
-            brk                ; 7613 00 
-            brk                ; 7614 00 
-            brk                ; 7615 00 
-            bcc L075CE         ; 7616 90 B6 
-            .byt $D3	; 7618 D3 
-            dec ScratchRam,x   ; 7619 DE 00 00 
-            brk                ; 761C 00 
-            brk                ; 761D 00 
-            brk                ; 761E 00 
-            brk                ; 761F 00 
-            brk                ; 7620 00 
-            brk                ; 7621 00 
-            brk                ; 7622 00 
-            brk                ; 7623 00 
-            brk                ; 7624 00 
-L07625      brk                ; 7625 00 
-            cmp ($00CC,x)     ; 7626 C1 CC 
-L07628      brk                ; 7628 00 
-L07629      ora ($0004,x)     ; 7629 01 04 
-L0762B      cpx #$03           ; 762B E0 03 
-            ora ScratchRam     ; 762D 05 00 
-            brk                ; 762F 00 
-            ora ($0004,x)     ; 7630 01 04 
-            tay                ; 7632 A8 
-            .byt $FF	; 7633 FF 
-            ora ScratchRam     ; 7634 05 00 
-            brk                ; 7636 00 
-L07637      ora ($0004,x)     ; 7637 01 04 
-            bne L0763E         ; 7639 D0 03 
-            ora ScratchRam     ; 763B 05 00 
-            brk                ; 763D 00 
-L0763E      .byt $7F	; 763E 7F 
-            ora ($0004,x)     ; 763F 01 04 
-            ora ($0010,x)     ; 7641 01 10 
-            ora ($0014,x)     ; 7643 01 14 
-            .byt $FF	; 7645 FF 
-            bpl L07648         ; 7646 10 00 
-L07648      brk                ; 7648 00 
-            .byt $7F	; 7649 7F 
-            jsr $00A2         ; 764A 20 A2 00 
-            ora (ScratchRam,x) ; 764D 01 00 
-            brk                ; 764F 00 
-            .byt $7F	; 7650 7F 
-            ora ($0010,x)     ; 7651 01 10 
-            ora ($0020,x)     ; 7653 01 20 
-            brk                ; 7655 00 
-            brk                ; 7656 00 
-            ora ($0002,x)     ; 7657 01 02 
-            .byt $0C	; 7659 0C 
-            ora ($0018,x)     ; 765A 01 18 
-            brk                ; 765C 00 
-            brk                ; 765D 00 
-            ora ($0010,x)     ; 765E 01 10 
-            ldy $00FF         ; 7660 A4 FF 
-            .byt $03	; 7662 03 
-            brk                ; 7663 00 
-            brk                ; 7664 00 
-            ora ($0001,x)     ; 7665 01 01 
-            .byt $04	; 7667 04 
-            ora ($0040,x)     ; 7668 01 40 
-            brk                ; 766A 00 
-            brk                ; 766B 00 
-            ora ($0010,x)     ; 766C 01 10 
-            ldy $00FF         ; 766E A4 FF 
-            .byt $04	; 7670 04 
-            brk                ; 7671 00 
-            brk                ; 7672 00 
-            ora ($00F0,x)     ; 7673 01 F0 
-            asl ScratchRam     ; 7675 06 00 
-            .byt $02,0,0	; 7677 02 00 00 
-            .byt $0F, $10, $A8	; 767A 0F 10 A8
-			.byt $00, $01, $10, $A0, $00
-			.byt $01, $00, $00, $01, $02
-			.byt $50, $01, $70, $00, $00 
-            .byt $07	; 768C 07
-			.byt $10, $a8, $00, $01, $10
-			.byt $a0, $00, $01, $00, $00
-			 
-            .byt $0C	; 7697 0C 
+
+			.byt $1f, $c4
+
+x7590		.byt $09, $70, $2d, $9a, $0b, $64, $38, $00
+			.byt $00, $00, $00, $00, $00, $00, $01, $08
+			.byt $00, $00, $00, $00, $00, $00, $0f, $08
+			.byt $00, $00, $00, $00, $16, $21, $00, $00
+x75b0		.byt $00, $00, $2f, $36, $00, $00, $00, $00 
+			.byt $3d, $44, $00, $00, $00, $00, $00, $00 
+			.byt $00, $00, $00, $00, $00, $00, $4b, $52
+			.byt $00, $00, $00, $00, $28, $21, $00, $00
+x75d0		.byt $00, $00, $5d, $64, $00, $00, $00, $00
+			.byt $00, $00, $00, $00, $6f, $7a, $85, $7a
+			.byt $90, $a5, $00, $00, $00, $00, $90, $b6
+			.byt $d3, $de, $00, $00, $00, $00, $00, $00 
+x75f0		.byt $00, $00, $00, $00, $00, $00, $c1, $cc
+			.byt $00, $01, $04, $e0, $03, $05, $00, $00
+x7600		.byt $01, $04, $a8, $ff, $05, $00, $00, $01
+			.byt $04, $d0, $03, $05, $00, $00, $7f, $01
+			.byt $04, $01, $10, $01, $14, $ff, $10, $00 
+			.byt $00, $7f, $20, $a2, $00, $01, $00, $00
+x7620		.byt $7f, $01, $10, $01, $20, $00, $00, $01
+			.byt $02, $0c, $01, $18, $00, $00, $01, $10
+			.byt $a4, $ff, $03, $00, $00, $01, $01, $04 
+			.byt $01, $40, $00, $00, $01, $10, $a4, $ff
+x7640		.byt $04, $00, $00, $01, $f0, $06, $00, $02
+			.byt $00, $00, $0f, $10, $a8, $00, $01, $10
+;			.byt $a0, $00, $01, $00, $00, $01, $02, $50
+x7650		.byt $a0, $00, $01, $00, $00, $01, $02, $50
+			.byt $01, $70, $00, $00, $07, $10, $a8, $00 
+x7660		.byt $01, $10, $a0, $00, $01, $00, $00, $0c	
+			
+			
+ 
             .byt $02	; 7698 02 
             asl                ; 7699 0A 
             ora ($0003,x)     ; 769A 01 03 
@@ -2880,6 +2702,9 @@ L07648      brk                ; 7648 00
             ora ($000C,x)     ; 76ED 01 0C 
             bmi L076F1         ; 76EF 30 00 
 L076F1      ora (ScratchRam,x) ; 76F1 01 00 
+
+
+; -------------------------------------------------------------------------------------------
             brk                ; 76F3 00 
             .byt $02	; 76F4 02 
             cpy #$A4           ; 76F5 C0 A4 
@@ -2910,96 +2735,44 @@ L07717      lda $0022         ; 7717 A5 22
 L0771C      txa                ; 771C 8A 
             pha                ; 771D 48 
             ldx #$07           ; 771E A2 07 
-L07720      bcc L07726         ; 7720 90 04 
-            lda $009B,x       ; 7722 B5 9B 
-            bne L0773B         ; 7724 D0 15 
-L07726      lda L075C8,y       ; 7726 B9 C8 75 
-            beq L0773B         ; 7729 F0 10 
-            bvc L0772F         ; 772B 50 02 
-            lda #$00           ; 772D A9 00 
-L0772F      pha                ; 772F 48 
-            lda #$00           ; 7730 A9 00 
-            sta $009B,x       ; 7732 95 9B 
-            lda #$80           ; 7734 A9 80 
-            sta $00BB,x       ; 7736 95 BB 
-            pla                ; 7738 68 
-            sta $009B,x       ; 7739 95 9B 
-L0773B      dey                ; 773B 88 
-            dex                ; 773C CA 
-            bpl L07720         ; 773D 10 E1 
-            pla                ; 773F 68 
-            tax                ; 7740 AA 
-L07741      rts                ; 7741 60 
-L07742      ldx #$07           ; 7742 A2 07 
-L07744      ldy $009B,x       ; 7744 B4 9B 
-            beq L07782         ; 7746 F0 3A 
-            lda $00BB,x       ; 7748 B5 BB 
-            bmi L0778D         ; 774A 30 41 
-            dec $00AB,x       ; 774C D6 AB 
-            bne L07784         ; 774E D0 34 
-            dec $00B3,x       ; 7750 D6 B3 
-            beq L0775D         ; 7752 F0 09 
-            lda $00A3,x       ; 7754 B5 A3 
-            clc                ; 7756 18 
-            adc L0762A,y       ; 7757 79 2A 76 
-            jmp L0776B         ; 775A 4C 6B 77 
-L0775D      iny                ; 775D C8 
-            iny                ; 775E C8 
-            iny                ; 775F C8 
-            iny                ; 7760 C8 
-L07761      sty $009B,x       ; 7761 94 9B 
-            lda L0762B,y       ; 7763 B9 2B 76 
-            sta $00B3,x       ; 7766 95 B3 
-            lda L07629,y       ; 7768 B9 29 76 
-L0776B      sta $00A3,x       ; 776B 95 A3 
-            lda L07628,y       ; 776D B9 28 76 
-            sta $00AB,x       ; 7770 95 AB 
-            bne L07784         ; 7772 D0 10 
-            ldy $00C3,x       ; 7774 B4 C3 
-            dec $00BB,x       ; 7776 D6 BB 
-            bne L07761         ; 7778 D0 E7 
-            ldy $009B,x       ; 777A B4 9B 
-            iny                ; 777C C8 
-            bne L0778D         ; 777D D0 0E 
-L0777F      tay                ; 777F A8 
-            sty $009B,x       ; 7780 94 9B 
-L07782      sty $00A3,x       ; 7782 94 A3 
-L07784      lda $00A3,x       ; 7784 B5 A3 
-            sta PKY_AUDF1,x        ; 7786 9D 00 2C 
-            dex                ; 7789 CA 
-            bpl L07744         ; 778A 10 B8 
-            rts                ; 778C 60 
-L0778D      lda L07628,y       ; 778D B9 28 76 
-            beq L0777F         ; 7790 F0 ED 
-            sta $00BB,x       ; 7792 95 BB 
-            iny                ; 7794 C8 
-            sty $00C3,x       ; 7795 94 C3 
-            bne L07761         ; 7797 D0 C8
 
+
+
+
+x7720		.byt $90, $04, $b5, $9b, $d0, $15, $b9, $c8
+			.byt $75, $f0, $10, $50, $02, $a9, $00, $48
+x7730		.byt $a9, $00, $95, $9b, $a9, $80, $95, $bb
+			.byt $68, $95, $9b, $88, $ca, $10, $e1, $68
+x7740		.byt $aa
+
+L07741		.byt $60
+L07742		.byt $a2, $07, $b4, $9b, $f0, $3a
+			.byt $b5, $bb, $30, $41, $d6, $ab, $d0, $34
+x7750		.byt $d6, $b3, $f0, $09, $b5, $a3, $18, $79
+			.byt $2a, $76, $4c, $6b, $77, $c8, $c8, $c8
+x7760		.byt $c8, $94, $9b, $b9, $2b, $76, $95, $b3
+			.byt $b9, $29, $76, $95, $a3, $b9, $28, $76
+x7770		.byt $95, $ab, $d0, $10, $b4, $c3, $d6, $bb
+			.byt $d0, $e7, $b4, $9b, $c8, $d0, $0e, $a8
+x7780		.byt $94, $9b, $94, $a3, $b5, $a3, $9d, $00
+			.byt $2c, $ca, $10, $b8, $60, $b9, $28, $76
+x7790		.byt $f0, $ed, $95, $bb, $c8, $94, $c3, $d0
+			.byt $c8
+			
 L07799		.byt $01
-L0779A		.byt $E0
-			.byt $c0
-			.byt $e1
-	
-
+L0779A		.byt $e0, $c0, $e1 
 L0779D		.byt $e5
-L0779E		.byt $c3
+L0779E		.byt $c3, $ca
+			
+x77a0		.byt $c3, $af, $c3, $94, $c3
 
-            dex                ; 779F CA 
-            .byt $C3	; 77A0 C3 
-            .byt $AF	; 77A1 AF 
-            .byt $C3	; 77A2 C3 
-            sty $00C3,x       ; 77A3 94 C3 
-L077A5      .byt $7F	; 77A5 7F 
-            .byt $02	; 77A6 02 
-            .byt $04	; 77A7 04 
-            .byt $04	; 77A8 04 
-            ora $0003         ; 77A9 05 03 
-            .byt $7F	; 77AB 7F 
-            .byt $7F	; 77AC 7F 
-            .byt $FF	; 77AD FF 
-            .byt $FF	; 77AE FF 
-            .byt $FF	; 77AF FF 
+L077A5		.byt $7f, $02, $04
+
+			.byt $04, $05, $03, $7f, $7f, $ff, $ff, $ff
+
+
+
+
             .byt $FF	; 77B0 FF 
             .byt $FF	; 77B1 FF 
             .byt $FF	; 77B2 FF 
@@ -3388,8 +3161,8 @@ L079F0      php                ; 79F0 08
 L079F8      cpy #$4A           ; 79F8 C0 4A 
             bcc L079FE         ; 79FA 90 02 
             ldy #$00           ; 79FC A0 00 
-L079FE      ldx L056F9,y       ; 79FE BE F9 56 
-            lda L056F8,y       ; 7A01 B9 F8 56 
+L079FE      ldx VROM56F9,y       ; 79FE BE F9 56 
+            lda VROM56F8,y       ; 7A01 B9 F8 56 
             jmp L07CD5         ; 7A04 4C D5 7C 
             lsr                ; 7A07 4A 
             and #$0F           ; 7A08 29 0F 
@@ -4110,7 +3883,7 @@ L07F38      inc $0076         ; 7F38 E6 76
             bmi L07F57         ; 7F4A 30 0B 
             sta $00CD         ; 7F4C 85 CD 
             sta $0021         ; 7F4E 85 21 
-            ldx #$15           ; 7F50 A2 15 
+L0FF50      ldx #$15           ; 7F50 A2 15 
             stx $00CC         ; 7F52 86 CC 
             dex                ; 7F54 CA 
             stx $00CB         ; 7F55 86 CB 
@@ -4192,11 +3965,12 @@ L07FE2      dex                ; 7FE2 CA
 
 L07FEE	    .byt $38
 			.byt $30
+			
 			.byt $1c
 			.byt $1e
 			.byt $24
 			.byt $28
-			.byt $06
+L07FF4		.byt $06
 			.byt $06
             .byt $04
             .byt $04 

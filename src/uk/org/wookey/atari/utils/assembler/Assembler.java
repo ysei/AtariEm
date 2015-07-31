@@ -47,7 +47,7 @@ public class Assembler {
 			p.pass(true);
 		}
 		
-		//p.dumpLabels();
+		p.dumpLabels();
 		
 		_logger.logInfo("Errors: " + p.errors() + ", hard: " + p.hardErrors() + ", soft: " + p.softErrors());
 	}
