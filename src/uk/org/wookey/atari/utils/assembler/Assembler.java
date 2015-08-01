@@ -4,8 +4,6 @@ import java.util.List;
 
 import uk.org.wookey.atari.editor.CodeEditor;
 import uk.org.wookey.atari.utils.Logger;
-import uk.org.wookey.atari.utils.lexer.Lexer;
-import uk.org.wookey.atari.utils.lexer.LexerToken;
 
 public class Assembler {
 	private final static Logger _logger = new Logger("Assembler");
@@ -17,9 +15,9 @@ public class Assembler {
 		
 		List<LexerToken> tokens = lex.lex(sourceCode);
 				
-		/*for (LexerToken tok: tokens) {
+		for (LexerToken tok: tokens) {
 			_logger.logInfo(tok.toString());
-		}*/
+		}
 		
 		Parser p = new Parser(tokens);
 		
@@ -47,7 +45,7 @@ public class Assembler {
 			p.pass(true);
 		}
 		
-		//p.dumpLabels();
+		p.dumpLabels();
 		
 		_logger.logInfo("Errors: " + p.errors() + ", hard: " + p.hardErrors() + ", soft: " + p.softErrors());
 	}

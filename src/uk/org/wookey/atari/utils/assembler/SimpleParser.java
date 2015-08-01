@@ -5,8 +5,6 @@ import java.util.List;
 import uk.org.wookey.atari.exceptions.EOFException;
 import uk.org.wookey.atari.exceptions.SyntaxException;
 import uk.org.wookey.atari.utils.Logger;
-import uk.org.wookey.atari.utils.lexer.LexerToken;
-import uk.org.wookey.atari.utils.lexer.LexerTokenType;
 
 public class SimpleParser {
 	private final static Logger _logger = new Logger("SimpleParser");

@@ -1,4 +1,5 @@
-package uk.org.wookey.atari.utils.lexer;
+package uk.org.wookey.atari.utils.assembler;
+
 
 
 public class LexerToken {

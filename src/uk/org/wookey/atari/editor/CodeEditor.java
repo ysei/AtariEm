@@ -15,9 +15,9 @@ import javax.swing.JTextPane;
 
 import uk.org.wookey.atari.utils.Logger;
 import uk.org.wookey.atari.utils.assembler.Assembler;
+import uk.org.wookey.atari.utils.assembler.Lexer;
+import uk.org.wookey.atari.utils.assembler.LexerToken;
 import uk.org.wookey.atari.utils.assembler.Parser;
-import uk.org.wookey.atari.utils.lexer.Lexer;
-import uk.org.wookey.atari.utils.lexer.LexerToken;
 
 public class CodeEditor extends JPanel {
 	private static final long serialVersionUID = 1L;

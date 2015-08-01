@@ -1,7 +1,6 @@
 package uk.org.wookey.atari.utils.assembler;
 
 import uk.org.wookey.atari.utils.Logger;
-import uk.org.wookey.atari.utils.lexer.LexerTokenType;
 
 public class OpNode extends ExprNode {
 	private final static Logger _logger = new Logger(OpNode.class.getName());

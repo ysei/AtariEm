@@ -1,4 +1,4 @@
-package uk.org.wookey.atari.utils.lexer;
+package uk.org.wookey.atari.utils.assembler;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -22,7 +22,6 @@ public class Lexer {
         startOfLine = true;
         
         for (int i = 0; i < input.length(); ) {
-        	col++;
         	//_logger.logInfo("Examining '" + input.charAt(i) + "'");
             switch (input.charAt(i)) {
             case '\n':
@@ -37,36 +36,57 @@ public class Lexer {
                 add(new LexerToken(LexerTokenType.LPAREN, lineNum, col), result);
                
                 i++;
+                col++;
                 break;
                 
             case ')':
                 add(new LexerToken(LexerTokenType.RPAREN, lineNum, col), result);
                 i++;
+                col++;
                 break;
                 
             case ',':
                 add(new LexerToken(LexerTokenType.COMMA, lineNum, col), result);
                 i++;
+                col++;
                 break;
                 
             case '+':
                 add(new LexerToken(LexerTokenType.PLUS, lineNum, col), result);
                 i++;
+                col++;
                 break;
                 
             case '-':
                 add(new LexerToken(LexerTokenType.MINUS, lineNum, col), result);
                 i++;
+                col++;
                 break;
-                
+                 
             case '<':
-                add(new LexerToken(LexerTokenType.LSBOF, lineNum, col), result);
                 i++;
+                col++;
+            	if (i < input.length() && input.charAt(i) == '@') {
+            		add(new LexerToken(LexerTokenType.PLABEL, lineNum, col), result);
+            		i++;
+            		col++;
+            	}
+            	else {
+                    add(new LexerToken(LexerTokenType.LSBOF, lineNum, col), result);
+            	}            	
                 break;
                 
             case '>':
-                add(new LexerToken(LexerTokenType.MSBOF, lineNum, col), result);
                 i++;
+                col++;
+            	if (i < input.length() && input.charAt(i) == '@') {
+            		add(new LexerToken(LexerTokenType.NLABEL, lineNum, col), result);
+            		i++;
+            		col++;
+            	}
+            	else {
+                    add(new LexerToken(LexerTokenType.MSBOF, lineNum, col), result);
+            	}            	
                 break;
                 
             case '$':
@@ -91,11 +111,13 @@ public class Lexer {
             case '#':
                 add(new LexerToken(LexerTokenType.HASH, lineNum, col), result);
                 i++;
+                col++;
                 break;
                 
             case '=':
                 add(new LexerToken(LexerTokenType.EQUALS, lineNum, col), result);
                 i++;
+                col++;
                 break;
                 
             case ';':
@@ -262,7 +284,7 @@ public class Lexer {
     		return true;
     	}
     	
-    	if (c == '_' || c == '.' || c == '*' || c == ':') {
+    	if (c == '_' || c == '.' || c == '*' || c == ':' || c == '@') {
     		return true;
     	}
     	

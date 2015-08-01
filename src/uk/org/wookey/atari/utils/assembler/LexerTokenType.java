@@ -1,4 +1,4 @@
-package uk.org.wookey.atari.utils.lexer;
+package uk.org.wookey.atari.utils.assembler;
 
 public enum LexerTokenType {
 	EOL,
@@ -18,5 +18,7 @@ public enum LexerTokenType {
 	MSBOF,
 	ATOM,
 	EQUALS,
+	PLABEL,
+	NLABEL,
 	UNKNOWN
 }

@@ -15,8 +15,6 @@ import uk.org.wookey.atari.exceptions.SyntaxException;
 import uk.org.wookey.atari.utils.Formatter;
 import uk.org.wookey.atari.utils.LabelTable;
 import uk.org.wookey.atari.utils.Logger;
-import uk.org.wookey.atari.utils.lexer.LexerToken;
-import uk.org.wookey.atari.utils.lexer.LexerTokenType;
 
 public class Parser extends SimpleParser {
 	//private final static Logger _logger = new Logger(Parser.class.getName());
@@ -34,6 +32,7 @@ public class Parser extends SimpleParser {
 	private boolean silentReplace;
 	private int numHardErrors;
 	private int numSoftErrors;
+	private int anonLabelCounter;
 	
 	private Hashtable<String, Integer> instructions;
 	
@@ -52,6 +51,7 @@ public class Parser extends SimpleParser {
 		passNumber = 0;
 		silentReplace = false;
 		generatingCode = false;
+		anonLabelCounter = 0;
 		
 		for (String op: InstructionTable.opcodeNames) {
 			if (op != null) {
@@ -82,6 +82,7 @@ public class Parser extends SimpleParser {
 		
 		LexerToken t = peekToken();
 		pc = 0;
+		anonLabelCounter = 0;
 		
 		try {
 			while (!eof) {
@@ -158,13 +159,22 @@ public class Parser extends SimpleParser {
 		}
 	}
 	
+	private void addLabel(String name, int val) throws RuntimeAssemblyException {
+		if (name.equals("@")) {
+			anonLabelCounter++;
+			name = String.format("@%04d", anonLabelCounter);
+		}
+		
+		try {
+			labels.add(name, pc, silentReplace);
+		} catch (LabelExistsException e) {
+			throw new RuntimeAssemblyException("Label '" + name + "' already defined");
+		}
+	}
+	
 	private void instruction(LexerToken instruction, LexerToken label) throws SyntaxException, RuntimeAssemblyException, EOFException {
 		if (label != null) {
-			try {
-				labels.add(label.value, pc, silentReplace);
-			} catch (LabelExistsException e) {
-				throw new RuntimeAssemblyException("Label '" + label.value + "' already defined");
-			}
+			addLabel(label.value, pc);
 		}
 		
 		//_logger.logInfo("Instruction: " + instruction.value);
@@ -651,6 +661,14 @@ public class Parser extends SimpleParser {
 		else if (t.type == LexerTokenType.ATOM) {
 			exp = new LabelNode(t.value, labels);
 		}
+		else if (t.type == LexerTokenType.PLABEL) {
+			String label = String.format("@%04d", anonLabelCounter);
+			exp = new LabelNode(label, labels);
+		}
+		else if (t.type == LexerTokenType.NLABEL) {
+			String label = String.format("@%04d", anonLabelCounter+1);
+			exp = new LabelNode(label, labels);
+		}		
 		else {
 			throw new SyntaxException("Unexpected item in Simple() - " + t.toString());
 		}
@@ -659,7 +677,8 @@ public class Parser extends SimpleParser {
 	}
 	
 	private boolean isSimple(LexerToken t) {
-		return typeIs(t, LexerTokenType.DECIMAL, LexerTokenType.HEX, LexerTokenType.BINARY, LexerTokenType.ATOM);
+		return typeIs(t, LexerTokenType.DECIMAL, LexerTokenType.HEX, LexerTokenType.BINARY, 
+				LexerTokenType.ATOM, LexerTokenType.PLABEL, LexerTokenType.NLABEL);
 	}
 	
 	private boolean isOper(LexerToken t) {
