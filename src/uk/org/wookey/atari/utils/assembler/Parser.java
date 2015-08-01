@@ -220,7 +220,7 @@ public class Parser extends SimpleParser {
 								}
 								
 								emit(inst.absoluteX, lsb(val), msb(val));
-								logf(inst.name, inst.absoluteX, String.format("$%04x,X", val), lsb(val), msb(val));
+								logf(inst.name, inst.absoluteX, String.format("%s,X", labels.addressToLabel(val)), lsb(val), msb(val));
 							}
 							else {
 								// zero page
@@ -230,11 +230,11 @@ public class Parser extends SimpleParser {
 									}
 									
 									emit(inst.absoluteX, val, 0);
-									logf(inst.name, inst.absoluteX, String.format("$%04x,X", val), lsb(val));
+									logf(inst.name, inst.absoluteX, String.format("%s,X", labels.addressToLabel(val)), lsb(val), msb(val));
 								}
 								else {								
 									emit(inst.zeroPageX, val);
-									logf(inst.name, inst.zeroPageX, String.format("$%02x,X", val), val);
+									logf(inst.name, inst.zeroPageX, String.format("%s,X", labels.addressToLabel(val, true)), val);
 								}
 							}
 							
@@ -249,7 +249,7 @@ public class Parser extends SimpleParser {
 								}
 									
 								emit(inst.absoluteY, lsb(val), msb(val));
-								logf(inst.name, inst.absoluteY, String.format("$%04x,Y", val), lsb(val), msb(val));
+								logf(inst.name, inst.absoluteY, String.format("%s,Y", labels.addressToLabel(val)), lsb(val), msb(val));
 							}
 							else {
 								// zero page
@@ -259,11 +259,11 @@ public class Parser extends SimpleParser {
 									}
 										
 									emit(inst.absoluteY, val, 0);
-									logf(inst.name, inst.absoluteY, String.format("$%04x,Y", val), lsb(val));
+									logf(inst.name, inst.absoluteY, String.format("%s,Y", labels.addressToLabel(val)), lsb(val));
 								}
 								else {								
 									emit(inst.zeroPageY, val);
-									logf(inst.name, inst.zeroPageY, String.format("$%02x,Y", val), val);
+									logf(inst.name, inst.zeroPageY, String.format("%s,Y", labels.addressToLabel(val, true)), val);
 								}
 							}	
 							
@@ -278,7 +278,7 @@ public class Parser extends SimpleParser {
 							}
 							
 							emit(inst.absolute, lsb(val), msb(val));
-							logf(inst.name, inst.absolute, String.format("$%04x", val), lsb(val), msb(val));
+							logf(inst.name, inst.absolute, labels.addressToLabel(val), lsb(val), msb(val));
 						}
 						else {
 							// zero page
@@ -288,11 +288,11 @@ public class Parser extends SimpleParser {
 								}
 								
 								emit(inst.absolute, val, 0);
-								logf(inst.name, inst.absolute, String.format("$%04x", val), lsb(val), msb(val));
+								logf(inst.name, inst.absolute, labels.addressToLabel(val), lsb(val), 0);
 							}
 							else {
 								emit(inst.zeroPage, val);
-								logf(inst.name, inst.zeroPage, String.format("$%02x", val), val);
+								logf(inst.name, inst.zeroPage, labels.addressToLabel(val, true), val);
 							}
 						}
 					}
@@ -329,11 +329,12 @@ public class Parser extends SimpleParser {
 			System.out.printf("%02x ", op);
 		}
 		
-		for (int i=opnd.length; i < 6; i++) {
+		for (int i=opnd.length; i < 4; i++) {
 			System.out.print("   ");
 		}
 		
-		System.out.print(name);
+		System.out.format("%-16s ", labels.addressToLabelString(pc));
+		System.out.print(" " + name);
 		
 		if (operand != null) {
 			System.out.print(" " + operand);
@@ -353,7 +354,7 @@ public class Parser extends SimpleParser {
 		}
 	
 		emit(inst.immediate, val);
-		logf(inst.name, inst.immediate, String.format("#$%02x", val), val);
+		logf(inst.name, inst.immediate, String.format("#%s", labels.addressToLabel(val)), val);
 	}
 	
 	private void relativeInstruction(Instruction inst) throws SyntaxException, EOFException, RuntimeAssemblyException {
@@ -375,7 +376,7 @@ public class Parser extends SimpleParser {
 		}
 		
 		emit(inst.relative, delta);
-		logf(inst.name, inst.relative, String.format("$%02x", val), delta & 0xff);
+		logf(inst.name, inst.relative, String.format("%s", labels.addressToLabel(val)), delta & 0xff);
 	}
 	
 	private void indirectTypeInstruction(Instruction inst) throws SyntaxException, RuntimeAssemblyException, EOFException {
@@ -399,7 +400,7 @@ public class Parser extends SimpleParser {
 			}
 			
 			emit(inst.indirectX, val);
-			logf(inst.name, inst.indirectX, String.format("($%02x,X)", val), val);
+			logf(inst.name, inst.indirectX, String.format("(%s,X)", labels.addressToLabel(val, true)), val);
 			
 			getToken(3);		
 		}
@@ -420,7 +421,7 @@ public class Parser extends SimpleParser {
 			}
 
 			emit(inst.indirectY, val);
-			logf(inst.name, inst.indirectY, String.format("($%02x),Y", val), val);
+			logf(inst.name, inst.indirectY, String.format("(%s),Y", labels.addressToLabel(val)), val);
 			
 			getToken(3);
 		}
@@ -430,7 +431,7 @@ public class Parser extends SimpleParser {
 			}
 
 			emit(inst.indirect, lsb(val), msb(val));
-			logf(inst.name, inst.indirect, String.format("($%04x)", val), val);
+			logf(inst.name, inst.indirect, String.format("(%s)", labels.addressToLabel(val)), lsb(val), msb(val));
 
 			getToken();
 		}
@@ -703,7 +704,7 @@ public class Parser extends SimpleParser {
 			b = b & 0xff;
 			
 			if (generatingCode) {
-				_logger.logSuccess(Integer.toHexString(pc) + ": " + Formatter.toHexString(b,  2));
+				//_logger.logSuccess(Integer.toHexString(pc) + ": " + Formatter.toHexString(b,  2));
 			}
 			pc++;
 		}

@@ -49,6 +49,34 @@ public class LabelTable {
 		
 		return val;
 	}
+
+	public String addressToLabel(int addr) {
+		return addressToLabel(addr, false);
+	}
+
+	public String addressToLabel(int addr, boolean zp) {
+		for (String lab: labels.keySet()) {
+			if (labels.get(lab) == addr) {
+				return lab;
+			}
+		}
+		
+		if (zp) {
+			return String.format("$%02x", addr);
+		}
+
+		return String.format("$%04x", addr);
+	}
+	
+	public String addressToLabelString(int addr) {
+		for (String lab: labels.keySet()) {
+			if (labels.get(lab) == addr) {
+				return lab;
+			}
+		}
+		
+		return "";
+	}
 	
 	public Set<String> getSet() {
 		return labels.keySet();

@@ -3550,6 +3550,12 @@ L07CD5      ldy #$00           ; 7CD5 A0 00
 
 
 
+
+
+
+;-------------------------------------------------------------------------
+; This is where it all kicks off
+;
 RESET_ISR
             ldx #$FE                        ; 7CE0 A2 FE    - Reset SP
             txs                             ; 7CE2 9A
@@ -3563,9 +3569,9 @@ RESET_ISR
 RamTest
 NextByte 
             lda #$11                        ; 7CE9 A9 11 
-WalkBit     sta PageOne,x                    ; 7CEB 9D 00 01 
+WalkBit     sta PageOne,x                   ; 7CEB 9D 00 01 
             tay                             ; 7CEE A8 
-            eor PageOne,x                    ; 7CEF 5D 00 01 
+            eor PageOne,x                   ; 7CEF 5D 00 01 
             bne BadRam                      ; 7CF2 D0 54 
             tya                             ; 7CF4 98 
             asl                             ; 7CF5 0A 
@@ -3574,221 +3580,239 @@ WalkBit     sta PageOne,x                    ; 7CEB 9D 00 01
 ; Clear all RAM 
             txa                             ; 7CF8 8A 
             sta ScratchRam,x                ; 7CF9 95 00 
-            sta ScratchRam+$0100,x        ; 7CFB 9D 00 01 
-            sta ScratchRam+$0200,x        ; 7CFE 9D 00 02 
-            sta ScratchRam+$0300,x        ; 7D01 9D 00 03
+            sta ScratchRam+$0100,x          ; 7CFB 9D 00 01 
+            sta ScratchRam+$0200,x          ; 7CFE 9D 00 02 
+            sta ScratchRam+$0300,x          ; 7D01 9D 00 03
              
             sta VectorRam,x                 ; 7D04 9D 00 40 
-            sta VectorRam+$0100,x         ; 7D07 9D 00 41 
-            sta VectorRam+$0200,x         ; 7D0A 9D 00 42 
-            sta VectorRam+$0300,x         ; 7D0D 9D 00 43 
-            sta VectorRam+$0400,x         ; 7D10 9D 00 44 
-            sta VectorRam+$0500,x         ; 7D13 9D 00 45 
-            sta VectorRam+$0600,x         ; 7D16 9D 00 46 
-            sta VectorRam+$0700,x         ; 7D19 9D 00 47 
+            sta VectorRam+$0100,x           ; 7D07 9D 00 41 
+            sta VectorRam+$0200,x           ; 7D0A 9D 00 42 
+            sta VectorRam+$0300,x           ; 7D0D 9D 00 43 
+            sta VectorRam+$0400,x           ; 7D10 9D 00 44 
+            sta VectorRam+$0500,x           ; 7D13 9D 00 45 
+            sta VectorRam+$0600,x           ; 7D16 9D 00 46 
+            sta VectorRam+$0700,x           ; 7D19 9D 00 47 
             dex                             ; 7D1C CA
              
             bne NextByte                    ; 7D1D D0 CA
              
             sta ResetWDog                   ; 7D1F 8D 00 34 - Reset watchdog timer
             
-L07D22      txa                ; 7D22 8A 
-L07D23      eor PageOne,x       ; 7D23 5D 00 01 
-            bne L07D48         ; 7D26 D0 20 
-            sta PageOne,x       ; 7D28 9D 00 01 
-            inx                ; 7D2B E8 
-            bit SelfTestSwitch ; 7D2C 2C 07 20 
-            bpl L07D36         ; 7D2F 10 05 
-            txa                ; 7D31 8A 
-            bne L07D23         ; 7D32 D0 EF 
-            beq L07D3C         ; 7D34 F0 06 
-L07D36      cpx #$FB           ; 7D36 E0 FB 
-            bcc L07D22         ; 7D38 90 E8 
-            ldx #$00           ; 7D3A A2 00 
-L07D3C      txa                ; 7D3C 8A 
-            eor ScratchRam,x   ; 7D3D 55 00 
-            bne L07D48         ; 7D3F D0 07 
-            lda #$11           ; 7D41 A9 11 
-L07D43      sta ScratchRam,x   ; 7D43 95 00 
-            tay                ; 7D45 A8 
-            eor ScratchRam,x   ; 7D46 55 00
+; Fill page 1 with an incrementing count and check it reads back ok
+; quit the test early if the selftest switch is active
+; on entry:
+;  X = 0
+;
+L07D22      txa                				; 7D22 8A 
+TestNextByte
+    		eor PageOne,x       			; 7D23 5D 00 01 
+            bne BadRam         				; 7D26 D0 20 
+            sta PageOne,x       			; 7D28 9D 00 01 
+            inx                				; 7D2B E8 
+            bit TestSwitchActive			; 7D2C 2C 07 20 
+            bpl TestSwitchActive			; 7D2F 10 05 
+            txa                				; 7D31 8A 
+            bne TestNextByte    			; 7D32 D0 EF 
+            beq L07D3C         				; 7D34 F0 06
+
+
+; Self test switch active
+;L07D36
+TestSwitchActive
+	      	cpx #$FB           				; 7D36 E0 FB 
+            bcc L07D22         				; 7D38 90 E8 
+            ldx #$00           				; 7D3A A2 00 
+L07D3C      txa                				; 7D3C 8A 
+            eor ScratchRam,x   				; 7D3D 55 00 
+            bne L07D48         				; 7D3F D0 07 
+            lda #$11           				; 7D41 A9 11 
+L07D43      sta ScratchRam,x   				; 7D43 95 00 
+            tay                				; 7D45 A8 
+            eor ScratchRam,x   				; 7D46 55 00
+          
+          
             
+;-------------------------------------------------------------------------
 ; Memory test error? Stuck bit?
+;
 BadRam
-L07D48      bne BadRam2        ; 7D48 D0 41 
-            tya                ; 7D4A 98 
-            asl                ; 7D4B 0A 
-            bcc L07D43         ; 7D4C 90 F5 
-            ldy #$00           ; 7D4E A0 00 
-            sty ScratchRam,x   ; 7D50 94 00 
-            dex                ; 7D52 CA 
-            bne L07D3C         ; 7D53 D0 E7 
-            sta ResetWDog      ; 7D55 8D 00 34 
-            lda #$02           ; 7D58 A9 02 
-L07D5A      sta $0001         ; 7D5A 85 01 
-L07D5C      tya                ; 7D5C 98 
-            eor (ScratchRam),y ; 7D5D 51 00 
-            bne L07D8F         ; 7D5F D0 2E 
-            lda #$11           ; 7D61 A9 11 
-L07D63      sta (ScratchRam),y ; 7D63 91 00 
-            tax                ; 7D65 AA 
-            eor (ScratchRam),y ; 7D66 51 00 
-            bne L07D8F         ; 7D68 D0 25 
-            sta (ScratchRam),y ; 7D6A 91 00 
-            txa                ; 7D6C 8A 
-            asl                ; 7D6D 0A 
-            bcc L07D63         ; 7D6E 90 F3 
-            iny                ; 7D70 C8 
-L07D71      bne L07D5C         ; 7D71 D0 E9 
-            sta ResetWDog      ; 7D73 8D 00 34 
-            inc $0001         ; 7D76 E6 01 
-            ldx $0001         ; 7D78 A6 01 
-            cpx #$04           ; 7D7A E0 04 
-            bcc L07D5C         ; 7D7C 90 DE 
-            lda #$40           ; 7D7E A9 40 
-            cpx #$40           ; 7D80 E0 40 
-            bcc L07D5A         ; 7D82 90 D6 
-            cpx #$48           ; 7D84 E0 48 
-            bcc L07D5C         ; 7D86 90 D4 
-            bcs L07DFC         ; 7D88 B0 72 
-            .byt $64	; 7D8A 64
+L07D48      bne BadRam2        				; 7D48 D0 41 
+            tya                				; 7D4A 98 
+            asl               				; 7D4B 0A 
+            bcc L07D43         				; 7D4C 90 F5 
+            ldy #$00           				; 7D4E A0 00 
+            sty ScratchRam,x   				; 7D50 94 00 
+            dex                				; 7D52 CA 
+            bne L07D3C         				; 7D53 D0 E7 
+            sta ResetWDog      				; 7D55 8D 00 34 
+            lda #$02           				; 7D58 A9 02 
+L07D5A      sta $0001         				; 7D5A 85 01 
+L07D5C      tya                				; 7D5C 98 
+            eor (ScratchRam),y 				; 7D5D 51 00 
+            bne L07D8F         				; 7D5F D0 2E 
+            lda #$11           				; 7D61 A9 11 
+L07D63      sta (ScratchRam),y 				; 7D63 91 00 
+            tax                				; 7D65 AA 
+            eor (ScratchRam),y 				; 7D66 51 00 
+            bne L07D8F         				; 7D68 D0 25 
+            sta (ScratchRam),y 				; 7D6A 91 00 
+            txa                				; 7D6C 8A 
+            asl                				; 7D6D 0A 
+            bcc L07D63         				; 7D6E 90 F3 
+            iny               				; 7D70 C8 
+L07D71      bne L07D5C         				; 7D71 D0 E9 
+            sta ResetWDog      				; 7D73 8D 00 34 
+            inc $0001         				; 7D76 E6 01 
+            ldx $0001         				; 7D78 A6 01 
+            cpx #$04           				; 7D7A E0 04 
+            bcc L07D5C         				; 7D7C 90 DE 
+            lda #$40           				; 7D7E A9 40 
+            cpx #$40           				; 7D80 E0 40 
+            bcc L07D5A         				; 7D82 90 D6 
+            cpx #$48           				; 7D84 E0 48 
+            bcc L07D5C         				; 7D86 90 D4 
+            bcs L07DFC         				; 7D88 B0 72 
+
+; One or other of the previous two instructions will branch, so we never
+; get here.
+            .byt $64						; 7D8A 64
 
 ; Looks like we end up here when a RAM bit error has been detected
 BadRam2
-L07D8B      ldy #$00           ; 7D8B A0 00 
-            beq L07D9D         ; 7D8D F0 0E 
-L07D8F      ldy #$00           ; 7D8F A0 00 
-            ldx $0001         ; 7D91 A6 01 
-            cpx #$04           ; 7D93 E0 04 
-            bcc L07D9D         ; 7D95 90 06 
-            iny                ; 7D97 C8 
-            cpx #$44           ; 7D98 E0 44 
-            bcc L07D9D         ; 7D9A 90 01 
-            iny                ; 7D9C C8 
+L07D8B      ldy #$00           				; 7D8B A0 00 
+            beq L07D9D         				; 7D8D F0 0E 
+L07D8F      ldy #$00           				; 7D8F A0 00 
+            ldx $0001         				; 7D91 A6 01 
+            cpx #$04           				; 7D93 E0 04 
+            bcc L07D9D         				; 7D95 90 06 
+            iny                				; 7D97 C8 
+            cpx #$44           				; 7D98 E0 44 
+            bcc L07D9D         				; 7D9A 90 01 
+            iny                				; 7D9C C8 
             
-L07D9D      cmp #$10           ; 7D9D C9 10 
-            rol                ; 7D9F 2A 
-            and #$1F           ; 7DA0 29 1F 
-            cmp #$02           ; 7DA2 C9 02 
-            rol                ; 7DA4 2A 
-            and #$03           ; 7DA5 29 03
+L07D9D      cmp #$10           				; 7D9D C9 10 
+            rol                				; 7D9F 2A 
+            and #$1F           				; 7DA0 29 1F 
+            cmp #$02           				; 7DA2 C9 02 
+            rol                				; 7DA4 2A 
+            and #$03           				; 7DA5 29 03
              
-L07DA7      dey                ; 7DA7 88 
-            bmi L07DAE         ; 7DA8 30 04 
-            asl                ; 7DAA 0A 
-            asl                ; 7DAB 0A 
-            bcc L07DA7         ; 7DAC 90 F9
+L07DA7      dey                				; 7DA7 88 
+            bmi L07DAE         				; 7DA8 30 04 
+            asl                				; 7DAA 0A 
+            asl                				; 7DAB 0A 
+            bcc L07DA7         				; 7DAC 90 F9
              
-L07DAE      lsr                ; 7DAE 4A 
+L07DAE      lsr                				; 7DAE 4A 
 
-            ldy #$07           ; 7DAF A0 07     - Fast POT, Enable key scan, Enable debounce
-            sty PKY_SKCTL      ; 7DB1 8C 0F 2C 
-            ldx #$20           ; 7DB4 A2 20 
-            bcc L07DBA         ; 7DB6 90 02 
-            ldx #$80           ; 7DB8 A2 80     - Divide by 129
-L07DBA      stx PKY_AUDF1      ; 7DBA 8E 00 2C 
+            ldy #$07           				; 7DAF A0 07     - Fast POT, Enable key scan, Enable debounce
+            sty PKY_SKCTL      				; 7DB1 8C 0F 2C 
+            ldx #$20           				; 7DB4 A2 20 
+            bcc L07DBA         				; 7DB6 90 02 
+            ldx #$80           				; 7DB8 A2 80     - Divide by 129
+L07DBA      stx PKY_AUDF1      				; 7DBA 8E 00 2C 
 
-            ldx #$A8           ; 7DBD A2 A8     - Pure tone - N - 2, Half volume
-            stx PKY_AUDC1      ; 7DBF 8E 01 2C 
+            ldx #$A8           				; 7DBD A2 A8     - Pure tone - N - 2, Half volume
+            stx PKY_AUDC1      				; 7DBF 8E 01 2C 
             
-            ldx #$00           ; 7DC2 A2 00 
-L07DC4      bit ThreeKHz           ; 7DC4 2C 01 20 
-            bpl L07DC4         ; 7DC7 10 FB 
-L07DC9      bit ThreeKHz           ; 7DC9 2C 01 20 
-            bmi L07DC9         ; 7DCC 30 FB 
-            dex                ; 7DCE CA 
-            sta ResetWDog      ; 7DCF 8D 00 34 
-            bne L07DC4         ; 7DD2 D0 F0 
-            dey                ; 7DD4 88 
-            bpl L07DC4         ; 7DD5 10 ED 
-            stx PKY_AUDC1         ; 7DD7 8E 01 2C 
-            ldy #$08           ; 7DDA A0 08 
-L07DDC      bit ThreeKHz           ; 7DDC 2C 01 20 
-            bpl L07DDC         ; 7DDF 10 FB 
-L07DE1      bit ThreeKHz           ; 7DE1 2C 01 20 
-            bmi L07DE1         ; 7DE4 30 FB 
-            dex                ; 7DE6 CA 
-            sta ResetWDog      ; 7DE7 8D 00 34 
-            bne L07DDC         ; 7DEA D0 F0 
-            dey                ; 7DEC 88 
-            bne L07DDC         ; 7DED D0 ED 
-            tax                ; 7DEF AA 
-            bne L07DAE         ; 7DF0 D0 BC
+            ldx #$00           				; 7DC2 A2 00 
+L07DC4      bit ThreeKHz           			; 7DC4 2C 01 20 
+            bpl L07DC4         				; 7DC7 10 FB 
+L07DC9      bit ThreeKHz           			; 7DC9 2C 01 20 
+            bmi L07DC9         				; 7DCC 30 FB 
+            dex                				; 7DCE CA 
+            sta ResetWDog      				; 7DCF 8D 00 34 
+            bne L07DC4         				; 7DD2 D0 F0 
+            dey                				; 7DD4 88 
+            bpl L07DC4         				; 7DD5 10 ED 
+            stx PKY_AUDC1         			; 7DD7 8E 01 2C 
+            ldy #$08           				; 7DDA A0 08 
+L07DDC      bit ThreeKHz           			; 7DDC 2C 01 20 
+            bpl L07DDC         				; 7DDF 10 FB 
+L07DE1      bit ThreeKHz           			; 7DE1 2C 01 20 
+            bmi L07DE1         				; 7DE4 30 FB 
+            dex                				; 7DE6 CA 
+            sta ResetWDog      				; 7DE7 8D 00 34 
+            bne L07DDC         				; 7DEA D0 F0 
+            dey                				; 7DEC 88 
+            bne L07DDC         				; 7DED D0 ED 
+            tax                				; 7DEF AA 
+            bne L07DAE         				; 7DF0 D0 BC
              
-L07DF2      sta ResetWDog      ; 7DF2 8D 00 34 
-            lda SelfTestSwitch ; 7DF5 AD 07 20  - Top bit only used. Assume lower 7 bits will read as 0 
-            bmi L07DF2         ; 7DF8 30 F8     
-L07DFA      bpl L07DFA         ; 7DFA 10 FE     - Loop forever if top bit not set and bottom bits not 0 (should never happen)
+L07DF2      sta ResetWDog      				; 7DF2 8D 00 34 
+            lda SelfTestSwitch 				; 7DF5 AD 07 20  - Top bit only used. Assume lower 7 bits will read as 0 
+            bmi L07DF2         				; 7DF8 30 F8     
+L07DFA      bpl L07DFA         				; 7DFA 10 FE     - Loop forever if top bit not set and bottom bits not 0 (should never happen)
 
-L07DFC      lda #$00           ; 7DFC A9 00 
-            tay                ; 7DFE A8 
-            tax                ; 7DFF AA 
-            lda #$48           ; 7E00 A9 48 
-L07E02      sta $000A         ; 7E02 85 0A 
-            lda #$07           ; 7E04 A9 07 
-            sta $000C         ; 7E06 85 0C 
-            lda #$55           ; 7E08 A9 55 
-            clc                ; 7E0A 18 
-L07E0B      adc ($0009),y     ; 7E0B 71 09 
-            iny                ; 7E0D C8 
-            bne L07E0B         ; 7E0E D0 FB 
-            inc $000A         ; 7E10 E6 0A 
-            dec $000C         ; 7E12 C6 0C 
-            bpl L07E0B         ; 7E14 10 F5 
-            sta $0010,x       ; 7E16 95 10 
-            inx                ; 7E18 E8 
-            sta ResetWDog      ; 7E19 8D 00 34 
-            lda $000A         ; 7E1C A5 0A 
-            cmp #$58           ; 7E1E C9 58 
-            bcc L07E02         ; 7E20 90 E0 
-            bne L07E26         ; 7E22 D0 02 
-            lda #$60           ; 7E24 A9 60 
-L07E26      cmp #$80           ; 7E26 C9 80 
-            bcc L07E02         ; 7E28 90 D8 
-            sta PageThree         ; 7E2A 8D 00 03 
-            sta BankSel        ; 7E2D 8D 04 3C 
-            cmp $0200         ; 7E30 CD 00 02 
-            beq L07E37         ; 7E33 F0 02 
-            inc $001A         ; 7E35 E6 1A 
-L07E37      lda PageThree         ; 7E37 AD 00 03 
-            beq L07E3E         ; 7E3A F0 02 
-            inc $001A         ; 7E3C E6 1A
+L07DFC      lda #$00           				; 7DFC A9 00 
+            tay                				; 7DFE A8 
+            tax                				; 7DFF AA 
+            lda #$48           				; 7E00 A9 48 
+L07E02      sta $000A         				; 7E02 85 0A 
+            lda #$07           				; 7E04 A9 07 
+            sta $000C         				; 7E06 85 0C 
+            lda #$55           				; 7E08 A9 55 
+            clc                				; 7E0A 18 
+L07E0B      adc ($0009),y     				; 7E0B 71 09 
+            iny                				; 7E0D C8 
+            bne L07E0B         				; 7E0E D0 FB 
+            inc $000A         				; 7E10 E6 0A 
+            dec $000C         				; 7E12 C6 0C 
+            bpl L07E0B         				; 7E14 10 F5 
+            sta $0010,x       				; 7E16 95 10 
+            inx                				; 7E18 E8 
+            sta ResetWDog      				; 7E19 8D 00 34 
+            lda $000A         				; 7E1C A5 0A 
+            cmp #$58           				; 7E1E C9 58 
+            bcc L07E02         				; 7E20 90 E0 
+            bne L07E26         				; 7E22 D0 02 
+            lda #$60           				; 7E24 A9 60 
+L07E26      cmp #$80           				; 7E26 C9 80 
+            bcc L07E02         				; 7E28 90 D8 
+            sta PageThree         			; 7E2A 8D 00 03 
+            sta BankSel       				; 7E2D 8D 04 3C 
+            cmp $0200         				; 7E30 CD 00 02 
+            beq L07E37         				; 7E33 F0 02 
+            inc $001A         				; 7E35 E6 1A 
+L07E37      lda PageThree         			; 7E37 AD 00 03 
+            beq L07E3E         				; 7E3A F0 02 
+            inc $001A         				; 7E3C E6 1A
              
-L07E3E      lda #$10           ; 7E3E A9 10 
-            sta $0001         ; 7E40 85 01 
-            sta BankSel        ; 7E42 8D 04 3C 
-            ldx #$24           ; 7E45 A2 24 
-L07E47      lda ThreeKHz           ; 7E47 AD 01 20 
-            bpl L07E47         ; 7E4A 10 FB 
-L07E4C      lda ThreeKHz           ; 7E4C AD 01 20 
-            bmi L07E4C         ; 7E4F 30 FB 
-            dex                ; 7E51 CA 
-            bpl L07E47         ; 7E52 10 F3 
-L07E54      bit VGHalted       ; 7E54 2C 02 20 
-            bmi L07E54         ; 7E57 30 FB 
-            sta ResetWDog      ; 7E59 8D 00 34 
-            lda #$00           ; 7E5C A9 00 
-            sta $0003         ; 7E5E 85 03 
-            lda #$40           ; 7E60 A9 40 
-            sta $0004         ; 7E62 85 04 
-            lda SelfTestSwitch ; 7E64 AD 07 20 
-            and #$80           ; 7E67 29 80 
-            bne L07E71         ; 7E69 D0 06 
-            sta $01FF         ; 7E6B 8D FF 01 
-            jmp $6000          ; 7E6E 4C 00 60 
+L07E3E      lda #$10           				; 7E3E A9 10 
+            sta $0001         				; 7E40 85 01 
+            sta BankSel        				; 7E42 8D 04 3C 
+            ldx #$24           				; 7E45 A2 24 
+L07E47      lda ThreeKHz           			; 7E47 AD 01 20 
+            bpl L07E47         				; 7E4A 10 FB 
+L07E4C      lda ThreeKHz           			; 7E4C AD 01 20 
+            bmi L07E4C         				; 7E4F 30 FB 
+            dex                				; 7E51 CA 
+            bpl L07E47         				; 7E52 10 F3 
+L07E54      bit VGHalted       				; 7E54 2C 02 20 
+            bmi L07E54         				; 7E57 30 FB 
+            sta ResetWDog      				; 7E59 8D 00 34 
+            lda #$00           				; 7E5C A9 00 
+            sta $0003         				; 7E5E 85 03 
+            lda #$40           				; 7E60 A9 40 
+            sta $0004         				; 7E62 85 04 
+            lda SelfTestSwitch 				; 7E64 AD 07 20 
+            and #$80           				; 7E67 29 80 
+            bne L07E71         				; 7E69 D0 06 
+            sta $01FF         				; 7E6B 8D FF 01 
+            jmp $6000          				; 7E6E 4C 00 60 
 
-L07E71      lda $001A         ; 7E71 A5 1A 
-            beq L07E7C         ; 7E73 F0 07 
-            ldx #$CC           ; 7E75 A2 CC 
-            lda #$57           ; 7E77 A9 57 
-            jsr L07A18         ; 7E79 20 18 7A 
-L07E7C      ldx #$96           ; 7E7C A2 96 
-            stx $000D         ; 7E7E 86 0D 
-            ldx #$05           ; 7E80 A2 05 
-L07E82      lda $0010,x       ; 7E82 B5 10 
-            beq L07EA7         ; 7E84 F0 21 
-            stx $000C         ; 7E86 86 0C 
-            ldx $000D         ; 7E88 A6 0D 
+L07E71      lda $001A         				; 7E71 A5 1A 
+            beq L07E7C         				; 7E73 F0 07 
+            ldx #$CC           				; 7E75 A2 CC 
+            lda #$57           				; 7E77 A9 57 
+            jsr L07A18         				; 7E79 20 18 7A 
+L07E7C      ldx #$96           				; 7E7C A2 96 
+            stx $000D         				; 7E7E 86 0D 
+            ldx #$05           				; 7E80 A2 05 
+L07E82      lda $0010,x       				; 7E82 B5 10 
+            beq L07EA7         				; 7E84 F0 21 
+            stx $000C         				; 7E86 86 0C 
+            ldx $000D         				; 7E88 A6 0D 
             txa                ; 7E8A 8A 
             sec                ; 7E8B 38 
             sbc #$08           ; 7E8C E9 08 
