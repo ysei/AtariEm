@@ -14,6 +14,8 @@ $6a             - set to $10 if bonus ship, otherwise 0?
 $6c             - set to item from bonus table: $ff-no bonus ship, $50, $20, $00 - bonus ship at 15000, 12000, 10000
 $6d             - set to $10 if bonus ship, otherwise 0?
 
+$76				- set to 4 in Sub_7118
+
 $8d             - possibly cost per play. Think #$03 means 50cents/play
 $9c - $a2       - set to 0 in Sub_7BE3
 

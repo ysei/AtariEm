@@ -2323,9 +2323,13 @@ L07113      tax                ; 7113 AA
 
 Sub_7118    lda #$04           	; 7118 A9 04 
             sta $0076         	; 711A 85 76 
-L0711C      jsr $4BA2         	; 711C 20 A2 4B 
+
+; Arghh! jumping into the Vector Ram!
+@           jsr $4BA2         	; 711C 20 A2 4B
+ 
             dec $0076         	; 711F C6 76 
-            bne L0711C         	; 7121 D0 F9 
+            bne <@          	; 7121 D0 F9 
+
             ldx #$C9           	; 7123 A2 C9 
             lda #$47           	; 7125 A9 47 
             sta $0004         	; 7127 85 04 
@@ -2343,6 +2347,8 @@ L0711C      jsr $4BA2         	; 711C 20 A2 4B
             ldx #$20           	; 7140 A2 20 
             jsr L0717F         	; 7142 20 7F 71 
             jmp L079D6         	; 7145 4C D6 79 
+
+
 L07148      lda #$C5           	; 7148 A9 C5 
             ldx #$C9           	; 714A A2 C9 
             jsr L07CD5         	; 714C 20 D5 7C 
