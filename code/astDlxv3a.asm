@@ -95,11 +95,33 @@ VROM56F6		= $56f6
 VROM56F8		= $56f8
 VROM56F9		= $56f9
 
+
+; Vector generator commands
+VGOP_VCTR_0 	= 00
+VGOP_VCTR_1 	= 10
+VGOP_VCTR_2 	= 20
+VGOP_VCTR_3 	= 30
+VGOP_VCTR_4 	= 40
+VGOP_VCTR_5 	= 50
+VGOP_VCTR_6 	= 60
+VGOP_VCTR_7 	= 70
+VGOP_VCTR_8 	= 80
+VGOP_VCTR_9 	= 90
+VGOP_LABS 		= $a0
+VGOP_HALT 		= $b0
+VGOP_JSRL 		= $c0
+VGOP_RTSL 		= $d0
+VGOP_JMPL 		= $e0
+VGOP_SVEC 		= $f0
+
+
 RomBase         = $6000
 
 *		= RomBase
-	
-            jsr L07BE3         ; 6000 20 E3 7B 
+
+; Main game - jump here after basic initialisation and selftest switch check
+
+            jsr Sub_7BE3         ; 6000 20 E3 7B 
             lda $00CD          ; 6003 A5 CD 
             bne L06011         ; 6005 D0 0A 
             sta $00CC          ; 6007 85 CC 
@@ -477,41 +499,44 @@ L062F8      txa                ; 62F8 8A
             dec $006F,x       ; 62FB D6 6F 
             tax                ; 62FD AA 
             lda #$81           ; 62FE A9 81 
-L06300      sta $02EB         ; 6300 8D EB 02 
-            lda #$05           ; 6303 A9 05 
-            sta $00DE         ; 6305 85 DE 
-            rts                ; 6307 60 
-L06308      lda $02E9         ; 6308 AD E9 02 
-            sta $02E8         ; 630B 8D E8 02 
-            lda $0022         ; 630E A5 22 
-            beq L062D7         ; 6310 F0 C5 
-            lda $021A         ; 6312 AD 1A 02 
-            lsr                ; 6315 4A 
-            lda #$00           ; 6316 A9 00 
-            bcs L0631C         ; 6318 B0 02 
-            lda #$20           ; 631A A9 20 
-L0631C      jsr L06C44         ; 631C 20 44 6C 
-            jmp L062D7         ; 631F 4C D7 62 
-L06322      lda $0076         ; 6322 A5 76 
-            and #$03           ; 6324 29 03 
-            beq L06329         ; 6326 F0 01 
-L06328      rts                ; 6328 60 
-L06329      lda $021A         ; 6329 AD 1A 02 
-            beq L06338         ; 632C F0 0A 
-            bpl L06335         ; 632E 10 05 
-            ldy #$17           ; 6330 A0 17 
-            jmp L0770D         ; 6332 4C 0D 77 
-L06335      jmp L063C5         ; 6335 4C C5 63 
-L06338      jsr L067FA         ; 6338 20 FA 67 
-            lda $0022         ; 633B A5 22 
-            beq L06346         ; 633D F0 07 
-            lda $0219         ; 633F AD 19 02 
-            beq L06328         ; 6342 F0 E4 
-            bmi L06328         ; 6344 30 E2 
-L06346      lda $02EA         ; 6346 AD EA 02 
-            beq L0634E         ; 6349 F0 03 
-            dec $02EA         ; 634B CE EA 02 
-L0634E      dec $02E8         ; 634E CE E8 02 
+
+
+
+Sub_6300    sta $02EB         	; 6300 8D EB 02 
+            lda #$05           	; 6303 A9 05 
+            sta $00DE         	; 6305 85 DE 
+            rts                	; 6307 60 
+L06308      lda $02E9         	; 6308 AD E9 02 
+            sta $02E8         	; 630B 8D E8 02 
+            lda $0022         	; 630E A5 22 
+            beq L062D7         	; 6310 F0 C5 
+            lda $021A         	; 6312 AD 1A 02 
+            lsr                	; 6315 4A 
+            lda #$00           	; 6316 A9 00 
+            bcs L0631C         	; 6318 B0 02 
+            lda #$20           	; 631A A9 20 
+L0631C      jsr L06C44         	; 631C 20 44 6C 
+            jmp L062D7         	; 631F 4C D7 62 
+L06322      lda $0076         	; 6322 A5 76 
+            and #$03           	; 6324 29 03 
+            beq L06329         	; 6326 F0 01 
+L06328      rts                	; 6328 60 
+L06329      lda $021A         	; 6329 AD 1A 02 
+            beq L06338         	; 632C F0 0A 
+            bpl L06335         	; 632E 10 05 
+            ldy #$17           	; 6330 A0 17 
+            jmp L0770D         	; 6332 4C 0D 77 
+L06335      jmp L063C5         	; 6335 4C C5 63 
+L06338      jsr L067FA        	; 6338 20 FA 67 
+            lda $0022         	; 633B A5 22 
+            beq L06346         	; 633D F0 07 
+            lda $0219         	; 633F AD 19 02 
+            beq L06328         	; 6342 F0 E4 
+            bmi L06328         	; 6344 30 E2 
+L06346      lda $02EA         	; 6346 AD EA 02 
+            beq L0634E         	; 6349 F0 03 
+            dec $02EA         	; 634B CE EA 02 
+L0634E      dec $02E8         	; 634E CE E8 02 
             bne L06328         ; 6351 D0 D5 
             lda #$01           ; 6353 A9 01 
             sta $02E8         ; 6355 8D E8 02 
@@ -2292,40 +2317,44 @@ L0710B      cmp #$41           ; 710B C9 41
 L07113      tax                ; 7113 AA 
             lda $4B61,x       ; 7114 BD 61 4B 
             rts                ; 7117 60 
-L07118      lda #$04           ; 7118 A9 04 
-            sta $0076         ; 711A 85 76 
-L0711C      jsr $4BA2         ; 711C 20 A2 4B 
-            dec $0076         ; 711F C6 76 
-            bne L0711C         ; 7121 D0 F9 
-            ldx #$C9           ; 7123 A2 C9 
-            lda #$47           ; 7125 A9 47 
-            sta $0004         ; 7127 85 04 
-            lda #$02           ; 7129 A9 02 
-            sta $0003         ; 712B 85 03 
-            lda #$C1           ; 712D A9 C1 
-            jsr L07CD5         ; 712F 20 D5 7C 
-            lda #$BE           ; 7132 A9 BE 
-            sta $0009         ; 7134 85 09 
-            lda #$75           ; 7136 A9 75 
-            sta $000A         ; 7138 85 0A 
-            lda #$00           ; 713A A9 00 
-            sta $0001         ; 713C 85 01 
-            lda #$70           ; 713E A9 70 
-            ldx #$20           ; 7140 A2 20 
-            jsr L0717F         ; 7142 20 7F 71 
-            jmp L079D6         ; 7145 4C D6 79 
-L07148      lda #$C5           ; 7148 A9 C5 
-            ldx #$C9           ; 714A A2 C9 
-            jsr L07CD5         ; 714C 20 D5 7C 
-            ldx #$BE           ; 714F A2 BE 
-            lda #$75           ; 7151 A9 75 
-            sta $000A         ; 7153 85 0A 
-            stx $0009         ; 7155 86 09 
-            bne L07187         ; 7157 D0 2E 
-L07159      lda OptionSwitch21 ; 7159 AD 03 28 
-            and #$03           ; 715C 29 03 
-            ldx #$10           ; 715E A2 10 
-            stx $0001         ; 7160 86 01 
+
+
+
+
+Sub_7118    lda #$04           	; 7118 A9 04 
+            sta $0076         	; 711A 85 76 
+L0711C      jsr $4BA2         	; 711C 20 A2 4B 
+            dec $0076         	; 711F C6 76 
+            bne L0711C         	; 7121 D0 F9 
+            ldx #$C9           	; 7123 A2 C9 
+            lda #$47           	; 7125 A9 47 
+            sta $0004         	; 7127 85 04 
+            lda #$02           	; 7129 A9 02 
+            sta $0003         	; 712B 85 03 
+            lda #$C1           	; 712D A9 C1 
+            jsr L07CD5         	; 712F 20 D5 7C 
+            lda #$BE           	; 7132 A9 BE 
+            sta $0009         	; 7134 85 09 
+            lda #$75           	; 7136 A9 75 
+            sta $000A         	; 7138 85 0A 
+            lda #$00           	; 713A A9 00 
+            sta $0001         	; 713C 85 01 
+            lda #$70           	; 713E A9 70 
+            ldx #$20           	; 7140 A2 20 
+            jsr L0717F         	; 7142 20 7F 71 
+            jmp L079D6         	; 7145 4C D6 79 
+L07148      lda #$C5           	; 7148 A9 C5 
+            ldx #$C9           	; 714A A2 C9 
+            jsr L07CD5         	; 714C 20 D5 7C 
+            ldx #$BE           	; 714F A2 BE 
+            lda #$75           	; 7151 A9 75 
+            sta $000A         	; 7153 85 0A 
+            stx $0009         	; 7155 86 09 
+            bne L07187         	; 7157 D0 2E 
+L07159      lda OptionSwitch21 	; 7159 AD 03 28 
+            and #$03           	; 715C 29 03 
+            ldx #$10           	; 715E A2 10 
+            stx $0001         	; 7160 86 01 
 L07162      asl                ; 7162 0A 
             tax                ; 7163 AA 
             lda L071F1,x       ; 7164 BD F1 71 
@@ -3421,87 +3450,106 @@ L07BC7      ldy $00CD         ; 7BC7 A4 CD
             sty $00CE         ; 7BDE 84 CE 
             sty $00D0         ; 7BE0 84 D0 
 L07BE2      rts                ; 7BE2 60 
-L07BE3      bit VGHalted       ; 7BE3 2C 02 20 
-            bmi L07BE3         ; 7BE6 30 FB 
-            jsr L07118         ; 7BE8 20 18 71 
-            lda #$B0           ; 7BEB A9 B0 
-            sta $4003         ; 7BED 8D 03 40 
-            lda #$00           ; 7BF0 A9 00 
-            ldx #$03           ; 7BF2 A2 03 
-L07BF4      sta $0061,x       ; 7BF4 95 61 
-            sta $0064,x       ; 7BF6 95 64 
-            dex                ; 7BF8 CA 
-            bne L07BF4         ; 7BF9 D0 F9 
-L07BFB      sta $0200,x       ; 7BFB 9D 00 02 
-            inx                ; 7BFE E8 
-            bne L07BFB         ; 7BFF D0 FA 
-            sta $00DD         ; 7C01 85 DD 
-            sta $00D3         ; 7C03 85 D3 
-            sta $00FA         ; 7C05 85 FA 
-            sta $00FC         ; 7C07 85 FC 
-            lda OptionSwitch65 ; 7C09 AD 01 28 
-            and #$02           ; 7C0C 29 02 
-            sta $00FB         ; 7C0E 85 FB 
-            sta $00FD         ; 7C10 85 FD 
-            lda #$01           ; 7C12 A9 01 
-            jsr L06300         ; 7C14 20 00 63 
-            lda #$98           ; 7C17 A9 98 
-            sta $02E9         ; 7C19 8D E9 02 
-            sta $02E8         ; 7C1C 8D E8 02 
-            lda #$7F           ; 7C1F A9 7F 
-            sta $02EC         ; 7C21 8D EC 02 
-            lda #$06           ; 7C24 A9 06 
-            sta $02EE         ; 7C26 8D EE 02 
-            lda #$FF           ; 7C29 A9 FF 
-            sta $0042         ; 7C2B 85 42 
-            sta $0043         ; 7C2D 85 43 
-            lda #$30           ; 7C2F A9 30 
-            sta $02ED         ; 7C31 8D ED 02 
-L07C34      jsr L07FCF         ; 7C34 20 CF 7F 
-            lda OptionSwitch87 ; 7C37 AD 00 28 
-            and #$03           ; 7C3A 29 03 
-            tay                ; 7C3C A8 
-            lda L07C6B,y       ; 7C3D B9 6B 7C 
-            sta $00F8         ; 7C40 85 F8 
-            sta $0069         ; 7C42 85 69 
-            sta $006C         ; 7C44 85 6C 
-            bmi L07C4A         ; 7C46 30 02 
-            lda #$01           ; 7C48 A9 01 
-L07C4A      sta $006A         ; 7C4A 85 6A 
-            sta $00F9         ; 7C4C 85 F9 
-            sta $006D         ; 7C4E 85 6D 
-            lda #$03           ; 7C50 A9 03 
-            and OptionSwitch43 ; 7C52 2D 02 28 
-            tax                ; 7C55 AA 
-            inx                ; 7C56 E8 
-            inx                ; 7C57 E8 
-            cpy #$03           ; 7C58 C0 03 
-            bne L07C5D         ; 7C5A D0 01 
-            inx                ; 7C5C E8 
-L07C5D      lda $008D         ; 7C5D A5 8D 
-            and #$03           ; 7C5F 29 03 
-            cmp #$03           ; 7C61 C9 03 
-            bne L07C66         ; 7C63 D0 01 
-            inx                ; 7C65 E8 
-L07C66      stx $006E         ; 7C66 86 6E 
-            jmp L07844         ; 7C68 4C 44 78 
-L07C6B      brk                ; 7C6B 00 
-            jsr L0FF50         ; 7C6C 20 50 FF 
-L07C6F      ldx #$D5           ; 7C6F A2 D5 
-L07C71      sty $0009         ; 7C71 84 09 
-            ldy #$E0           ; 7C73 A0 E0 
-            sty $0001         ; 7C75 84 01 
-            jsr L07A1F         ; 7C77 20 1F 7A 
-            lda #$70           ; 7C7A A9 70 
-            jsr L07AEA         ; 7C7C 20 EA 7A 
-            jmp L07C89         ; 7C7F 4C 89 7C 
-L07C82      ldx #$CA           ; 7C82 A2 CA 
-            lda #$A4           ; 7C84 A9 A4 
-            jsr L07CD5         ; 7C86 20 D5 7C 
-L07C89      dec $0009         ; 7C89 C6 09 
-            beq L07C8F         ; 7C8B F0 02 
-            bpl L07C82         ; 7C8D 10 F3 
-L07C8F      rts                ; 7C8F 60 
+
+
+Sub_7BE3    bit VGHalted  		; 7BE3 2C 02 20 - Wait for the vector generator to finish
+            bmi Sub_7BE3        ; 7BE6 30 FB 
+
+            jsr Sub_7118     	; 7BE8 20 18 71
+ 
+            lda #VGOP_HALT      ; 7BEB A9 B0
+
+; Why VectorRam+3 ??? 
+            sta VectorRam+3     ; 7BED 8D 03 40 - Write halt instruction to vector generator memory
+
+            lda #$00           	; 7BF0 A9 00 
+            ldx #$03           	; 7BF2 A2 03
+ 
+@           sta $0061,x       	; 7BF4 95 61 
+            sta $0064,x       	; 7BF6 95 64 
+            dex                	; 7BF8 CA 
+            bne <@         		; 7BF9 D0 F9 
+
+; clear page 2
+;   x - previously set to 0
+@      		sta $0200,x       	; 7BFB 9D 00 02 
+            inx                	; 7BFE E8 
+            bne <@         		; 7BFF D0 FA
+
+; looks like we're initialising a load of variables to 0
+            sta $00DD         	; 7C01 85 DD 
+            sta $00D3         	; 7C03 85 D3 
+            sta $00FA         	; 7C05 85 FA 
+            sta $00FC         	; 7C07 85 FC
+
+            lda OptionSwitch65 	; 7C09 AD 01 28 
+            and #$02           	; 7C0C 29 02 
+            sta $00FB         	; 7C0E 85 FB 
+            sta $00FD         	; 7C10 85 FD
+
+            lda #$01           	; 7C12 A9 01 
+            jsr Sub_6300        ; 7C14 20 00 63
+
+            lda #$98           	; 7C17 A9 98 
+            sta $02E9         	; 7C19 8D E9 02 
+            sta $02E8         	; 7C1C 8D E8 02 
+            lda #$7F           	; 7C1F A9 7F 
+            sta $02EC         	; 7C21 8D EC 02 
+            lda #$06           	; 7C24 A9 06 
+            sta $02EE         	; 7C26 8D EE 02 
+            lda #$FF           	; 7C29 A9 FF 
+            sta $0042         	; 7C2B 85 42 
+            sta $0043        	; 7C2D 85 43 
+            lda #$30           	; 7C2F A9 30 
+            sta $02ED         	; 7C31 8D ED 02 
+L07C34      jsr L07FCF         	; 7C34 20 CF 7F 
+            lda OptionSwitch87 	; 7C37 AD 00 28 
+            and #$03           	; 7C3A 29 03 
+            tay                	; 7C3C A8 
+            lda L07C6B,y       	; 7C3D B9 6B 7C 
+            sta $00F8         	; 7C40 85 F8 
+            sta $0069         	; 7C42 85 69 
+            sta $006C         	; 7C44 85 6C 
+            bmi L07C4A         	; 7C46 30 02 
+            lda #$01           	; 7C48 A9 01 
+L07C4A      sta $006A         	; 7C4A 85 6A 
+            sta $00F9         	; 7C4C 85 F9 
+            sta $006D         	; 7C4E 85 6D 
+            lda #$03           	; 7C50 A9 03 
+            and OptionSwitch43 	; 7C52 2D 02 28 
+            tax                	; 7C55 AA 
+            inx                	; 7C56 E8 
+            inx                	; 7C57 E8 
+            cpy #$03           	; 7C58 C0 03 
+            bne L07C5D         	; 7C5A D0 01 
+            inx                	; 7C5C E8 
+L07C5D      lda $008D         	; 7C5D A5 8D 
+            and #$03           	; 7C5F 29 03 
+            cmp #$03           	; 7C61 C9 03 
+            bne L07C66         	; 7C63 D0 01 
+            inx                	; 7C65 E8 
+L07C66      stx $006E         	; 7C66 86 6E 
+            jmp L07844         	; 7C68 4C 44 78 
+L07C6B      brk                	; 7C6B 00 
+            jsr L0FF50         	; 7C6C 20 50 FF 
+L07C6F      ldx #$D5           	; 7C6F A2 D5 
+L07C71      sty $0009         	; 7C71 84 09 
+            ldy #$E0           	; 7C73 A0 E0 
+            sty $0001         	; 7C75 84 01 
+            jsr L07A1F         	; 7C77 20 1F 7A 
+            lda #$70           	; 7C7A A9 70 
+            jsr L07AEA         	; 7C7C 20 EA 7A 
+            jmp L07C89         	; 7C7F 4C 89 7C 
+L07C82      ldx #$CA           	; 7C82 A2 CA 
+            lda #$A4           	; 7C84 A9 A4 
+            jsr L07CD5         	; 7C86 20 D5 7C 
+L07C89      dec $0009         	; 7C89 C6 09 
+            beq L07C8F         	; 7C8B F0 02 
+            bpl L07C82         	; 7C8D 10 F3 
+L07C8F      rts                	; 7C8F 60 
+
+
+
 L07C90      lda #$F7           ; 7C90 A9 F7 
             ldy #$03           ; 7C92 A0 03 
             sec                ; 7C94 38 
@@ -3777,30 +3825,43 @@ L07E26      cmp #$80           				; 7E26 C9 80
 L07E37      lda PageThree         			; 7E37 AD 00 03 
             beq L07E3E         				; 7E3A F0 02 
             inc $001A         				; 7E3C E6 1A
+
+
+
+
              
 L07E3E      lda #$10           				; 7E3E A9 10 
             sta $0001         				; 7E40 85 01 
             sta BankSel        				; 7E42 8D 04 3C 
-            ldx #$24           				; 7E45 A2 24 
+            ldx #$24           				; 7E45 A2 24
+
 L07E47      lda ThreeKHz           			; 7E47 AD 01 20 
-            bpl L07E47         				; 7E4A 10 FB 
+            bpl L07E47         				; 7E4A 10 FB
+
 L07E4C      lda ThreeKHz           			; 7E4C AD 01 20 
             bmi L07E4C         				; 7E4F 30 FB 
             dex                				; 7E51 CA 
-            bpl L07E47         				; 7E52 10 F3 
+            bpl L07E47         				; 7E52 10 F3
+ 
 L07E54      bit VGHalted       				; 7E54 2C 02 20 
             bmi L07E54         				; 7E57 30 FB 
+
             sta ResetWDog      				; 7E59 8D 00 34 
+
             lda #$00           				; 7E5C A9 00 
             sta $0003         				; 7E5E 85 03 
             lda #$40           				; 7E60 A9 40 
             sta $0004         				; 7E62 85 04 
+
             lda SelfTestSwitch 				; 7E64 AD 07 20 
             and #$80           				; 7E67 29 80 
             bne L07E71         				; 7E69 D0 06 
             sta $01FF         				; 7E6B 8D FF 01 
             jmp $6000          				; 7E6E 4C 00 60 
 
+
+
+; Selftest
 L07E71      lda $001A         				; 7E71 A5 1A 
             beq L07E7C         				; 7E73 F0 07 
             ldx #$CC           				; 7E75 A2 CC 
@@ -3946,6 +4007,9 @@ L07F97      sta PKY_AUDC1         ; 7F97 8D 01 2C
             sta PKY_AUDF1          ; 7F9B 8D 00 2C 
             sta StartVG        ; 7F9E 8D 00 30  - Tell the DVG to draw
             jmp L07E3E         ; 7FA1 4C 3E 7E 
+
+
+
             
 L07FA4      jsr L07FA7         ; 7FA4 20 A7 7F 
 L07FA7      ldx #$07           ; 7FA7 A2 07 

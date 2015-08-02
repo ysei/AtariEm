@@ -14,10 +14,12 @@ public class Assembler {
 		_logger.logInfo("Assembling...");
 		
 		List<LexerToken> tokens = lex.lex(sourceCode);
-				
+
+		/*
 		for (LexerToken tok: tokens) {
 			_logger.logInfo(tok.toString());
 		}
+		*/
 		
 		Parser p = new Parser(tokens);
 		
@@ -45,7 +47,7 @@ public class Assembler {
 			p.pass(true);
 		}
 		
-		p.dumpLabels();
+		//p.dumpLabels();
 		
 		_logger.logInfo("Errors: " + p.errors() + ", hard: " + p.hardErrors() + ", soft: " + p.softErrors());
 	}

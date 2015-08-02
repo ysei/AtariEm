@@ -1,0 +1,26 @@
+Memory locations:
+
+Page 0
+
+$62, $63, $64	- set to 0 in Sub_7BE3
+$65, $66, $67	- set to 0 in Sub_7BE3
+$d3				- set to 0 in Sub_7BE3
+$dd				- set to 0 in Sub_7BE3
+$fa				- set to 0 in Sub_7BE3
+$fb				- bottom two bits contain option switches 65
+$fc				- set to 0 in Sub_7BE3
+$fd				- bottom two bits contain option switches 65
+
+
+
+Page 1
+
+
+
+
+Page 2
+
+
+
+
+Page 3
