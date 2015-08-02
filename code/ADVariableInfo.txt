@@ -2,10 +2,27 @@ Memory locations:
 
 Page 0
 
+$42				- initialised to $ff in Sub_7BE3
+$43				- initialised to $ff in Sub_7BE3
+
 $62, $63, $64	- set to 0 in Sub_7BE3
 $65, $66, $67	- set to 0 in Sub_7BE3
+
+$69             - set to item from bonus table: $ff-no bonus ship, $50, $20, $00 - bonus ship at 15000, 12000, 10000
+$6a             - set to $10 if bonus ship, otherwise 0?
+
+$6c             - set to item from bonus table: $ff-no bonus ship, $50, $20, $00 - bonus ship at 15000, 12000, 10000
+$6d             - set to $10 if bonus ship, otherwise 0?
+
+$8d             - possibly cost per play. Think #$03 means 50cents/play
+$9c - $a2       - set to 0 in Sub_7BE3
+
 $d3				- set to 0 in Sub_7BE3
 $dd				- set to 0 in Sub_7BE3
+
+$f8             - set to item from bonus table: $ff-no bonus ship, $50, $20, $00 - bonus ship at 15000, 12000, 10000
+$f9             - set to $10 if bonus ship, otherwise 0?
+
 $fa				- set to 0 in Sub_7BE3
 $fb				- bottom two bits contain option switches 65
 $fc				- set to 0 in Sub_7BE3
@@ -20,7 +37,11 @@ Page 1
 
 Page 2
 
-
+$e8				- initialised to $98 in Sub_7BE3
+$e9				- initialised to $98 in Sub_7BE3
+$ec				- initialised to $7f in Sub_7BE3
+$ed				- initialised to $30 in Sub_7BE3
+$ee				- initialised to $06 in Sub_7BE3
 
 
 Page 3

@@ -2949,14 +2949,18 @@ L077A5		.byt $7f, $02, $04
             .byt $FF	; 7840 FF 
             .byt $FF	; 7841 FF 
             .byt $FF	; 7842 FF 
-            .byt $FF	; 7843 FF 
-L07844      lda #$00           ; 7844 A9 00 
-            ldx #$07           ; 7846 A2 07 
-L07848      sta $009B,x       ; 7848 95 9B 
-            dex                ; 784A CA 
-            bpl L07848         ; 784B 10 FB 
-            sta PKY_AUDCTL         ; 784D 8D 08 2C 
-            rts                ; 7850 60 
+            .byt $FF	; 7843 FF
+
+; ...continuation of Sub_7BE3
+L07844      lda #$00           		; 7844 A9 00 
+            ldx #$07           		; 7846 A2 07
+ 
+@           sta $009B,x       		; 7848 95 9B 
+            dex                		; 784A CA 
+            bpl <@          		; 784B 10 FB
+ 
+            sta PKY_AUDCTL         	; 784D 8D 08 2C 
+            rts                		; 7850 60       - end of Sub_7BE3 
             
 NMI_ISR            
             bit $01FF         ; 7851 2C FF 01 
@@ -3493,45 +3497,67 @@ Sub_7BE3    bit VGHalted  		; 7BE3 2C 02 20 - Wait for the vector generator to f
             lda #$98           	; 7C17 A9 98 
             sta $02E9         	; 7C19 8D E9 02 
             sta $02E8         	; 7C1C 8D E8 02 
+
             lda #$7F           	; 7C1F A9 7F 
             sta $02EC         	; 7C21 8D EC 02 
+
             lda #$06           	; 7C24 A9 06 
-            sta $02EE         	; 7C26 8D EE 02 
+            sta $02EE         	; 7C26 8D EE 02
+ 
             lda #$FF           	; 7C29 A9 FF 
             sta $0042         	; 7C2B 85 42 
-            sta $0043        	; 7C2D 85 43 
+            sta $0043        	; 7C2D 85 43
+ 
             lda #$30           	; 7C2F A9 30 
-            sta $02ED         	; 7C31 8D ED 02 
+            sta $02ED         	; 7C31 8D ED 02
+ 
 L07C34      jsr L07FCF         	; 7C34 20 CF 7F 
+
             lda OptionSwitch87 	; 7C37 AD 00 28 
             and #$03           	; 7C3A 29 03 
             tay                	; 7C3C A8 
-            lda L07C6B,y       	; 7C3D B9 6B 7C 
+            lda BonusTab,y      ; 7C3D B9 6B 7C 
             sta $00F8         	; 7C40 85 F8 
             sta $0069         	; 7C42 85 69 
-            sta $006C         	; 7C44 85 6C 
-            bmi L07C4A         	; 7C46 30 02 
+            sta $006C         	; 7C44 85 6C
+            bmi L07C4A         	; 7C46 30 02    - Branch if no bonus ship
             lda #$01           	; 7C48 A9 01 
 L07C4A      sta $006A         	; 7C4A 85 6A 
             sta $00F9         	; 7C4C 85 F9 
             sta $006D         	; 7C4E 85 6D 
+
+; Number of starting ships
+;   00 - 2 ships
+;   01 - 3 shipd
+;   02 - 4 ships
+;   03 - 5 ships
+;     If set for no bonus ship or 50cents/play, add one extra ship
+
             lda #$03           	; 7C50 A9 03 
             and OptionSwitch43 	; 7C52 2D 02 28 
-            tax                	; 7C55 AA 
-            inx                	; 7C56 E8 
+            tax                	; 7C55 AA    - x = switches & 0x03
+            inx                	; 7C56 E8    - x += 2; 
             inx                	; 7C57 E8 
-            cpy #$03           	; 7C58 C0 03 
-            bne L07C5D         	; 7C5A D0 01 
-            inx                	; 7C5C E8 
-L07C5D      lda $008D         	; 7C5D A5 8D 
+
+            cpy #$03           	; 7C58 C0 03 - #$03 means no bonus ship
+            bne >@          	; 7C5A D0 01 
+            inx                	; 7C5C E8    - add extra ship because no bonus ship
+@           lda $008D         	; 7C5D A5 8D 
             and #$03           	; 7C5F 29 03 
-            cmp #$03           	; 7C61 C9 03 
-            bne L07C66         	; 7C63 D0 01 
+            cmp #$03           	; 7C61 C9 03 - guessing that #$03 means 50cents/play
+            bne >@          	; 7C63 D0 01 
             inx                	; 7C65 E8 
-L07C66      stx $006E         	; 7C66 86 6E 
+@           stx $006E         	; 7C66 86 6E 
             jmp L07844         	; 7C68 4C 44 78 
-L07C6B      brk                	; 7C6B 00 
-            jsr L0FF50         	; 7C6C 20 50 FF 
+
+
+; Bonus ship table
+BonusTab	.byt $00			; 7C6b 00       - Bonus ship at 10000
+			.byt $20			; 7C6C 20       - Bonus ship at 12000
+			.byt $50			; 7C6D 50		- Bonus ship at 15000
+			.byt $ff			; 7C6E FF		- No bonus ship
+			
+			
 L07C6F      ldx #$D5           	; 7C6F A2 D5 
 L07C71      sty $0009         	; 7C71 84 09 
             ldy #$E0           	; 7C73 A0 E0 
