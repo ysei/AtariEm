@@ -1,250 +1,294 @@
-ScratchRam      = $0000
+ScratchRam      		= $0000
 
-PageOne		= $0100
-PageThree	= $0300
+PageOne					= $0100
+PageThree				= $0300
 
-V0319		= $0319
+V0319					= $0319
 
-L01A4A			= $1a4a
-L01C16			= $1c16
-L01C1A			= $1c1a
-L0201F			= $201f
-L02BFF			= $2bff
-L02C56			= $2c56
-L03440			= $3440
-L03873			= $3873
-L056F7			= $56f7
+L01A4A					= $1a4a
+L01C16					= $1c16
+L01C1A					= $1c1a
+L0201F					= $201f
+L02BFF					= $2bff
+L02C56					= $2c56
+L03440					= $3440
+L03873					= $3873
+L056F7					= $56f7
 
-ThreeKHz        = $2001
-VGHalted        = $2002
-ShieldSwitch    = $2003
-FireSwitch      = $2004
-SlamSwitch      = $2006
+ThreeKHz        		= $2001
+VGHalted        		= $2002
+ShieldSwitch    		= $2003
+FireSwitch      		= $2004
+SlamSwitch      		= $2006
 
-SelfTestSwitch  = $2007
-LCoinSwitch     = $2400
-CCoinSwitch     = $2401
-RCoinSwitch     = $2402
-OnePlayerStartSwitch   = $2403
-TwoPlayerStartSwitch   = $2404
-ThrustSwitch    = $2405
-RotRightSwitch  = $2406
-RotLeftSwitch   = $2407
+SelfTestSwitch  		= $2007
+LCoinSwitch     		= $2400
+CCoinSwitch     		= $2401
+RCoinSwitch     		= $2402
+OnePlayerStartSwitch   	= $2403
+TwoPlayerStartSwitch   	= $2404
+ThrustSwitch    		= $2405
+RotRightSwitch  		= $2406
+RotLeftSwitch   		= $2407
 
-OptionSwitch87  = $2800
-OptionSwitch65  = $2801
-OptionSwitch43  = $2802
-OptionSwitch21  = $2803
+OptionSwitch87  		= $2800
+OptionSwitch65  		= $2801
+OptionSwitch43  		= $2802
+OptionSwitch21  		= $2803
 
 ; POKEY Write registers
-PKY_AUDF1       = $2C00
-PKY_AUDC1       = $2C01
-PKY_AUDF2       = $2C02
-PKY_AUDC2       = $2C03
-PKY_AUDF3       = $2C04
-PKY_AUDC3       = $2C05
-PKY_AUDF4       = $2C06
-PKY_AUDC4       = $2C07
-PKY_AUDCTL      = $2C08
-PKY_STIMER      = $2C09
-PKY_SKRES       = $2C0A
-PKY_POTGO       = $2C0B
-PKY_SEROUT      = $2C0D
-PKY_IRQEN       = $2C0E
-PKY_SKCTL       = $2C0F
+PKY_AUDF1       		= $2C00
+PKY_AUDC1       		= $2C01
+PKY_AUDF2       		= $2C02
+PKY_AUDC2       		= $2C03
+PKY_AUDF3       		= $2C04
+PKY_AUDC3       		= $2C05
+PKY_AUDF4       		= $2C06
+PKY_AUDC4       		= $2C07
+PKY_AUDCTL      		= $2C08
+PKY_STIMER      		= $2C09
+PKY_SKRES       		= $2C0A
+PKY_POTGO       		= $2C0B
+PKY_SEROUT      		= $2C0D
+PKY_IRQEN       		= $2C0E
+PKY_SKCTL       		= $2C0F
 
 ; POKEY Read registers
-PKY_POT0        = $2C00
-PKY_POT1        = $2C01
-PKY_POT2        = $2C02
-PKY_POT3        = $2C03
-PKY_POT4        = $2C04
-PKY_POT5        = $2C05
-PKY_POT6        = $2C06
-PKY_POT7        = $2C07
-PKY_ALLPOT      = $2C08
-PKY_KBCODE      = $2C09
-PKY_RANDOM      = $2C0A
-PKY_SERIN       = $2C0D
-PKY_IRQST       = $2C0E
-PKY_SKSTAT      = $2C0F
+PKY_POT0        		= $2C00
+PKY_POT1        		= $2C01
+PKY_POT2        		= $2C02
+PKY_POT3        		= $2C03
+PKY_POT4        		= $2C04
+PKY_POT5        		= $2C05
+PKY_POT6        		= $2C06
+PKY_POT7        		= $2C07
+PKY_ALLPOT      		= $2C08
+PKY_KBCODE      		= $2C09
+PKY_RANDOM      		= $2C0A
+PKY_SERIN       		= $2C0D
+PKY_IRQST       		= $2C0E
+PKY_SKSTAT      		= $2C0F
 
-EAROM           = $2C40
-StartVG         = $3000
-LatchEA         = $3200
-ResetWDog       = $3400
-ExplosionDat    = $3600
-ResetVG         = $3800
-EACtlLatch      = $3A00
-OnePlayerLED           = $3C00
-TwoPlayerLED           = $3C01
-ThrustSnd       = $3C03
-BankSel         = $3C04
-LCoinCounter    = $3C05
-CCoinCounter    = $3C06
-RCoinCounter    = $3C07
-NoiseGenReset   = $3E00
+EAROM           		= $2C40
+StartVG         		= $3000
+LatchEA         		= $3200
+ResetWDog       		= $3400
+ExplosionDat    		= $3600
+ResetVG         		= $3800
+EACtlLatch      		= $3A00
+OnePlayerLED    		= $3C00
+TwoPlayerLED    		= $3C01
+ThrustSnd       		= $3C03
+BankSel         		= $3C04
+LCoinCounter    		= $3C05
+CCoinCounter    		= $3C06
+RCoinCounter    		= $3C07
+NoiseGenReset   		= $3E00
 
-VectorRam       = $4000
-VectorROM       = $4800
+VectorRam       		= $4000
+VectorROM       		= $4800
 
-VROM506A		= $506a
-VROM506B		= $506b
-VROM53BC		= $53bc
-VROM56F6		= $56f6
-VROM56F8		= $56f8
-VROM56F9		= $56f9
+VGFn_4BE1				= $4BE1
+
+VROM506A				= $506a
+VROM506B				= $506b
+VROM53BC				= $53bc
+VROM56F6				= $56f6
+VROM56F8				= $56f8
+VROM56F9				= $56f9
 
 
 ; Vector generator commands
-VGOP_VCTR_0 	= 00
-VGOP_VCTR_1 	= 10
-VGOP_VCTR_2 	= 20
-VGOP_VCTR_3 	= 30
-VGOP_VCTR_4 	= 40
-VGOP_VCTR_5 	= 50
-VGOP_VCTR_6 	= 60
-VGOP_VCTR_7 	= 70
-VGOP_VCTR_8 	= 80
-VGOP_VCTR_9 	= 90
-VGOP_LABS 		= $a0
-VGOP_HALT 		= $b0
-VGOP_JSRL 		= $c0
-VGOP_RTSL 		= $d0
-VGOP_JMPL 		= $e0
-VGOP_SVEC 		= $f0
+VGOP_VCTR_0 			= $00
+VGOP_VCTR_1 			= $10
+VGOP_VCTR_2 			= $20
+VGOP_VCTR_3 			= $30
+VGOP_VCTR_4 			= $40
+VGOP_VCTR_5 			= $50
+VGOP_VCTR_6 			= $60
+VGOP_VCTR_7 			= $70
+VGOP_VCTR_8 			= $80
+VGOP_VCTR_9 			= $90
+VGOP_LABS 				= $a0
+VGOP_HALT 				= $b0
+VGOP_JSRL 				= $c0
+VGOP_RTSL 				= $d0
 
 
-RomBase         = $6000
+VGOP_JMPL 				= $e0
 
-*		= RomBase
+VGOP_SVEC 				= $f0
+
+
+RomBase         		= $6000
+
+*						= RomBase
 
 ; Main game - jump here after basic initialisation and selftest switch check
 
-            jsr Sub_7BE3         ; 6000 20 E3 7B 
-            lda $00CD          ; 6003 A5 CD 
-            bne L06011         ; 6005 D0 0A 
-            sta $00CC          ; 6007 85 CC 
-            sta $00CB          ; 6009 85 CB 
-            sta $00CE          ; 600B 85 CE 
-            lda #$20           ; 600D A9 20 
-            sta $00CD          ; 600F 85 CD 
-L06011      jsr L06959         ; 6011 20 59 69 
-L06014      bit VGHalted       ; 6014 2C 02 20 
-            bmi L06014         ; 6017 30 FB 
-            jsr $4BA2          ; 6019 20 A2 4B 
-L0601C      lsr $0075          ; 601C 46 75 
-            bcc L0601C         ; 601E 90 FC 
-            lda $0076          ; 6020 A5 76 
-            and #$01           ; 6022 29 01 
-            asl                ; 6024 0A 
-            tax                ; 6025 AA 
-            eor #$02           ; 6026 49 02 
-            tay                ; 6028 A8 
-            lda L07799,x       ; 6029 BD 99 77 
-            sta VectorRam      ; 602C 8D 00 40 
-            lda L0779A,x       ; 602F BD 9A 77 
-            sta $4001         ; 6032 8D 01 40 
-            lda L07799,y       ; 6035 B9 99 77 
-            asl                ; 6038 0A 
-            sta $0003         ; 6039 85 03 
-            lda L0779A,y       ; 603B B9 9A 77 
-            rol                ; 603E 2A 
-            and #$1F           ; 603F 29 1F 
-            ora #$40           ; 6041 09 40 
-            sta $0004         ; 6043 85 04 
-            sta StartVG        ; 6045 8D 00 30 
-            sta ResetWDog      ; 6048 8D 00 34 
-            inc $0076         ; 604B E6 76 
-            bne L0607F         ; 604D D0 30 
-            inc $0077         ; 604F E6 77 
-            ldx $0020         ; 6051 A6 20 
-            lda $0064,x       ; 6053 B5 64 
-            and #$0F           ; 6055 29 0F 
-            sta $0010         ; 6057 85 10 
-            eor $0064,x       ; 6059 55 64 
-            lsr                ; 605B 4A 
-            sta $0011         ; 605C 85 11 
-            lsr                ; 605E 4A 
-            lsr                ; 605F 4A 
-            adc $0011         ; 6060 65 11 
-            adc $0010         ; 6062 65 10 
-            ldx $001F         ; 6064 A6 1F 
-            ldy $0077         ; 6066 A4 77 
-            cpy #$80           ; 6068 C0 80 
-            bne L06074         ; 606A D0 08 
-            cmp $00FA,x       ; 606C D5 FA 
-            bne L06072         ; 606E D0 02 
-            inc $00FB,x       ; 6070 F6 FB 
-L06072      sta $00FA,x       ; 6072 95 FA 
-L06074      clc                ; 6074 18 
-            adc $00FB,x       ; 6075 75 FB 
-            cmp #$10           ; 6077 C9 10 
-            bcc L0607D         ; 6079 90 02 
-            lda #$0F           ; 607B A9 0F 
-L0607D      sta $00D3         ; 607D 85 D3 
-L0607F      jsr L07AFF         ; 607F 20 FF 7A 
-            jsr $4BE1         ; 6082 20 E1 4B 
-            bcs L060C9         ; 6085 B0 42 
-            jsr L06FD4         ; 6087 20 D4 6F 
-            jsr L0656B         ; 608A 20 6B 65 
-            bpl L060AD         ; 608D 10 1E 
-            jsr L06C9D         ; 608F 20 9D 6C 
-            bcs L060AD         ; 6092 B0 19 
-            lda $0074         ; 6094 A5 74 
-            bne L060A7         ; 6096 D0 0F 
-            jsr L06659         ; 6098 20 59 66 
-            jsr L06497         ; 609B 20 97 64 
-            jsr L06810         ; 609E 20 10 68 
-            jsr $4A9E          ; 60A1 20 9E 4A 
-            jsr L06322         ; 60A4 20 22 63 
-L060A7      jsr L066DC         ; 60A7 20 DC 66 
-            jsr L060F7         ; 60AA 20 F7 60 
-L060AD      jsr L06A7E         ; 60AD 20 7E 6A 
-            jsr L06EF6         ; 60B0 20 F6 6E 
-            lda #$7F           ; 60B3 A9 7F 
-            tax                ; 60B5 AA 
-            jsr L07A1F         ; 60B6 20 1F 7A 
-            jsr L079DA         ; 60B9 20 DA 79 
-            lda $02EC         ; 60BC AD EC 02 
-            beq L060C4         ; 60BF F0 03 
-            dec $02EC         ; 60C1 CE EC 02 
-L060C4      ora $02E7         ; 60C4 0D E7 02 
-            bne L060CC         ; 60C7 D0 03 
-L060C9      jmp L06011         ; 60C9 4C 11 60 
-L060CC      jmp L06014         ; 60CC 4C 14 60 
-            .byt $B2	; 60CF B2 
-            lda $0042         ; 60D0 A5 42 
-            and $0043         ; 60D2 25 43 
-            bmi L060D9         ; 60D4 30 03 
-            jmp L07BC7         ; 60D6 4C C7 7B 
-L060D9      clc                ; 60D9 18 
-            rts                ; 60DA 60 
-            lda $008A         ; 60DB A5 8A 
-            ora $0013         ; 60DD 05 13 
-            bpl L060E8         ; 60DF 10 07 
-            lda $0076         ; 60E1 A5 76 
-            and #$20           ; 60E3 29 20 
-            beq L060E8         ; 60E5 F0 01 
-            rts                ; 60E7 60 
-L060E8      jmp L07159         ; 60E8 4C 59 71 
-            ldy #$01           ; 60EB A0 01 
-            jsr L07159         ; 60ED 20 59 71 
-            ldy $001E         ; 60F0 A4 1E 
-            iny                ; 60F2 C8 
-            tya                ; 60F3 98 
-            jmp L079EB         ; 60F4 4C EB 79 
-L060F7      lsr $0071         ; 60F7 46 71 
-            ldx #$07           ; 60F9 A2 07 
-L060FB      lda $0219,x       ; 60FB BD 19 02 
-            beq L06102         ; 60FE F0 02 
-            bpl L0610C         ; 6100 10 0A 
-L06102      dex                ; 6102 CA 
-            bpl L060FB         ; 6103 10 F6 
-            bit $0071         ; 6105 24 71 
-            bmi L0610B         ; 6107 30 02 
-            stx $0072         ; 6109 86 72 
-L0610B      rts                ; 610B 60 
+            jsr Sub_7BE3         	; 6000 20 E3 7B 
+            lda $CD          		; 6003 A5 CD 
+            bne L06011         		; 6005 D0 0A 
+            sta $CC          		; 6007 85 CC 
+            sta $CB          		; 6009 85 CB 
+            sta $CE          		; 600B 85 CE 
+            lda #$20           		; 600D A9 20 
+            sta $00CD          		; 600F 85 CD 
+
+L06011      jsr L06959         		; 6011 20 59 69 
+
+L06014      bit VGHalted       		; 6014 2C 02 20 - Wait for Vector generator to finish 
+            bmi L06014         		; 6017 30 FB 
+
+            jsr $4BA2          		; 6019 20 A2 4B - Run some code in Vecor RAM!!!
+L0601C      lsr $0075          		; 601C 46 75 
+            bcc L0601C         		; 601E 90 FC 
+
+            lda $76          		; 6020 A5 76 
+            and #$01           		; 6022 29 01 
+            asl                		; 6024 0A 
+            tax                		; 6025 AA 
+            eor #$02           		; 6026 49 02 
+            tay                		; 6028 A8
+
+; Load one of two VG instructions into VG RAM:
+;   JMPL $001
+;	JMPL $1c0 
+            lda L07799,x       		; 6029 BD 99 77 
+            sta VectorRam      		; 602C 8D 00 40 
+            lda L0779A,x       		; 602F BD 9A 77 
+            sta VectorRam+1    		; 6032 8D 01 40 
+
+; get LSB of JMPL destination??
+            lda L07799,y       		; 6035 B9 99 77 
+            asl                		; 6038 0A 
+            sta $03         		; 6039 85 03
+; get MSB of JMPL destination (including opcode)?? 
+            lda L0779A,y       		; 603B B9 9A 77 
+            rol                		; 603E 2A 
+            and #$1F           		; 603F 29 1F 	- Remove VG Instruction
+            ora #$40           		; 6041 09 40 
+            sta $04         		; 6043 85 04
+
+; Word at $03:$04 contains 6502 address of VG JMPL destination 
+            sta StartVG        		; 6045 8D 00 30 - Start the VG
+            sta ResetWDog      		; 6048 8D 00 34
+
+            inc $76         		; 604B E6 76 
+            bne L0607F         		; 604D D0 30    - branch if no wraparound
+
+; Counter at $76 wrapped, increment MSB at $77 
+            inc $77         		; 604F E6 77
+ 
+            ldx $20         		; 6051 A6 20 
+            lda $64,x       		; 6053 B5 64 
+            and #$0F           		; 6055 29 0F 
+            sta $10         		; 6057 85 10 
+            eor $64,x       		; 6059 55 64 
+            lsr                		; 605B 4A 
+            sta $11         		; 605C 85 11 
+            lsr                		; 605E 4A 
+            lsr                		; 605F 4A 
+            adc $11         		; 6060 65 11 
+            adc $10         		; 6062 65 10 
+            ldx $1F         		; 6064 A6 1F 
+            ldy $77         		; 6066 A4 77 
+            cpy #$80           		; 6068 C0 80 
+            bne L06074         		; 606A D0 08 
+            cmp $FA,x       		; 606C D5 FA 
+            bne L06072         		; 606E D0 02 
+            inc $FB,x       		; 6070 F6 FB 
+L06072      sta $FA,x       		; 6072 95 FA 
+L06074      clc                		; 6074 18 
+            adc $FB,x       		; 6075 75 FB 
+            cmp #$10           		; 6077 C9 10 
+            bcc L0607D         		; 6079 90 02 
+            lda #$0F           		; 607B A9 0F 
+L0607D      sta $D3         		; 607D 85 D3
+
+; Branch here if counter at $76 didn't wrap when incremented
+L0607F      jsr Sub_7AFF         	; 607F 20 FF 7A 
+            jsr VGFn_4BE1      		; 6082 20 E1 4B - Jump into VG ROM somewhere
+
+            bcs L060C9         		; 6085 B0 42 
+            jsr Sub_6FD4         	; 6087 20 D4 6F 
+            jsr L0656B         		; 608A 20 6B 65 
+            bpl L060AD         		; 608D 10 1E 
+            jsr L06C9D         		; 608F 20 9D 6C 
+            bcs L060AD         		; 6092 B0 19 
+            lda $0074         		; 6094 A5 74 
+            bne L060A7         		; 6096 D0 0F 
+            jsr L06659         		; 6098 20 59 66 
+            jsr L06497         		; 609B 20 97 64 
+            jsr L06810         		; 609E 20 10 68 
+            jsr $4A9E          		; 60A1 20 9E 4A 
+            jsr L06322         		; 60A4 20 22 63 
+L060A7      jsr L066DC         		; 60A7 20 DC 66 
+            jsr Sub_60F7         	; 60AA 20 F7 60
+L060AD      jsr L06A7E         		; 60AD 20 7E 6A 
+            jsr L06EF6         		; 60B0 20 F6 6E 
+            lda #$7F           		; 60B3 A9 7F 
+            tax                		; 60B5 AA 
+            jsr L07A1F         		; 60B6 20 1F 7A 
+            jsr L079DA         		; 60B9 20 DA 79 
+            lda $02EC         		; 60BC AD EC 02 
+            beq L060C4         		; 60BF F0 03 
+            dec $02EC         		; 60C1 CE EC 02 
+L060C4      ora $02E7         		; 60C4 0D E7 02 
+            bne L060CC         		; 60C7 D0 03 
+L060C9      jmp L06011         		; 60C9 4C 11 60 
+
+
+L060CC      jmp L06014         		; 60CC 4C 14 60 
+
+
+; Dead code
+            .byt $B2				; 60CF B2
+            lda $0042         		; 60D0 A5 42
+            and $0043         		; 60D2 25 43
+            bmi L060D9         		; 60D4 30 03
+            jmp L07BC7         		; 60D6 4C C7 7B
+
+
+L060D9      clc                		; 60D9 18
+            rts                		; 60DA 60
+
+
+            lda $008A         		; 60DB A5 8A
+            ora $0013         		; 60DD 05 13
+            bpl L060E8         		; 60DF 10 07
+            lda $0076         		; 60E1 A5 76
+            and #$20           		; 60E3 29 20
+            beq L060E8         		; 60E5 F0 01
+            rts                		; 60E7 60
+
+
+L060E8      jmp L07159         		; 60E8 4C 59 71
+
+
+            ldy #$01           		; 60EB A0 01
+            jsr L07159         		; 60ED 20 59 71
+            ldy $001E         		; 60F0 A4 1E
+            iny                		; 60F2 C8
+            tya                		; 60F3 98
+            jmp L079EB         		; 60F4 4C EB 79
+
+
+; On entry:
+
+Sub_60F7    lsr $71         		; 60F7 46 71
+            ldx #$07           		; 60F9 A2 07
+L060FB      lda $0219,x       		; 60FB BD 19 02
+            beq L06102         		; 60FE F0 02
+            bpl L0610C         		; 6100 10 0A
+L06102      dex                		; 6102 CA
+            bpl L060FB         		; 6103 10 F6
+            bit $71         		; 6105 24 71
+            bmi L0610B         		; 6107 30 02
+            stx $72        		 	; 6109 86 72
+L0610B      rts             	   	; 610B 60
+
+
 L0610C      ldy #$1A           ; 610C A0 1A 
             cpx #$04           ; 610E E0 04 
             bcs L06119         ; 6110 B0 07 
@@ -345,11 +389,15 @@ L061AF      cmp $0009         ; 61AF C5 09
             tax                ; 61CF AA 
             ldy #$00           ; 61D0 A0 00 
 L061D2      jmp L06116         ; 61D2 4C 16 61 
+
+
 L061D5      bit $0073         ; 61D5 24 73 
             bpl L061DB         ; 61D7 10 02 
             adc #$08           ; 61D9 69 08 
 L061DB      adc #$1C           ; 61DB 69 1C 
             rts                ; 61DD 60 
+
+
 L061DE      adc #$1C           ; 61DE 69 1C 
             pha                ; 61E0 48 
             lda $021A         ; 61E1 AD 1A 02 
@@ -358,6 +406,8 @@ L061DE      adc #$1C           ; 61DE 69 1C
             bcs L061EA         ; 61E6 B0 02 
             adc #$12           ; 61E8 69 12 
 L061EA      rts                ; 61EA 60 
+
+
 L061EB      lda $0200,y       ; 61EB B9 00 02 
             and #$07           ; 61EE 29 07 
             sta $0009         ; 61F0 85 09 
@@ -378,6 +428,8 @@ L061EB      lda $0200,y       ; 61EB B9 00 02
             lda $0242,y       ; 621A B9 42 02 
             sta $0242,x       ; 621D 9D 42 02 
             rts                ; 6220 60 
+
+
 L06221      ldy #$FF           ; 6221 A0 FF 
             bit $0012         ; 6223 24 12 
             bmi L06254         ; 6225 30 2D 
@@ -402,6 +454,8 @@ L06227      iny                ; 6227 C8
 L06245      dex                ; 6245 CA 
             bpl L06227         ; 6246 10 DF 
             jmp L07A55         ; 6248 4C 55 7A 
+
+
 L0624B      lda ($0010),y     ; 624B B1 10 
             eor $0009         ; 624D 45 09 
             sta ($0003),y     ; 624F 91 03 
@@ -441,6 +495,8 @@ L06285      iny                ; 6285 C8
             dex                ; 6286 CA 
             bpl L06254         ; 6287 10 CB 
             jmp L07A55         ; 6289 4C 55 7A 
+
+
 L0628C      eor $0014         ; 628C 45 14 
             and #$07           ; 628E 29 07 
             pha                ; 6290 48 
@@ -492,6 +548,8 @@ L062D7      lda $0200,y       ; 62D7 B9 00 02
             sta $0221,y       ; 62EC 99 21 02 
             sta $0242,y       ; 62EF 99 42 02 
             rts                ; 62F2 60 
+
+
 L062F3      jsr L062F8         ; 62F3 20 F8 62 
             bne L062D7         ; 62F6 D0 DF 
 L062F8      txa                ; 62F8 8A 
@@ -501,11 +559,12 @@ L062F8      txa                ; 62F8 8A
             lda #$81           ; 62FE A9 81 
 
 
-
 Sub_6300    sta $02EB         	; 6300 8D EB 02 
             lda #$05           	; 6303 A9 05 
             sta $00DE         	; 6305 85 DE 
             rts                	; 6307 60 
+
+
 L06308      lda $02E9         	; 6308 AD E9 02 
             sta $02E8         	; 630B 8D E8 02 
             lda $0022         	; 630E A5 22 
@@ -517,16 +576,24 @@ L06308      lda $02E9         	; 6308 AD E9 02
             lda #$20           	; 631A A9 20 
 L0631C      jsr L06C44         	; 631C 20 44 6C 
             jmp L062D7         	; 631F 4C D7 62 
+
+
 L06322      lda $0076         	; 6322 A5 76 
             and #$03           	; 6324 29 03 
             beq L06329         	; 6326 F0 01 
 L06328      rts                	; 6328 60 
+
+
 L06329      lda $021A         	; 6329 AD 1A 02 
             beq L06338         	; 632C F0 0A 
             bpl L06335         	; 632E 10 05 
             ldy #$17           	; 6330 A0 17 
             jmp L0770D         	; 6332 4C 0D 77 
+
+
 L06335      jmp L063C5         	; 6335 4C C5 63 
+
+
 L06338      jsr L067FA        	; 6338 20 FA 67 
             lda $0022         	; 633B A5 22 
             beq L06346         	; 633D F0 07 
@@ -589,9 +656,10 @@ L063B9      sty $021A         ; 63B9 8C 1A 02
             lda L063C2,y       ; 63BC B9 C2 63 
             tay                ; 63BF A8
 
-
  
 ;            jmp L07716         ; 63C0 4C 16 77
+
+
 			.byt $4c, $16
 L063C2		.byt $77
 
@@ -613,6 +681,8 @@ L063D6      lda $0022         ; 63D6 A5 22
 L063DF      dec $02E8         ; 63DF CE E8 02 
             beq L063E5         ; 63E2 F0 01 
 L063E4      rts                ; 63E4 60 
+
+
 L063E5      lda #$0A           ; 63E5 A9 0A 
             sta $02E8         ; 63E7 8D E8 02 
             ldy #$19           ; 63EA A0 19 
@@ -661,11 +731,15 @@ L06442      ldy #$03           ; 6442 A0 03
             ldx $0018         ; 6448 A6 18 
             sta $0018         ; 644A 85 18 
             jmp L064C8         ; 644C 4C C8 64 
+
+
 L0644F      .byt $9F	; 644F 9F 
             .byt $8F	; 6450 8F 
             .byt $8F	; 6451 8F 
             .byt $87	; 6452 87 
 L06453      rts                ; 6453 60 
+
+
             bvs L064C6         ; 6454 70 70 
             sei                ; 6456 78 
 L06457      beq L06459         ; 6457 F0 00 
@@ -682,6 +756,8 @@ L06461      dey                ; 6461 88
             ldy #$19           ; 6464 A0 19 
             sec                ; 6466 38 
             rts                ; 6467 60 
+
+
 L06468      bmi L06461         ; 6468 30 F7 
             cmp #$40           ; 646A C9 40 
             bcc L06478         ; 646C 90 0A 
@@ -692,6 +768,8 @@ L06468      bmi L06461         ; 6468 30 F7
             bpl L06461         ; 6474 10 EB 
             clc                ; 6476 18 
             rts                ; 6477 60 
+
+
 L06478      lda $027D         ; 6478 AD 7D 02 
             sec                ; 647B 38 
             sbc $0263,y       ; 647C F9 63 02 
@@ -707,11 +785,15 @@ L0648B      sbc $0284,y       ; 648B F9 84 02
 L06492      cmp #$08           ; 6492 C9 08 
             bcs L06461         ; 6494 B0 CB 
             rts                ; 6496 60 
+
+
 L06497      ldx #$00           ; 6497 A2 00 
             lda $0022         ; 6499 A5 22 
 L0649B      bne L064A0         ; 649B D0 03 
 L0649D      stx $00FF         ; 649D 86 FF 
             rts                ; 649F 60 
+
+
 L064A0      bit $0073         ; 64A0 24 73 
             bmi L0649D         ; 64A2 30 F9 
             bit $00FE         ; 64A4 24 FE 
@@ -725,6 +807,8 @@ L064A0      bit $0073         ; 64A0 24 73
             cmp #$0F           ; 64B5 C9 0F 
             bcs L0649D         ; 64B7 B0 E4 
             rts                ; 64B9 60 
+
+
 L064BA      stx $0018         ; 64BA 86 18 
             lda #$03           ; 64BC A9 03 
             sta $000F         ; 64BE 85 0F 
@@ -738,6 +822,8 @@ L064C8      lda $0219,y       ; 64C8 B9 19 02
             cpy $000F         ; 64CE C4 0F 
             bne L064C8         ; 64D0 D0 F6 
             rts                ; 64D2 60 
+
+
 L064D3      stx $000E         ; 64D3 86 0E 
             lda #$12           ; 64D5 A9 12 
             sta $0219,y       ; 64D7 99 19 02 
@@ -812,14 +898,18 @@ L06547      stx $000C         ; 6547 86 0C
             bcc L06568         ; 6564 90 02 
             ldy #$1F           ; 6566 A0 1F 
 L06568      jmp L07717         ; 6568 4C 17 77 
+
+
 L0656B      lda $0042         ; 656B A5 42 
             and $0043         ; 656D 25 43 
             bpl L0657B         ; 656F 10 0A 
             lda $0022         ; 6571 A5 22 
             bne L06578         ; 6573 D0 03 
-            jsr L07844         ; 6575 20 44 78 
+            jsr Sub_7844         ; 6575 20 44 78 
 L06578      lda #$FF           ; 6578 A9 FF 
             rts                ; 657A 60 
+
+
 L0657B      lda $0021         ; 657B A5 21 
             lsr                ; 657D 4A 
             beq L06598         ; 657E F0 18 
@@ -889,8 +979,9 @@ L065F8      ldx #$00           ; 65F8 A2 00
             bpl L06609         ; 6604 10 03 
             jsr L07BC7         ; 6606 20 C7 7B 
 L06609      jmp L06C95         ; 6609 4C 95 6C 
-L0660C      inc $000D         ; 660C E6 0D 
 
+
+L0660C      inc $000D         ; 660C E6 0D 
 
 
 			.byt $a6
@@ -934,6 +1025,8 @@ L0664E      cpy #$25           ; 664E C0 25
 L06654      sty $0044,x       ; 6654 94 44 
 L06656      lda #$00           ; 6656 A9 00 
             rts                ; 6658 60 
+
+
 L06659      lsr $0073         ; 6659 46 73 
             lda $0022         ; 665B A5 22 
             beq L06680         ; 665D F0 21 
@@ -952,6 +1045,8 @@ L06659      lsr $0073         ; 6659 46 73
             bne L06680         ; 667B D0 03 
             dec $02EF         ; 667D CE EF 02 
 L06680      rts                ; 6680 60 
+
+
 L06681      bit $0073         ; 6681 24 73 
             bpl L06680         ; 6683 10 FB 
             lda $02EF         ; 6685 AD EF 02 
@@ -976,6 +1071,8 @@ L06690      pha                ; 6690 48
             lda #$00           ; 66AC A9 00 
             sta $0009         ; 66AE 85 09 
             jmp L06E96         ; 66B0 4C 96 6E 
+
+
 L066B3      lda #$06           ; 66B3 A9 06 
             sta $02EE         ; 66B5 8D EE 02 
             ldx #$00           ; 66B8 A2 00 
@@ -985,6 +1082,8 @@ L066BB      sta $0200,x       ; 66BB 9D 00 02
             inx                ; 66C1 E8 
             bne L066BB         ; 66C2 D0 F7 
             rts                ; 66C4 60 
+
+
 L066C5      lda $0044,y       ; 66C5 B9 44 00 
             asl                ; 66C8 0A 
             tay                ; 66C9 A8 
@@ -995,7 +1094,11 @@ L066C5      lda $0044,y       ; 66C5 B9 44 00
             ldx #$B0           ; 66D2 A2 B0 
             lda #$56           ; 66D4 A9 56 
             jmp L07A18         ; 66D6 4C 18 7A 
-L066D9      jmp L079F8         ; 66D9 4C F8 79 
+
+
+L066D9      jmp Sub_79F8         ; 66D9 4C F8 79 
+
+
 L066DC      ldx #$20           ; 66DC A2 20 
             lda #$00           ; 66DE A9 00 
             sta $0019         ; 66E0 85 19 
@@ -1004,6 +1107,8 @@ L066E2      lda $0200,x       ; 66E2 BD 00 02
 L066E7      dex                ; 66E7 CA 
             bpl L066E2         ; 66E8 10 F8 
             rts                ; 66EA 60 
+
+
 L066EB      bpl L06750         ; 66EB 10 63 
             jsr L070B6         ; 66ED 20 B6 70 
             lsr                ; 66F0 4A 
@@ -1031,6 +1136,8 @@ L06715      lda #$00           ; 6715 A9 00
             beq L066E7         ; 671A F0 CB 
 L0671C      jsr L06A1B         ; 671C 20 1B 6A 
             jmp L06715         ; 671F 4C 15 67 
+
+
 L06722      lda $02E9         ; 6722 AD E9 02 
             sta $02E8         ; 6725 8D E8 02 
             bne L06715         ; 6728 D0 EB 
@@ -1051,6 +1158,8 @@ L06738      tay                ; 6738 A8
             lda $0284,x       ; 6748 BD 84 02 
             sta $0008         ; 674B 85 08 
             jmp L067E5         ; 674D 4C E5 67 
+
+
 L06750      sta $001B         ; 6750 85 1B 
             asl $001B         ; 6752 06 1B 
             bpl L0676B         ; 6754 10 15 
@@ -1081,6 +1190,8 @@ L06774      adc $02A5,x       ; 6774 7D A5 02
             bne L0678E         ; 6786 D0 06 
             jsr L067EB         ; 6788 20 EB 67 
 L0678B      jmp L066E7         ; 678B 4C E7 66 
+
+
 L0678E      bit $001B         ; 678E 24 1B 
             bpl L067AC         ; 6790 10 1A 
             ldy $001D         ; 6792 A4 1D 
@@ -1123,6 +1234,8 @@ L067D6      sta $0284,x       ; 67D6 9D 84 02
             tay                ; 67E4 A8 
 L067E5      jsr L06BA8         ; 67E5 20 A8 6B 
             jmp L066E7         ; 67E8 4C E7 66 
+
+
 L067EB      lda $02E9         ; 67EB AD E9 02 
             sta $02E8         ; 67EE 8D E8 02 
             tya                ; 67F1 98 
@@ -1138,6 +1251,8 @@ L067FA      lda #$00           ; 67FA A9 00
             sta $027D         ; 6805 8D 7D 02 
             sta $02BF         ; 6808 8D BF 02 
 L0680B      rts                ; 680B 60 
+
+
 L0680C      brk                ; 680C 00 
             cpx #$F0           ; 680D E0 F0 
 
@@ -1158,6 +1273,8 @@ L06810	.byt $a5
             stx $008B         ; 682A 86 8B 
             ldy #$47           ; 682C A0 47 
             jmp L07716         ; 682E 4C 16 77 
+
+
 L06831      lda RotLeftSwitch  ; 6831 AD 07 24 
             bpl L0683A         ; 6834 10 04 
             lda #$03           ; 6836 A9 03 
@@ -1196,6 +1313,8 @@ L06846      lda $0076         ; 6846 A5 76
             sta $025B         ; 687F 8D 5B 02 
             stx $007D         ; 6882 86 7D 
             rts                ; 6884 60 
+
+
 L06885      lda #$00           ; 6885 A9 00 
             tax                ; 6887 AA 
             sec                ; 6888 38 
@@ -1225,6 +1344,8 @@ L068AA      adc $007D         ; 68AA 65 7D
             adc $025B         ; 68AF 6D 5B 02 
             sta $025B         ; 68B2 8D 5B 02 
             rts                ; 68B5 60 
+
+
 L068B6      bpl L068BB         ; 68B6 10 03 
             jsr L070B6         ; 68B8 20 B6 70 
 L068BB      lsr                ; 68BB 4A 
@@ -1250,6 +1371,8 @@ L068DA      asl                ; 68DA 0A
             rol $0011         ; 68DD 26 11 
             clc                ; 68DF 18 
             rts                ; 68E0 60 
+
+
 L068E1      .byt $80	; 68E1 80 
             bvs L06944         ; 68E2 70 60 
             bvc L06926         ; 68E4 50 40 
@@ -1261,11 +1384,15 @@ L068EA      bmi L068F5         ; 68EA 30 09
             ldx #$FF           ; 68F0 A2 FF 
             lda #$3F           ; 68F2 A9 3F 
             rts                ; 68F4 60 
+
+
 L068F5      cmp #$C1           ; 68F5 C9 C1 
             bcs L068FD         ; 68F7 B0 04 
             ldx #$01           ; 68F9 A2 01 
 L068FB      lda #$C1           ; 68FB A9 C1 
 L068FD      rts                ; 68FD 60 
+
+
 L068FE      lda $0076         ; 68FE A5 76 
             and #$03           ; 6900 29 03 
             bne L06929         ; 6902 D0 25 
@@ -1318,14 +1445,20 @@ L0694E      dex                ; 694E CA
             bpl L0692B         ; 694F 10 DA 
             inx                ; 6951 E8 
             rts                ; 6952 60 
+
+
 L06953      inc $02EB         ; 6953 EE EB 02 
 L06956      rts                ; 6956 60 
+
+
             .byt $1C	; 6957 1C
             .byt $10
 L06959	    ldx #$18
             lda $02EC         ; 695B AD EC 02 
             beq L06963         ; 695E F0 03 
             jmp L069DE         ; 6960 4C DE 69 
+
+
 L06963      lda $0022         ; 6963 A5 22 
             beq L0696E         ; 6965 F0 07 
             lda $0219         ; 6967 AD 19 02 
@@ -1387,6 +1520,8 @@ L069E0      sta $0200,x       ; 69E0 9D 00 02
             dex                ; 69E3 CA 
             bpl L069E0         ; 69E4 10 FA 
             rts                ; 69E6 60 
+
+
 L069E7      lda PKY_RANDOM         ; 69E7 AD 0A 2C 
             and #$38           ; 69EA 29 38 
             ora #$04           ; 69EC 09 04 
@@ -1409,6 +1544,8 @@ L06A0F      sta $0263,x       ; 6A0F 9D 63 02
             sta $0284,x       ; 6A14 9D 84 02 
             sta $02C6,x       ; 6A17 9D C6 02 
 L06A1A      rts                ; 6A1A 60 
+
+
 L06A1B      lda #$60           ; 6A1B A9 60 
             sta $02BE         ; 6A1D 8D BE 02 
             sta $02DF         ; 6A20 8D DF 02 
@@ -1422,6 +1559,8 @@ L06A1B      lda #$60           ; 6A1B A9 60
             lda #$FF           ; 6A35 A9 FF 
             sta $02EF         ; 6A37 8D EF 02 
             rts                ; 6A3A 60 
+
+
 L06A3B      lda PKY_RANDOM         ; 6A3B AD 0A 2C 
             and #$8F           ; 6A3E 29 8F 
             bpl L06A44         ; 6A40 10 02 
@@ -1439,6 +1578,8 @@ L06A57      clc                ; 6A57 18
             jsr L06A62         ; 6A5B 20 62 6A 
             sta $0242,x       ; 6A5E 9D 42 02 
             rts                ; 6A61 60 
+
+
 L06A62      bpl L06A71         ; 6A62 10 0D 
             cmp $00DC         ; 6A64 C5 DC 
             bcs L06A6A         ; 6A66 B0 02 
@@ -1447,6 +1588,8 @@ L06A6A      cmp $00DB         ; 6A6A C5 DB
             bcc L06A7D         ; 6A6C 90 0F 
             lda $00DB         ; 6A6E A5 DB 
             rts                ; 6A70 60 
+
+
 L06A71      cmp $00D9         ; 6A71 C5 D9 
             bcs L06A77         ; 6A73 B0 02 
             lda $00D9         ; 6A75 A5 D9 
@@ -1454,11 +1597,13 @@ L06A77      cmp $00DA         ; 6A77 C5 DA
             bcc L06A7D         ; 6A79 90 02 
             lda $00DA         ; 6A7B A5 DA 
 L06A7D      rts                ; 6A7D 60 
+
+
 L06A7E      lda $0022         ; 6A7E A5 22 
             beq L06A8F         ; 6A80 F0 0D 
             lda #$81           ; 6A82 A9 81 
             ldx #$C3           ; 6A84 A2 C3 
-            jsr L07CD5         ; 6A86 20 D5 7C 
+            jsr Sub_7CD5         ; 6A86 20 D5 7C 
             ldy #$00           ; 6A89 A0 00 
             lda $001E         ; 6A8B A5 1E 
             bne L06A91         ; 6A8D D0 02 
@@ -1512,7 +1657,7 @@ L06ADB      lda #$00           ; 6ADB A9 00
             jsr L07C95         ; 6AF6 20 95 7C 
             ldy #$00           ; 6AF9 A0 00 
             sty $0013         ; 6AFB 84 13 
-            jsr L079F8         ; 6AFD 20 F8 79 
+            jsr Sub_79F8         ; 6AFD 20 F8 79 
             jsr L06D42         ; 6B00 20 42 6D 
 L06B03      lda $0022         ; 6B03 A5 22 
             beq L06B1D         ; 6B05 F0 16 
@@ -1567,6 +1712,8 @@ L06B5A      ldy $0070         ; 6B5A A4 70
             beq L06B88         ; 6B6D F0 19 
             bmi L06B88         ; 6B6F 30 17 
             jmp L06B89         ; 6B71 4C 89 6B 
+
+
 L06B74      eor $001E         ; 6B74 45 1E 
             beq L06B81         ; 6B76 F0 09 
             ldx V0319         ; 6B78 AE 19 03 
@@ -1574,14 +1721,20 @@ L06B74      eor $001E         ; 6B74 45 1E
             bne L06B80         ; 6B7D D0 01 
 L06B7F      iny                ; 6B7F C8 
 L06B80      rts                ; 6B80 60 
+
+
 L06B81      ldx $0219         ; 6B81 AE 19 02 
             beq L06B7F         ; 6B84 F0 F9 
             bmi L06B7F         ; 6B86 30 F7 
 L06B88      rts                ; 6B88 60 
+
+
 L06B89      lda $008B         ; 6B89 A5 8B 
             cmp #$C0           ; 6B8B C9 C0 
             bcc L06B90         ; 6B8D 90 01 
             rts                ; 6B8F 60 
+
+
 L06B90      pha                ; 6B90 48 
             eor #$FF           ; 6B91 49 FF 
             adc #$C1           ; 6B93 69 C1 
@@ -1596,6 +1749,8 @@ L06B90      pha                ; 6B90 48
             pla                ; 6BA4 68 
             sta $008B         ; 6BA5 85 8B 
             rts                ; 6BA7 60 
+
+
 L06BA8      sty $0001         ; 6BA8 84 01 
             stx $000E         ; 6BAA 86 0E 
             lsr $0006         ; 6BAC 46 06 
@@ -1616,6 +1771,8 @@ L06BA8      sty $0001         ; 6BA8 84 01
             jsr L06BD1         ; 6BCB 20 D1 6B 
             ldx $000E         ; 6BCE A6 0E 
             rts                ; 6BD0 60 
+
+
 L06BD1      lda $0200,x       ; 6BD1 BD 00 02 
             bpl L06BE9         ; 6BD4 10 13 
             cpx #$19           ; 6BD6 E0 19 
@@ -1627,6 +1784,8 @@ L06BD1      lda $0200,x       ; 6BD1 BD 00 02
             ldx $4D81,y       ; 6BE1 BE 81 4D 
             bne L06C05         ; 6BE4 D0 1F 
 L06BE6      jmp L06D5B         ; 6BE6 4C 5B 6D 
+
+
 L06BE9      cpx #$19           ; 6BE9 E0 19 
             beq L06C08         ; 6BEB F0 1B 
             cpx #$1A           ; 6BED E0 1A 
@@ -1635,6 +1794,8 @@ L06BE9      cpx #$19           ; 6BE9 E0 19
             asl                ; 6BF3 0A 
             bpl L06BF9         ; 6BF4 10 03 
             jmp $4A75         ; 6BF6 4C 75 4A 
+
+
 L06BF9      lsr                ; 6BF9 4A 
             lsr                ; 6BFA 4A 
             lsr                ; 6BFB 4A 
@@ -1642,9 +1803,13 @@ L06BF9      lsr                ; 6BF9 4A
             tay                ; 6BFE A8 
             lda L0779D,y       ; 6BFF B9 9D 77 
             ldx L0779E,y       ; 6C02 BE 9E 77 
-L06C05      jmp L07CD5         ; 6C05 4C D5 7C 
+L06C05      jmp Sub_7CD5         ; 6C05 4C D5 7C 
+
+
 L06C08      jsr L06681         ; 6C08 20 81 66 
             jmp L06E20         ; 6C0B 4C 20 6E 
+
+
 L06C0E      lda #$34           ; 6C0E A9 34 
             ldx #$C7           ; 6C10 A2 C7 
             bne L06C05         ; 6C12 D0 F1 
@@ -1657,6 +1822,8 @@ L06C14      lda #$70           ; 6C14 A9 70
             bne L06C26         ; 6C21 D0 03 
             dec $0200,x       ; 6C23 DE 00 02 
 L06C26      rts                ; 6C26 60 
+
+
 L06C27      ldx #$05           ; 6C27 A2 05 
             jsr L07A38         ; 6C29 20 38 7A 
 L06C2C      lda #$70           ; 6C2C A9 70 
@@ -1672,6 +1839,8 @@ L06C31      cmp #$A0           ; 6C31 C9 A0
             sbc #$10           ; 6C3D E9 10 
             bne L06C31         ; 6C3F D0 F0 
 L06C41      jmp L07AEA         ; 6C41 4C EA 7A 
+
+
 L06C44      ror                ; 6C44 6A 
             ror $0010         ; 6C45 66 10 
             lsr                ; 6C47 4A 
@@ -1721,11 +1890,15 @@ L06C82		.byt $6a
 L06C91      cld                ; 6C91 D8 
             ldx $0012         ; 6C92 A6 12 
             rts                ; 6C94 60 
+
+
 L06C95      lda $001E         ; 6C95 A5 1E 
             lsr                ; 6C97 4A 
             ror                ; 6C98 6A 
             sta BankSel        ; 6C99 8D 04 3C 
             rts                ; 6C9C 60 
+
+
 L06C9D      ldx $0022         ; 6C9D A6 22 
             bne L06CBD         ; 6C9F D0 1C 
             lda $0077         ; 6CA1 A5 77 
@@ -1742,12 +1915,13 @@ L06CA7      stx $0001         ; 6CA7 86 01
             jsr L07159         ; 6CBA 20 59 71 
 L06CBD      clc                ; 6CBD 18 
             rts                ; 6CBE 60 
+
+
 L06CBF      lda $0023         ; 6CBF A5 23 
 
 
 			.byt $05
 L06CC2		.byt $24
-
 
 
             ora $0025         ; 6CC3 05 25 
@@ -1786,13 +1960,13 @@ L06CD8      lda #$10           ; 6CD8 A9 10
             tax                ; 6D05 AA 
             jsr L07AEC         ; 6D06 20 EC 7A 
             ldy #$00           ; 6D09 A0 00 
-            jsr L079F8         ; 6D0B 20 F8 79 
+            jsr Sub_79F8         ; 6D0B 20 F8 79 
             lda $0011         ; 6D0E A5 11 
             ldy #$03           ; 6D10 A0 03 
             sec                ; 6D12 38 
             jsr L07C95         ; 6D13 20 95 7C 
             ldy #$00           ; 6D16 A0 00 
-            jsr L079F8         ; 6D18 20 F8 79 
+            jsr Sub_79F8         ; 6D18 20 F8 79 
             jsr L06D42         ; 6D1B 20 42 6D 
             lda $0010         ; 6D1E A5 10 
             cmp #$04           ; 6D20 C9 04 
@@ -1815,18 +1989,24 @@ L06D30      lda $0012         ; 6D30 A5 12
             bcc L06CD8         ; 6D3E 90 98 
 L06D40      sec                ; 6D40 38 
             rts                ; 6D41 60 
+
+
 L06D42      jsr L06D48         ; 6D42 20 48 6D 
             jsr L06D48         ; 6D45 20 48 6D 
 L06D48      ldy $0013         ; 6D48 A4 13 
             jsr L066C5         ; 6D4A 20 C5 66 
             inc $0013         ; 6D4D E6 13 
             rts                ; 6D4F 60 
+
+
 L06D50      ldx #$18           ; 6D50 A2 18 
 L06D52      lda $0200,x       ; 6D52 BD 00 02 
             beq L06D5A         ; 6D55 F0 03 
             dex                ; 6D57 CA 
             bpl L06D52         ; 6D58 10 F8 
 L06D5A      rts                ; 6D5A 60 
+
+
 L06D5B      lda $0219         ; 6D5B AD 19 02 
             cmp #$A2           ; 6D5E C9 A2 
             bcs L06D9D         ; 6D60 B0 3B 
@@ -1904,6 +2084,8 @@ L06DA3      ldx $0015         ; 6DA3 A6 15
             dec $0015         ; 6DF1 C6 15 
             bpl L06DA3         ; 6DF3 10 AE 
             rts                ; 6DF5 60 
+
+
 L06DF6      ldy #$00           ; 6DF6 A0 00 
             lda $00DF,x       ; 6DF8 B5 DF 
             bpl L06DFD         ; 6DFA 10 01 
@@ -1920,12 +2102,16 @@ L06DFD      clc                ; 6DFD 18
             sta $0008         ; 6E10 85 08 
             ror $0007         ; 6E12 66 07 
             rts                ; 6E14 60 
+
+
 L06E15      lda PKY_RANDOM         ; 6E15 AD 0A 2C 
             and #$07           ; 6E18 29 07 
             clc                ; 6E1A 18 
             adc #$FC           ; 6E1B 69 FC 
             adc #$00           ; 6E1D 69 00 
             rts                ; 6E1F 60 
+
+
 L06E20      lda $008B         ; 6E20 A5 8B 
             cmp #$C0           ; 6E22 C9 C0 
             bcs L06E70         ; 6E24 B0 4A 
@@ -1988,6 +2174,8 @@ L06E96      tya                ; 6E96 98
             adc $0011         ; 6E9E 65 11 
             sta $0011         ; 6EA0 85 11 
             jmp L06221         ; 6EA2 4C 21 62 
+
+
 L06EA5      lda $0079         ; 6EA5 A5 79 
             sec                ; 6EA7 38 
             sbc #$40           ; 6EA8 E9 40 
@@ -2008,6 +2196,8 @@ L06EBA      adc #$C6           ; 6EBA 69 C6
             sta $0011         ; 6EC1 85 11 
             ldx #$00           ; 6EC3 A2 00 
 L06EC5      rts                ; 6EC5 60 
+
+
 L06EC6      lsr                ; 6EC6 4A 
             sta $0010         ; 6EC7 85 10 
             lsr                ; 6EC9 4A 
@@ -2032,6 +2222,8 @@ L06EDE      tay                ; 6EDE A8
             and #$04           ; 6EE9 29 04 
             sta $000A         ; 6EEB 85 0A 
             rts                ; 6EED 60 
+
+
 L06EEE      brk                ; 6EEE 00 
             .byt $A3	; 6EEF A3 
             .byt $22	; 6EF0 22 
@@ -2088,6 +2280,8 @@ L06F55      stx $007F         ; 6F55 86 7F
             lda $0010         ; 6F5A A5 10 
             sta ThrustSnd      ; 6F5C 8D 03 3C 
             rts                ; 6F5F 60 
+
+
 L06F60      .byt $07	; 6F60 07 
             .byt $0F	; 6F61 0F 
 L06F62      stx $000E         ; 6F62 86 0E 
@@ -2098,6 +2292,8 @@ L06F62      stx $000E         ; 6F62 86 0E
             asl                ; 6F6E 0A 
             bpl L06F74         ; 6F6F 10 03 
             jmp VectorROM      ; 6F71 4C 00 48 
+
+
 L06F74      lsr                ; 6F74 4A 
             sta $000F         ; 6F75 85 0F 
             lda $0200,y       ; 6F77 B9 00 02 
@@ -2144,48 +2340,59 @@ L06F98      ldx $0200,y       ; 6F98 BE 00 02
             sta $02C6,x       ; 6FCE 9D C6 02 
 L06FD1      ldx $000E         ; 6FD1 A6 0E 
             rts                ; 6FD3 60 
-L06FD4      lda $0022         ; 6FD4 A5 22 
-            bpl L07025         ; 6FD6 10 4D 
-            sta $0077         ; 6FD8 85 77 
-            sta $0042         ; 6FDA 85 42 
-            sta $0043         ; 6FDC 85 43 
-            sta $00CE         ; 6FDE 85 CE 
-            jsr L07844         ; 6FE0 20 44 78 
-            ldx #$03           ; 6FE3 A2 03 
-L06FE5      ldy #$00           ; 6FE5 A0 00 
-L06FE7      lda $0023,y       ; 6FE7 B9 23 00 
-            cmp $0062,x       ; 6FEA D5 62 
-            lda $0024,y       ; 6FEC B9 24 00 
-            sbc $0063,x       ; 6FEF F5 63 
-            lda $0025,y       ; 6FF1 B9 25 00 
-            sbc $0064,x       ; 6FF4 F5 64 
-            bcc L07026         ; 6FF6 90 2E 
-            iny                ; 6FF8 C8 
-            iny                ; 6FF9 C8 
-            iny                ; 6FFA C8 
-            cpy #$1E           ; 6FFB C0 1E 
-            bcc L06FE7         ; 6FFD 90 E8 
-L06FFF      dex                ; 6FFF CA 
-            dex                ; 7000 CA 
-            dex                ; 7001 CA 
-            bpl L06FE5         ; 7002 10 E1 
-            lda $0043         ; 7004 A5 43 
-            bmi L07016         ; 7006 30 0E 
-            cmp $0042         ; 7008 C5 42 
-            bcc L07016         ; 700A 90 0A 
-            adc #$02           ; 700C 69 02 
-            cmp #$1E           ; 700E C9 1E 
-            bcc L07014         ; 7010 90 02 
-            lda #$FF           ; 7012 A9 FF 
-L07014      sta $0043         ; 7014 85 43 
-L07016      ldx $00CE         ; 7016 A6 CE 
-            bmi L0701F         ; 7018 30 05 
-            ldy #$4F           ; 701A A0 4F 
-            jsr L07716         ; 701C 20 16 77 
-L0701F      lda #$00           ; 701F A9 00 
-            sta $0022         ; 7021 85 22 
-            sta $0041         ; 7023 85 41 
-L07025      rts                ; 7025 60 
+
+
+Sub_6FD4    lda $22         		; 6FD4 A5 22 
+            bpl L07025         		; 6FD6 10 4D 
+
+            sta $77         		; 6FD8 85 77 
+            sta $42         		; 6FDA 85 42 
+            sta $43         		; 6FDC 85 43 
+            sta $CE         		; 6FDE 85 CE
+
+            jsr Sub_7844         	; 6FE0 20 44 78
+ 
+            ldx #$03           		; 6FE3 A2 03 
+L06FE5      ldy #$00           		; 6FE5 A0 00
+ 
+@      		lda $23,y       		; 6FE7 B9 23 00 
+            cmp $62,x       		; 6FEA D5 62 
+            lda $24,y       		; 6FEC B9 24 00 
+            sbc $63,x       		; 6FEF F5 63 
+            lda $25,y       		; 6FF1 B9 25 00 
+            sbc $64,x       		; 6FF4 F5 64 
+            bcc L07026         		; 6FF6 90 2E 
+            iny                		; 6FF8 C8 
+            iny                		; 6FF9 C8 
+            iny                		; 6FFA C8 
+            cpy #$1E           		; 6FFB C0 1E 
+            bcc <@        			; 6FFD 90 E8
+ 
+L06FFF      dex                		; 6FFF CA 
+            dex                		; 7000 CA 
+            dex                		; 7001 CA 
+            bpl L06FE5         		; 7002 10 E1 
+            lda $43         		; 7004 A5 43 
+            bmi L07016         		; 7006 30 0E 
+            cmp $42         		; 7008 C5 42 
+            bcc L07016         		; 700A 90 0A 
+            adc #$02           		; 700C 69 02 
+            cmp #$1E           		; 700E C9 1E 
+            bcc L07014         		; 7010 90 02 
+            lda #$FF           		; 7012 A9 FF 
+L07014      sta $43         		; 7014 85 43 
+L07016      ldx $CE         		; 7016 A6 CE 
+            bmi L0701F         		; 7018 30 05 
+            ldy #$4F           		; 701A A0 4F 
+            jsr L07716         		; 701C 20 16 77 
+L0701F      lda #$00           		; 701F A9 00 
+            sta $22         		; 7021 85 22 
+            sta $41         		; 7023 85 41
+
+; We branch here if $22 is positive
+L07025      rts                		; 7025 60 
+
+
 L07026      stx $000C         ; 7026 86 0C 
             txa                ; 7028 8A 
             lsr                ; 7029 4A 
@@ -2248,11 +2455,15 @@ L0707C      lda #$0B           ; 707C A9 0B
             lda $0062,x       ; 7096 B5 62 
             sta $0023,y       ; 7098 99 23 00 
             jmp L06FFF         ; 709B 4C FF 6F 
+
+
             tya                ; 709E 98 
             bpl L070AA         ; 709F 10 09 
             jsr L070B6         ; 70A1 20 B6 70 
             jsr L070AA         ; 70A4 20 AA 70 
             jmp L070B6         ; 70A7 4C B6 70 
+
+
 L070AA      tay                ; 70AA A8 
             txa                ; 70AB 8A 
             bpl L070BC         ; 70AC 10 0E 
@@ -2263,6 +2474,8 @@ L070B6      eor #$FF           ; 70B6 49 FF
             clc                ; 70B8 18 
             adc #$01           ; 70B9 69 01 
             rts                ; 70BB 60 
+
+
 L070BC      sta $000D         ; 70BC 85 0D 
             tya                ; 70BE 98 
             cmp $000D         ; 70BF C5 0D 
@@ -2274,10 +2487,14 @@ L070BC      sta $000D         ; 70BC 85 0D
             sec                ; 70CB 38 
             sbc #$40           ; 70CC E9 40 
             jmp L070B6         ; 70CE 4C B6 70 
+
+
 L070D1      jsr L070EB         ; 70D1 20 EB 70 
             tax                ; 70D4 AA 
             lda L070D9,x       ; 70D5 BD D9 70 
             rts                ; 70D8 60 
+
+
 L070D9      brk                ; 70D9 00 
             .byt $02	; 70DA 02 
             ora $0007         ; 70DB 05 07 
@@ -2304,12 +2521,16 @@ L070F3      rol $000C         ; 70F3 26 0C
             lda $000C         ; 70F9 A5 0C 
             and #$1F           ; 70FB 29 1F 
             rts                ; 70FD 60 
+
+
 L070FE      clc                ; 70FE 18 
             adc #$40           ; 70FF 69 40 
 L07101      bpl L0710B         ; 7101 10 08 
             and #$7F           ; 7103 29 7F 
             jsr L0710B         ; 7105 20 0B 71 
             jmp L070B6         ; 7108 4C B6 70 
+
+
 L0710B      cmp #$41           ; 710B C9 41 
             bcc L07113         ; 710D 90 04 
             eor #$7F           ; 710F 49 7F 
@@ -2319,39 +2540,44 @@ L07113      tax                ; 7113 AA
             rts                ; 7117 60 
 
 
-
-
 Sub_7118    lda #$04           	; 7118 A9 04 
             sta $0076         	; 711A 85 76 
 
 ; Arghh! jumping into the Vector Ram!
 @           jsr $4BA2         	; 711C 20 A2 4B
  
-            dec $0076         	; 711F C6 76 
+            dec $76         	; 711F C6 76 
             bne <@          	; 7121 D0 F9 
 
             ldx #$C9           	; 7123 A2 C9 
             lda #$47           	; 7125 A9 47 
-            sta $0004         	; 7127 85 04 
+            sta $04         	; 7127 85 04 
+
             lda #$02           	; 7129 A9 02 
-            sta $0003         	; 712B 85 03 
+            sta $03         	; 712B 85 03
+
             lda #$C1           	; 712D A9 C1 
-            jsr L07CD5         	; 712F 20 D5 7C 
+            jsr Sub_7CD5       	; 712F 20 D5 7C
+ 
             lda #$BE           	; 7132 A9 BE 
-            sta $0009         	; 7134 85 09 
+            sta $09         	; 7134 85 09
+ 
             lda #$75           	; 7136 A9 75 
             sta $000A         	; 7138 85 0A 
+
             lda #$00           	; 713A A9 00 
-            sta $0001         	; 713C 85 01 
+            sta $0001         	; 713C 85 01
+ 
             lda #$70           	; 713E A9 70 
             ldx #$20           	; 7140 A2 20 
-            jsr L0717F         	; 7142 20 7F 71 
+            jsr Sub_717F        ; 7142 20 7F 71
+ 
             jmp L079D6         	; 7145 4C D6 79 
 
 
 L07148      lda #$C5           	; 7148 A9 C5 
             ldx #$C9           	; 714A A2 C9 
-            jsr L07CD5         	; 714C 20 D5 7C 
+            jsr Sub_7CD5         	; 714C 20 D5 7C 
             ldx #$BE           	; 714F A2 BE 
             lda #$75           	; 7151 A9 75 
             sta $000A         	; 7153 85 0A 
@@ -2376,7 +2602,7 @@ L07176      tya                ; 7176 98
             tay                ; 7178 A8 
             lda L071D4,y       ; 7179 B9 D4 71 
             ldx L071D5,y       ; 717C BE D5 71 
-L0717F      jsr L07A1F         ; 717F 20 1F 7A 
+Sub_717F    jsr L07A1F         ; 717F 20 1F 7A 
             lda #$70           ; 7182 A9 70 
             jsr L07AEA         ; 7184 20 EA 7A 
 L07187      ldy #$00           ; 7187 A0 00 
@@ -2401,6 +2627,8 @@ L0718B      lda ($0009,x)     ; 718B A1 09
             bcc L0718B         ; 71AA 90 DF 
 L071AC      dey                ; 71AC 88 
             jmp L07A55         ; 71AD 4C 55 7A 
+
+
 L071B0      inc $0009         ; 71B0 E6 09 
             bne L071B6         ; 71B2 D0 02 
             inc $000A         ; 71B4 E6 0A 
@@ -2421,6 +2649,8 @@ L071C4      tax                ; 71C4 AA
             iny                ; 71D0 C8 
             ldx #$00           ; 71D1 A2 00 
             rts                ; 71D3 60 
+
+
 L071D4      pla                ; 71D4 68 
 L071D5      ldx $0072,y       ; 71D5 B6 72 
             ldx $000C,y       ; 71D7 B6 0C 
@@ -2507,8 +2737,6 @@ L07278		.byt $9b, $64, $09, $02, $3d, $92
 			.byt $4d, $f0, $0e, $64, $0a, $12, $b8, $46, $10, $62
 			.byt $4b, $60, $82, $72, $b5, $c0, $be, $a8, $0a, $64
 			.byt $c5, $92, $f0, $74, $9d, $c2, $6c, $9a, $c3, $4a
-
-
  
 
             .byt $82	; 73BE 82 
@@ -2551,8 +2779,6 @@ L07278		.byt $9b, $64, $09, $02, $3d, $92
 			.byt $92, $43, $70, $9d, $c3, $20, $5c, $ca
 			.byt $56, $2d, $c2, $8b, $64, $6c, $67
 
-
-
 			
 L074E7		bit $73
             bpl L07514         ; 74E9 10 29 
@@ -2579,6 +2805,8 @@ L07507      txa                ; 7507 8A
 L07511      sta $02EF         ; 7511 8D EF 02 
 L07514      clc                ; 7514 18 
             rts                ; 7515 60 
+
+
 L07516      ldx #$80           ; 7516 A2 80 
             cpx $02EF         ; 7518 EC EF 02 
             bcc L07523         ; 751B 90 06 
@@ -2586,9 +2814,13 @@ L07516      ldx #$80           ; 7516 A2 80
             ldy #$1A           ; 751F A0 1A 
             clc                ; 7521 18 
             rts                ; 7522 60 
+
+
 L07523      jsr L07507         ; 7523 20 07 75 
             sec                ; 7526 38 
             rts                ; 7527 60 
+
+
 L07528      ldx #$F8           ; 7528 A2 F8 
             sec                ; 752A 38 
             ror $0071         ; 752B 66 71 
@@ -2631,6 +2863,8 @@ L07578      lda #$00           ; 7578 A9 00
             sec                ; 757A 38 
             sbc $0221,y       ; 757B F9 21 02 
             jmp L0759A         ; 757E 4C 9A 75 
+
+
 L07581      lda $023A,x       ; 7581 BD 3A 02 
             bpl L0758B         ; 7584 10 05 
             jsr L075B1         ; 7586 20 B1 75 
@@ -2654,6 +2888,8 @@ L075A5      cmp #$06           ; 75A5 C9 06
 L075AB      ldx $0011         ; 75AB A6 11 
             sta $023A,x       ; 75AD 9D 3A 02 
             rts                ; 75B0 60 
+
+
 L075B1      lda $02A5,y       ; 75B1 B9 A5 02 
             cmp $02BE,x       ; 75B4 DD BE 02
 
@@ -2663,6 +2899,8 @@ L075B1      lda $02A5,y       ; 75B1 B9 A5 02
 L075B7      lda $0263,y       ; 75B7 B9 63 02 
             sbc $027C,x       ; 75BA FD 7C 02 
             rts                ; 75BD 60 
+
+
 
 			.byt $1f, $c4
 
@@ -2720,9 +2958,6 @@ x7660		.byt $01, $10, $a0, $00, $01, $00, $00, $0c
 			.byt $00, $01, $30, $21, $01, $08, $00, $01, $80, $84
 			.byt $01, $04, $30, $85, $ff, $04, $00, $00, $04, $18
 					
-
-
-
 
 
             lda $00FF         ; 76E0 A5 FF 
@@ -2794,8 +3029,14 @@ x7780		.byt $94, $9b, $94, $a3, $b5, $a3, $9d, $00
 x7790		.byt $f0, $ed, $95, $bb, $c8, $94, $c3, $d0
 			.byt $c8
 			
-L07799		.byt $01
-L0779A		.byt $e0, $c0, $e1 
+; I think these are VG instructions
+L07799		.byt $01			; I think this represents the VG instruction 'JMPL $001'
+L0779A		.byt $e0 
+
+			.byt $c0			; I think this represents the VG instruction 'JMPL $1c0'
+			.byt $e1
+			
+			 
 L0779D		.byt $e5
 L0779E		.byt $c3, $ca
 			
@@ -2804,8 +3045,6 @@ x77a0		.byt $c3, $af, $c3, $94, $c3
 L077A5		.byt $7f, $02, $04
 
 			.byt $04, $05, $03, $7f, $7f, $ff, $ff, $ff
-
-
 
 
             .byt $FF	; 77B0 FF 
@@ -2958,7 +3197,8 @@ L077A5		.byt $7f, $02, $04
             .byt $FF	; 7843 FF
 
 ; ...continuation of Sub_7BE3
-L07844      lda #$00           		; 7844 A9 00 
+; also entered directly from multiple places
+Sub_7844    lda #$00           		; 7844 A9 00 
             ldx #$07           		; 7846 A2 07
  
 @           sta $009B,x       		; 7848 95 9B 
@@ -2966,351 +3206,376 @@ L07844      lda #$00           		; 7844 A9 00
             bpl <@          		; 784B 10 FB
  
             sta PKY_AUDCTL         	; 784D 8D 08 2C 
-            rts                		; 7850 60       - end of Sub_7BE3 
-            
+            rts                		; 7850 60
+
+; Under normal operation, we get an NMI interrupt every 4mS. This is disabled
+; during reset or self-test mode.           
 NMI_ISR            
-            bit $01FF         ; 7851 2C FF 01 
-            bpl L07857         ; 7854 10 01 
-            rti                ; 7856 40 
-L07857      pha                ; 7857 48 
-            tya                ; 7858 98 
-            pha                ; 7859 48 
-            txa                ; 785A 8A 
-            pha                ; 785B 48 
-            cld                ; 785C D8 
-            lda $01FF         ; 785D AD FF 01 
-            ora $01D0         ; 7860 0D D0 01 
-L07863      bne L07863         ; 7863 D0 FE 
-            inc $0078         ; 7865 E6 78 
-            lda $0078         ; 7867 A5 78 
-            and #$03           ; 7869 29 03 
-            bne L0787A         ; 786B D0 0D 
-            inc $0075         ; 786D E6 75 
-            lda $0075         ; 786F A5 75 
-            cmp #$03           ; 7871 C9 03 
-            bcc L0787A         ; 7873 90 05 
-L07875      bne L07875         ; 7875 D0 FE 
-            sta ResetVG        ; 7877 8D 00 38 
-L0787A      ldx $0022         ; 787A A6 22 
-            bne L0789B         ; 787C D0 1D 
-            lda $0042         ; 787E A5 42 
-            and $0043         ; 7880 25 43 
-            bpl L0789B         ; 7882 10 17 
-            stx PKY_SKCTL         ; 7884 8E 0F 2C 
-            ldx #$04           ; 7887 A2 04 
-L07889      dex                ; 7889 CA 
-            bne L07889         ; 788A D0 FD 
-            ldx #$07           ; 788C A2 07 
-            stx PKY_SKCTL         ; 788E 8E 0F 2C 
-            stx PKY_POTGO         ; 7891 8E 0B 2C 
-            lda PKY_ALLPOT         ; 7894 AD 08 2C 
-            eor #$FF           ; 7897 49 FF 
-            sta $008D         ; 7899 85 8D 
-L0789B      jsr L07742         ; 789B 20 42 77 
-            ldx #$02           ; 789E A2 02 
-L078A0      lda LCoinSwitch,x  ; 78A0 BD 00 24 
-            asl                ; 78A3 0A 
-            lda $0096,x       ; 78A4 B5 96 
-            and #$1F           ; 78A6 29 1F 
-            bcc L078E1         ; 78A8 90 37 
-            beq L078BC         ; 78AA F0 10 
-            cmp #$1B           ; 78AC C9 1B 
-            bcs L078BA         ; 78AE B0 0A 
-            tay                ; 78B0 A8 
-            lda $0078         ; 78B1 A5 78 
-            and #$07           ; 78B3 29 07 
-            cmp #$07           ; 78B5 C9 07 
-            tya                ; 78B7 98 
-            bcc L078BC         ; 78B8 90 02 
-L078BA      sbc #$01           ; 78BA E9 01 
-L078BC      sta $0096,x       ; 78BC 95 96 
-            lda SlamSwitch     ; 78BE AD 06 20 
-            and #$80           ; 78C1 29 80 
-            beq L078C9         ; 78C3 F0 04 
-            lda #$F0           ; 78C5 A9 F0 
-            sta $008E         ; 78C7 85 8E 
-L078C9      lda $008E         ; 78C9 A5 8E 
-            beq L078D5         ; 78CB F0 08 
-            dec $008E         ; 78CD C6 8E 
-            lda #$00           ; 78CF A9 00 
-            sta $0096,x       ; 78D1 95 96 
-            sta $0093,x       ; 78D3 95 93 
-L078D5      clc                ; 78D5 18 
-            lda $0093,x       ; 78D6 B5 93 
-            beq L078FD         ; 78D8 F0 23 
-            dec $0093,x       ; 78DA D6 93 
-            bne L078FD         ; 78DC D0 1F 
-            sec                ; 78DE 38 
-            bcs L078FD         ; 78DF B0 1C 
-L078E1      cmp #$1B           ; 78E1 C9 1B 
-            bcs L078EE         ; 78E3 B0 09 
-            lda $0096,x       ; 78E5 B5 96 
-            adc #$20           ; 78E7 69 20 
-            bcc L078BC         ; 78E9 90 D1 
-            beq L078EE         ; 78EB F0 01 
-            clc                ; 78ED 18 
-L078EE      lda #$1F           ; 78EE A9 1F 
-            bcs L078BC         ; 78F0 B0 CA 
-            sta $0096,x       ; 78F2 95 96 
-            lda $0093,x       ; 78F4 B5 93 
-            beq L078F9         ; 78F6 F0 01 
-            sec                ; 78F8 38 
-L078F9      lda #$78           ; 78F9 A9 78 
-            sta $0093,x       ; 78FB 95 93 
-L078FD      bcc L07929         ; 78FD 90 2A 
-            lda #$00           ; 78FF A9 00 
-            cpx #$01           ; 7901 E0 01 
-            bcc L0791B         ; 7903 90 16 
-            beq L07913         ; 7905 F0 0C 
-            lda $008D         ; 7907 A5 8D 
-            and #$0C           ; 7909 29 0C 
-            lsr                ; 790B 4A 
-            lsr                ; 790C 4A 
-            beq L0791B         ; 790D F0 0C 
-            adc #$02           ; 790F 69 02 
-            bne L0791B         ; 7911 D0 08 
-L07913      lda $008D         ; 7913 A5 8D 
-            and #$10           ; 7915 29 10 
-            beq L0791B         ; 7917 F0 02 
-            lda #$01           ; 7919 A9 01 
-L0791B      sec                ; 791B 38 
-            pha                ; 791C 48 
-            adc $0099         ; 791D 65 99 
-            sta $0099         ; 791F 85 99 
-            pla                ; 7921 68 
-            sec                ; 7922 38 
-            adc $008F         ; 7923 65 8F 
-            sta $008F         ; 7925 85 8F 
-            inc $0090,x       ; 7927 F6 90 
-L07929      dex                ; 7929 CA 
-            bmi L0792F         ; 792A 30 03 
-            jmp L078A0         ; 792C 4C A0 78 
-L0792F      lda $008D         ; 792F A5 8D 
-            lsr                ; 7931 4A 
-            lsr                ; 7932 4A 
-            lsr                ; 7933 4A 
-            lsr                ; 7934 4A 
-            lsr                ; 7935 4A 
-            tay                ; 7936 A8 
-            lda $0099         ; 7937 A5 99 
-            sec                ; 7939 38 
-            sbc L077A5,y       ; 793A F9 A5 77 
-            bmi L07949         ; 793D 30 0A 
-            sta $0099         ; 793F 85 99 
-            inc $009A         ; 7941 E6 9A 
-            cpy #$03           ; 7943 C0 03 
-            bne L07949         ; 7945 D0 02 
-            inc $009A         ; 7947 E6 9A 
-L07949      lda $008D         ; 7949 A5 8D 
-            and #$03           ; 794B 29 03 
-            tay                ; 794D A8 
-            beq L0796A         ; 794E F0 1A 
-            lsr                ; 7950 4A 
-            adc #$00           ; 7951 69 00 
-            eor #$FF           ; 7953 49 FF 
-            sec                ; 7955 38 
-            adc $008F         ; 7956 65 8F 
-            bcs L07962         ; 7958 B0 08 
-            adc $009A         ; 795A 65 9A 
-            bmi L0796C         ; 795C 30 0E 
-            sta $009A         ; 795E 85 9A 
-            lda #$00           ; 7960 A9 00 
-L07962      cpy #$02           ; 7962 C0 02 
-            bcs L07968         ; 7964 B0 02 
-            inc $008C         ; 7966 E6 8C 
-L07968      inc $008C         ; 7968 E6 8C 
-L0796A      sta $008F         ; 796A 85 8F 
-L0796C      lda $0078         ; 796C A5 78 
-            lsr                ; 796E 4A 
-            bcs L07998         ; 796F B0 27 
-            ldy #$00           ; 7971 A0 00 
-            ldx #$02           ; 7973 A2 02 
-L07975      lda $0090,x       ; 7975 B5 90 
-            beq L07982         ; 7977 F0 09 
-            cmp #$10           ; 7979 C9 10 
-            bcc L07982         ; 797B 90 05 
-            adc #$EF           ; 797D 69 EF 
-            iny                ; 797F C8 
-            sta $0090,x       ; 7980 95 90 
-L07982      dex                ; 7982 CA 
-            bpl L07975         ; 7983 10 F0 
-            tya                ; 7985 98 
-            bne L07998         ; 7986 D0 10 
-            ldx #$02           ; 7988 A2 02 
-L0798A      lda $0090,x       ; 798A B5 90 
-            beq L07995         ; 798C F0 07 
-            clc                ; 798E 18 
-            adc #$EF           ; 798F 69 EF 
-            sta $0090,x       ; 7991 95 90 
-            bmi L07998         ; 7993 30 03 
-L07995      dex                ; 7995 CA 
-            bpl L0798A         ; 7996 10 F2 
-L07998      lda $0090         ; 7998 A5 90 
-            sta LCoinCounter   ; 799A 8D 05 3C 
-            lda $0091         ; 799D A5 91 
-            sta CCoinCounter   ; 799F 8D 06 3C 
-            lda $0092         ; 79A2 A5 92 
-            sta RCoinCounter   ; 79A4 8D 07 3C 
-            lda $0085         ; 79A7 A5 85 
-            eor #$03           ; 79A9 49 03 
-            ror                ; 79AB 6A 
-            ror                ; 79AC 6A 
-            sta OnePlayerLED          ; 79AD 8D 00 3C 
-            ror                ; 79B0 6A 
-            sta TwoPlayerLED          ; 79B1 8D 01 3C 
-            lda $008E         ; 79B4 A5 8E 
-            beq L079C2         ; 79B6 F0 0A 
-            lda #$08           ; 79B8 A9 08 
-            ldy #$AF           ; 79BA A0 AF 
-            sta PKY_AUDF1          ; 79BC 8D 00 2C 
-            sty PKY_AUDC1         ; 79BF 8C 01 2C 
-L079C2      lda #$00           ; 79C2 A9 00 
-            asl FireSwitch     ; 79C4 0E 04 20 
-            bcc L079CE         ; 79C7 90 05 
-            lda $00FE         ; 79C9 A5 FE 
-            ora #$08           ; 79CB 09 08 
-            asl                ; 79CD 0A 
-L079CE      sta $00FE         ; 79CE 85 FE 
-            pla                ; 79D0 68 
-            tax                ; 79D1 AA 
-            pla                ; 79D2 68 
-            tay                ; 79D3 A8 
-            pla                ; 79D4 68 
-            rti                ; 79D5 40 
-L079D6      lda #$D0           ; 79D6 A9 D0 
-            bne L079DC         ; 79D8 D0 02 
-L079DA      lda #$B0           ; 79DA A9 B0 
-L079DC      ldy #$00           ; 79DC A0 00 
-            sta ($0003),y     ; 79DE 91 03 
-            iny                ; 79E0 C8 
-            sta ($0003),y     ; 79E1 91 03 
-            bne L07A55         ; 79E3 D0 70 
-L079E5      bcc L079EB         ; 79E5 90 04 
-            and #$0F           ; 79E7 29 0F 
-            beq L079F0         ; 79E9 F0 05 
-L079EB      and #$0F           ; 79EB 29 0F 
-            clc                ; 79ED 18 
-            adc #$01           ; 79EE 69 01 
-L079F0      php                ; 79F0 08 
-            asl                ; 79F1 0A 
-            tay                ; 79F2 A8 
-            jsr L079F8         ; 79F3 20 F8 79 
-            plp                ; 79F6 28 
-            rts                ; 79F7 60 
-L079F8      cpy #$4A           ; 79F8 C0 4A 
-            bcc L079FE         ; 79FA 90 02 
-            ldy #$00           ; 79FC A0 00 
-L079FE      ldx VROM56F9,y       ; 79FE BE F9 56 
-            lda VROM56F8,y       ; 7A01 B9 F8 56 
-            jmp L07CD5         ; 7A04 4C D5 7C 
-            lsr                ; 7A07 4A 
-            and #$0F           ; 7A08 29 0F 
-            ora #$E0           ; 7A0A 09 E0 
-L07A0C      ldy #$01           ; 7A0C A0 01 
-            sta ($0003),y     ; 7A0E 91 03 
-            dey                ; 7A10 88 
-            txa                ; 7A11 8A 
-            ror                ; 7A12 6A 
-            sta ($0003),y     ; 7A13 91 03 
-            iny                ; 7A15 C8 
-            bne L07A55         ; 7A16 D0 3D 
-L07A18      lsr                ; 7A18 4A 
-            and #$0F           ; 7A19 29 0F 
-            ora #$C0           ; 7A1B 09 C0 
-            bne L07A0C         ; 7A1D D0 ED 
-L07A1F      ldy #$00           ; 7A1F A0 00 
-            sty $0006         ; 7A21 84 06 
-            sty $0008         ; 7A23 84 08 
-            asl                ; 7A25 0A 
-            rol $0006         ; 7A26 26 06 
-            asl                ; 7A28 0A 
-            rol $0006         ; 7A29 26 06 
-            sta $0005         ; 7A2B 85 05 
-            txa                ; 7A2D 8A 
-            asl                ; 7A2E 0A 
-            rol $0008         ; 7A2F 26 08 
-            asl                ; 7A31 0A 
-            rol $0008         ; 7A32 26 08 
-            sta $0007         ; 7A34 85 07 
-            ldx #$05           ; 7A36 A2 05 
-L07A38      lda $0002,x       ; 7A38 B5 02 
-            ldy #$00           ; 7A3A A0 00 
-            sta ($0003),y     ; 7A3C 91 03 
-            lda $0003,x       ; 7A3E B5 03 
-            and #$0F           ; 7A40 29 0F 
-            ora #$A0           ; 7A42 09 A0 
-            iny                ; 7A44 C8 
-            sta ($0003),y     ; 7A45 91 03 
-            lda ScratchRam,x   ; 7A47 B5 00 
-            iny                ; 7A49 C8 
-            sta ($0003),y     ; 7A4A 91 03 
-            lda $0001,x       ; 7A4C B5 01 
-            and #$0F           ; 7A4E 29 0F 
-            ora $0001         ; 7A50 05 01 
-            iny                ; 7A52 C8 
-            sta ($0003),y     ; 7A53 91 03 
-L07A55      tya                ; 7A55 98 
-            sec                ; 7A56 38 
-            adc $0003         ; 7A57 65 03 
-            sta $0003         ; 7A59 85 03 
-            bcc L07A5F         ; 7A5B 90 02 
-            inc $0004         ; 7A5D E6 04 
-L07A5F      rts                ; 7A5F 60 
-            ldx #$00           ; 7A60 A2 00 
-            lda $0006         ; 7A62 A5 06 
-            cmp #$80           ; 7A64 C9 80 
-            bcc L07A72         ; 7A66 90 0A 
-            txa                ; 7A68 8A 
-            sbc $0005         ; 7A69 E5 05 
-            sta $0005         ; 7A6B 85 05 
-            txa                ; 7A6D 8A 
-            sbc $0006         ; 7A6E E5 06 
-            sta $0006         ; 7A70 85 06 
-L07A72      rol $0009         ; 7A72 26 09 
-            lda $0008         ; 7A74 A5 08 
-            cmp #$80           ; 7A76 C9 80 
-            bcc L07A84         ; 7A78 90 0A 
-            txa                ; 7A7A 8A 
-            sbc $0007         ; 7A7B E5 07 
-            sta $0007         ; 7A7D 85 07 
-            txa                ; 7A7F 8A 
-            sbc $0008         ; 7A80 E5 08 
-            sta $0008         ; 7A82 85 08 
-L07A84      rol $0009         ; 7A84 26 09 
-            ora $0006         ; 7A86 05 06 
-            beq L07A92         ; 7A88 F0 08 
-            cmp #$02           ; 7A8A C9 02 
-            bcs L07AB2         ; 7A8C B0 24 
-            ldy #$01           ; 7A8E A0 01 
-            bne L07AA2         ; 7A90 D0 10 
-L07A92      ldy #$02           ; 7A92 A0 02 
-            ldx #$09           ; 7A94 A2 09 
-            lda $0005         ; 7A96 A5 05 
-            ora $0007         ; 7A98 05 07 
-            beq L07AB2         ; 7A9A F0 16 
-            bmi L07AA2         ; 7A9C 30 04 
-L07A9E      iny                ; 7A9E C8 
-            asl                ; 7A9F 0A 
-            bpl L07A9E         ; 7AA0 10 FC 
-L07AA2      tya                ; 7AA2 98 
-            tax                ; 7AA3 AA 
-            lda $0006         ; 7AA4 A5 06 
-L07AA6      asl $0005         ; 7AA6 06 05 
-            rol                ; 7AA8 2A 
-            asl $0007         ; 7AA9 06 07 
-            rol $0008         ; 7AAB 26 08 
-            dey                ; 7AAD 88 
-            bne L07AA6         ; 7AAE D0 F6 
-            sta $0006         ; 7AB0 85 06 
-L07AB2      txa                ; 7AB2 8A 
-            sec                ; 7AB3 38 
-            sbc #$0A           ; 7AB4 E9 0A 
-            eor #$FF           ; 7AB6 49 FF 
-            asl                ; 7AB8 0A 
-            ror $0009         ; 7AB9 66 09 
-            rol                ; 7ABB 2A 
-            ror $0009         ; 7ABC 66 09 
-            rol                ; 7ABE 2A 
+            bit $01FF         		; 7851 2C FF 01 
+            bpl >@        	 		; 7854 10 01 
+            rti                		; 7856 40 
+
+@      		pha                		; 7857 48 
+            tya                		; 7858 98 
+            pha                		; 7859 48 
+            txa                		; 785A 8A 
+            pha                		; 785B 48 
+            cld                		; 785C D8 
+            lda $01FF         		; 785D AD FF 01 
+            ora $01D0         		; 7860 0D D0 01 
+L07863      bne L07863         		; 7863 D0 FE 
+            inc $78         		; 7865 E6 78 
+            lda $78         		; 7867 A5 78 
+            and #$03           		; 7869 29 03 
+            bne L0787A         		; 786B D0 0D 
+            inc $75         		; 786D E6 75 
+            lda $75         		; 786F A5 75 
+            cmp #$03           		; 7871 C9 03 
+            bcc L0787A         		; 7873 90 05 
+L07875      bne L07875         		; 7875 D0 FE 
+            sta ResetVG        		; 7877 8D 00 38 
+L0787A      ldx $22         		; 787A A6 22 
+            bne L0789B         		; 787C D0 1D 
+            lda $42         		; 787E A5 42 
+            and $43         		; 7880 25 43 
+            bpl L0789B         		; 7882 10 17 
+            stx PKY_SKCTL         	; 7884 8E 0F 2C 
+            ldx #$04           		; 7887 A2 04 
+L07889      dex                		; 7889 CA 
+            bne L07889         		; 788A D0 FD 
+            ldx #$07           		; 788C A2 07 
+            stx PKY_SKCTL         	; 788E 8E 0F 2C 
+            stx PKY_POTGO         	; 7891 8E 0B 2C 
+            lda PKY_ALLPOT         	; 7894 AD 08 2C 
+            eor #$FF           		; 7897 49 FF 
+            sta $8D         		; 7899 85 8D 
+L0789B      jsr L07742         		; 789B 20 42 77 
+
+
+; Poll the coin switches, starting with Right -> Center -> Left
+; Clever - only polling the coin switches every few mS
+            ldx #$02           		; 789E A2 02 
+L078A0      lda LCoinSwitch,x  		; 78A0 BD 00 24 
+            asl                		; 78A3 0A 
+            lda $96,x       		; 78A4 B5 96 
+            and #$1F           		; 78A6 29 1F 
+            bcc L078E1         		; 78A8 90 37 
+            beq L078BC         		; 78AA F0 10 
+            cmp #$1B           		; 78AC C9 1B 
+            bcs L078BA         		; 78AE B0 0A 
+            tay                		; 78B0 A8 
+            lda $78         		; 78B1 A5 78 
+            and #$07           		; 78B3 29 07 
+            cmp #$07           		; 78B5 C9 07 
+            tya                		; 78B7 98 
+            bcc L078BC         		; 78B8 90 02 
+L078BA      sbc #$01           		; 78BA E9 01 
+L078BC      sta $96,x       		; 78BC 95 96 
+            lda SlamSwitch     		; 78BE AD 06 20 
+            and #$80           		; 78C1 29 80 
+            beq L078C9         		; 78C3 F0 04 
+            lda #$F0           		; 78C5 A9 F0 
+            sta $8E         		; 78C7 85 8E 
+L078C9      lda $8E         		; 78C9 A5 8E 
+            beq L078D5         		; 78CB F0 08 
+            dec $8E         		; 78CD C6 8E 
+            lda #$00           		; 78CF A9 00 
+            sta $96,x       		; 78D1 95 96 
+            sta $93,x       		; 78D3 95 93 
+L078D5      clc                		; 78D5 18 
+            lda 093,x       		; 78D6 B5 93 
+            beq L078FD         		; 78D8 F0 23 
+            dec $93,x       		; 78DA D6 93 
+            bne L078FD         		; 78DC D0 1F 
+            sec                		; 78DE 38 
+            bcs L078FD         		; 78DF B0 1C 
+L078E1      cmp #$1B           		; 78E1 C9 1B 
+            bcs L078EE         		; 78E3 B0 09 
+            lda $96,x       		; 78E5 B5 96 
+            adc #$20           		; 78E7 69 20 
+            bcc L078BC         		; 78E9 90 D1 
+            beq L078EE         		; 78EB F0 01 
+            clc                		; 78ED 18 
+L078EE      lda #$1F           		; 78EE A9 1F 
+            bcs L078BC         		; 78F0 B0 CA 
+            sta $96,x       		; 78F2 95 96 
+            lda $93,x       		; 78F4 B5 93 
+            beq L078F9         		; 78F6 F0 01 
+            sec                		; 78F8 38 
+L078F9      lda #$78           		; 78F9 A9 78 
+            sta $93,x       		; 78FB 95 93 
+L078FD      bcc L07929         		; 78FD 90 2A 
+            lda #$00           		; 78FF A9 00 
+            cpx #$01           		; 7901 E0 01 
+            bcc L0791B         		; 7903 90 16 
+            beq L07913         		; 7905 F0 0C 
+            lda $8D         		; 7907 A5 8D 
+            and #$0C           		; 7909 29 0C 
+            lsr                		; 790B 4A 
+            lsr                		; 790C 4A 
+            beq L0791B         		; 790D F0 0C 
+            adc #$02           		; 790F 69 02 
+            bne L0791B         		; 7911 D0 08 
+L07913      lda $8D         		; 7913 A5 8D 
+            and #$10          		; 7915 29 10 
+            beq L0791B        		; 7917 F0 02 
+            lda #$01          	 	; 7919 A9 01 
+L0791B      sec                		; 791B 38 
+            pha                		; 791C 48 
+            adc $99         		; 791D 65 99 
+            sta $99         		; 791F 85 99 
+            pla                		; 7921 68 
+            sec                		; 7922 38 
+            adc $8F         		; 7923 65 8F 
+            sta $8F         		; 7925 85 8F 
+            inc $90,x       		; 7927 F6 90 
+L07929      dex                		; 7929 CA 
+            bmi L0792F         		; 792A 30 03 
+            jmp L078A0         		; 792C 4C A0 78 
+
+
+L0792F      lda $8D         		; 792F A5 8D 
+            lsr                		; 7931 4A 
+            lsr                		; 7932 4A 
+            lsr                		; 7933 4A 
+            lsr                		; 7934 4A 
+            lsr                		; 7935 4A 
+            tay                		; 7936 A8 
+            lda $99         		; 7937 A5 99 
+            sec                		; 7939 38 
+            sbc L077A5,y       		; 793A F9 A5 77 
+            bmi L07949         		; 793D 30 0A 
+            sta $99         		; 793F 85 99 
+            inc $9A         		; 7941 E6 9A 
+            cpy #$03           		; 7943 C0 03 
+            bne L07949         		; 7945 D0 02 
+            inc $9A         		; 7947 E6 9A 
+L07949      lda $8D         		; 7949 A5 8D 
+            and #$03           		; 794B 29 03 
+            tay                		; 794D A8 
+            beq L0796A         		; 794E F0 1A 
+            lsr                		; 7950 4A 
+            adc #$00           		; 7951 69 00 
+            eor #$FF           		; 7953 49 FF 
+            sec                		; 7955 38 
+            adc $8F         		; 7956 65 8F 
+            bcs L07962         		; 7958 B0 08 
+            adc $9A         		; 795A 65 9A 
+            bmi L0796C         		; 795C 30 0E 
+            sta $9A         		; 795E 85 9A 
+            lda #$00           		; 7960 A9 00 
+L07962      cpy #$02           		; 7962 C0 02 
+            bcs L07968         		; 7964 B0 02 
+            inc $8C         		; 7966 E6 8C 
+L07968      inc $8C         		; 7968 E6 8C 
+L0796A      sta $8F         		; 796A 85 8F 
+L0796C      lda $78         		; 796C A5 78 
+            lsr                		; 796E 4A 
+            bcs L07998         		; 796F B0 27 
+            ldy #$00           		; 7971 A0 00 
+            ldx #$02           		; 7973 A2 02 
+L07975      lda $90,x       		; 7975 B5 90 
+            beq L07982         		; 7977 F0 09 
+            cmp #$10           		; 7979 C9 10 
+            bcc L07982         		; 797B 90 05 
+            adc #$EF           		; 797D 69 EF 
+            iny                		; 797F C8 
+            sta $90,x       		; 7980 95 90 
+L07982      dex                		; 7982 CA 
+            bpl L07975         		; 7983 10 F0 
+            tya                		; 7985 98 
+            bne L07998         		; 7986 D0 10 
+            ldx #$02           		; 7988 A2 02 
+L0798A      lda $90,x       		; 798A B5 90 
+            beq L07995         		; 798C F0 07 
+            clc                		; 798E 18 
+            adc #$EF           		; 798F 69 EF 
+            sta $90,x       		; 7991 95 90 
+            bmi L07998         		; 7993 30 03 
+L07995      dex                		; 7995 CA 
+            bpl L0798A         		; 7996 10 F2 
+L07998      lda $90         		; 7998 A5 90 
+            sta LCoinCounter   		; 799A 8D 05 3C 
+            lda $91         		; 799D A5 91 
+            sta CCoinCounter   		; 799F 8D 06 3C 
+            lda $92         		; 79A2 A5 92 
+            sta RCoinCounter   		; 79A4 8D 07 3C 
+            lda $85         		; 79A7 A5 85 
+            eor #$03           		; 79A9 49 03 
+            ror                		; 79AB 6A 
+            ror                		; 79AC 6A 
+            sta OnePlayerLED        ; 79AD 8D 00 3C 
+            ror                		; 79B0 6A 
+            sta TwoPlayerLED        ; 79B1 8D 01 3C 
+            lda $8E         		; 79B4 A5 8E 
+            beq L079C2         		; 79B6 F0 0A 
+            lda #$08           		; 79B8 A9 08 
+            ldy #$AF           		; 79BA A0 AF 
+            sta PKY_AUDF1          	; 79BC 8D 00 2C 
+            sty PKY_AUDC1         	; 79BF 8C 01 2C 
+L079C2      lda #$00           		; 79C2 A9 00 
+            asl FireSwitch     		; 79C4 0E 04 20 
+            bcc L079CE         		; 79C7 90 05 
+            lda $FE         		; 79C9 A5 FE 
+            ora #$08           		; 79CB 09 08 
+            asl                		; 79CD 0A 
+L079CE      sta $FE         		; 79CE 85 FE 
+            pla                		; 79D0 68 
+            tax                		; 79D1 AA 
+            pla               		; 79D2 68 
+            tay                		; 79D3 A8 
+            pla                		; 79D4 68 
+            rti                		; 79D5 40
+
+
+
+; ...continuation of Sub_7118
+; TODO: more study 
+L079D6      lda #$D0           		; 79D6 A9 D0 
+            bne L079DC         		; 79D8 D0 02 
+L079DA      lda #$B0           		; 79DA A9 B0 
+L079DC      ldy #$00           		; 79DC A0 00 
+            sta ($03),y     		; 79DE 91 03 
+            iny                		; 79E0 C8 
+            sta ($03),y     		; 79E1 91 03 
+            bne L07A55         		; 79E3 D0 70 
+L079E5      bcc L079EB         		; 79E5 90 04 
+            and #$0F           		; 79E7 29 0F 
+            beq L079F0         		; 79E9 F0 05 
+L079EB      and #$0F           		; 79EB 29 0F 
+            clc                		; 79ED 18 
+            adc #$01           		; 79EE 69 01 
+L079F0      php                		; 79F0 08 
+            asl                		; 79F1 0A 
+            tay                		; 79F2 A8 
+            jsr Sub_79F8         	; 79F3 20 F8 79 
+            plp                		; 79F6 28 
+            rts                		; 79F7 60
+
+
+; On entry:
+;  y: ????
+Sub_79F8    cpy #$4A           		; 79F8 C0 4A 
+            bcc L079FE         		; 79FA 90 02 
+            ldy #$00           		; 79FC A0 00 
+L079FE      ldx VROM56F9,y       	; 79FE BE F9 56 
+            lda VROM56F8,y       	; 7A01 B9 F8 56 
+            jmp Sub_7CD5         	; 7A04 4C D5 7C
+
+ 
+            lsr                		; 7A07 4A 
+            and #$0F           		; 7A08 29 0F 
+            ora #$E0           		; 7A0A 09 E0 
+L07A0C      ldy #$01           		; 7A0C A0 01 
+            sta ($0003),y     		; 7A0E 91 03 
+            dey                		; 7A10 88 
+            txa                		; 7A11 8A 
+            ror                		; 7A12 6A 
+            sta ($0003),y     		; 7A13 91 03 
+            iny                		; 7A15 C8 
+            bne L07A55         		; 7A16 D0 3D 
+L07A18      lsr                		; 7A18 4A 
+            and #$0F           		; 7A19 29 0F 
+            ora #$C0           		; 7A1B 09 C0 
+            bne L07A0C         		; 7A1D D0 ED 
+L07A1F      ldy #$00           		; 7A1F A0 00 
+            sty $0006         		; 7A21 84 06 
+            sty $0008         		; 7A23 84 08 
+            asl                		; 7A25 0A 
+            rol $0006         		; 7A26 26 06 
+            asl                		; 7A28 0A 
+            rol $0006         		; 7A29 26 06 
+            sta $0005         		; 7A2B 85 05 
+            txa                		; 7A2D 8A 
+            asl                		; 7A2E 0A 
+            rol $0008         		; 7A2F 26 08 
+            asl                		; 7A31 0A 
+            rol $0008         		; 7A32 26 08 
+            sta $0007         		; 7A34 85 07 
+            ldx #$05           		; 7A36 A2 05 
+L07A38      lda $0002,x       		; 7A38 B5 02 
+            ldy #$00           		; 7A3A A0 00 
+            sta ($0003),y     		; 7A3C 91 03 
+            lda $0003,x       		; 7A3E B5 03 
+            and #$0F           		; 7A40 29 0F 
+            ora #$A0           		; 7A42 09 A0 
+            iny                		; 7A44 C8 
+            sta ($0003),y     		; 7A45 91 03 
+            lda ScratchRam,x   		; 7A47 B5 00 
+            iny                		; 7A49 C8 
+            sta ($0003),y     		; 7A4A 91 03 
+            lda $0001,x       		; 7A4C B5 01 
+            and #$0F           		; 7A4E 29 0F 
+            ora $0001         		; 7A50 05 01 
+            iny                		; 7A52 C8 
+            sta ($0003),y     		; 7A53 91 03
+
+; Many subs jump here 
+L07A55      tya                		; 7A55 98 
+            sec                		; 7A56 38 
+            adc $03         		; 7A57 65 03 
+            sta $03         		; 7A59 85 03 
+            bcc >@         			; 7A5B 90 02 
+            inc $04         		; 7A5D E6 04 
+@	        rts                		; 7A5F 60
+
+
+; Doesn't look like anything jumps/calls this
+            ldx #$00           		; 7A60 A2 00 
+            lda $0006         		; 7A62 A5 06 
+            cmp #$80           		; 7A64 C9 80 
+            bcc L07A72         		; 7A66 90 0A 
+            txa                		; 7A68 8A 
+            sbc $0005         		; 7A69 E5 05 
+            sta $0005         		; 7A6B 85 05 
+            txa                		; 7A6D 8A 
+            sbc $0006         		; 7A6E E5 06 
+            sta $0006         		; 7A70 85 06 
+L07A72      rol $0009         		; 7A72 26 09 
+            lda $0008         		; 7A74 A5 08 
+            cmp #$80           		; 7A76 C9 80 
+            bcc >@         			; 7A78 90 0A 
+            txa                		; 7A7A 8A 
+            sbc $07         		; 7A7B E5 07 
+            sta $07         		; 7A7D 85 07 
+            txa                		; 7A7F 8A 
+            sbc $08         		; 7A80 E5 08 
+            sta $08         		; 7A82 85 08 
+@	        rol $09         		; 7A84 26 09 
+            ora $06         		; 7A86 05 06 
+            beq L07A92         		; 7A88 F0 08 
+            cmp #$02           		; 7A8A C9 02 
+            bcs L07AB2         		; 7A8C B0 24 
+            ldy #$01           		; 7A8E A0 01 
+            bne L07AA2         		; 7A90 D0 10 
+L07A92      ldy #$02           		; 7A92 A0 02 
+            ldx #$09           		; 7A94 A2 09 
+            lda $05         		; 7A96 A5 05 
+            ora $07         		; 7A98 05 07 
+            beq L07AB2         		; 7A9A F0 16 
+            bmi L07AA2         		; 7A9C 30 04 
+@      		iny                		; 7A9E C8 
+            asl                		; 7A9F 0A 
+            bpl <@        			; 7AA0 10 FC 
+L07AA2      tya                		; 7AA2 98 
+            tax                		; 7AA3 AA 
+            lda $06         		; 7AA4 A5 06 
+@           asl $05         		; 7AA6 06 05 
+            rol                		; 7AA8 2A 
+            asl $07         		; 7AA9 06 07 
+            rol $08         		; 7AAB 26 08 
+            dey                		; 7AAD 88 
+            bne <@         			; 7AAE D0 F6 
+            sta $06         		; 7AB0 85 06 
+L07AB2      txa                		; 7AB2 8A 
+            sec                		; 7AB3 38 
+            sbc #$0A           		; 7AB4 E9 0A 
+            eor #$FF           		; 7AB6 49 FF 
+            asl                		; 7AB8 0A 
+            ror $09         		; 7AB9 66 09 
+            rol                		; 7ABB 2A 
+            ror $09         		; 7ABC 66 09 
+            rol               	 	; 7ABE 2A 
             asl                ; 7ABF 0A 
             sta $0009         ; 7AC0 85 09 
             ldy #$00           ; 7AC2 A0 00 
@@ -3331,7 +3596,12 @@ L07AB2      txa                ; 7AB2 8A
             ora $0006         ; 7ADD 05 06 
             iny                ; 7ADF C8 
             sta ($0003),y     ; 7AE0 91 03 
-            jmp L07A55         ; 7AE2 4C 55 7A 
+            jmp L07A55         ; 7AE2 4C 55 7A
+
+
+
+
+ 
 L07AE5      jsr L07A1F         ; 7AE5 20 1F 7A 
             lda #$70           ; 7AE8 A9 70 
 L07AEA      ldx #$00           ; 7AEA A2 00 
@@ -3346,26 +3616,33 @@ L07AEC      ldy #$01           ; 7AEC A0 01
             iny                ; 7AF8 C8 
             txa                ; 7AF9 8A 
             sta ($0003),y     ; 7AFA 91 03 
-            jmp L07A55         ; 7AFC 4C 55 7A 
-L07AFF      lda $0078         ; 7AFF A5 78 
-            and #$0C           ; 7B01 29 0C 
-            bne L07B26         ; 7B03 D0 21 
-            lda $00CD         ; 7B05 A5 CD 
-            beq L07B23         ; 7B07 F0 1A 
-            bpl L07B27         ; 7B09 10 1C 
-            ldx $00CB         ; 7B0B A6 CB 
-            lda #$06           ; 7B0D A9 06 
-            sta EACtlLatch     ; 7B0F 8D 00 3A 
-            sta LatchEA,x      ; 7B12 9D 00 32 
-            lda #$0E           ; 7B15 A9 0E 
-            dec $00CB         ; 7B17 C6 CB 
-            dec $00CC         ; 7B19 C6 CC 
-            bne L07B23         ; 7B1B D0 06 
-            ldx #$40           ; 7B1D A2 40 
-            stx $00CD         ; 7B1F 86 CD 
-L07B21      inc $00CB         ; 7B21 E6 CB 
-L07B23      sta EACtlLatch     ; 7B23 8D 00 3A 
-L07B26      rts                ; 7B26 60 
+            jmp L07A55         ; 7AFC 4C 55 7A
+
+
+; Do something with NVRam - store high score maybe?
+Sub_7AFF    lda $78         		; 7AFF A5 78 
+            and #$0C           		; 7B01 29 0C 
+            bne L07B26         		; 7B03 D0 21 
+
+            lda $CD         		; 7B05 A5 CD 
+            beq L07B23         		; 7B07 F0 1A 
+            bpl L07B27         		; 7B09 10 1C 
+            ldx $CB         		; 7B0B A6 CB 
+            lda #$06           		; 7B0D A9 06 
+            sta EACtlLatch     		; 7B0F 8D 00 3A 
+            sta LatchEA,x      		; 7B12 9D 00 32 
+
+            lda #$0E           		; 7B15 A9 0E 
+            dec $CB         		; 7B17 C6 CB 
+            dec $CC         		; 7B19 C6 CC 
+            bne L07B23         		; 7B1B D0 06 
+            ldx #$40           		; 7B1D A2 40 
+            stx $CD         		; 7B1F 86 CD 
+L07B21      inc $CB         		; 7B21 E6 CB 
+L07B23      sta EACtlLatch     		; 7B23 8D 00 3A 
+L07B26      rts                		; 7B26 60 
+
+
 L07B27      ldy $00CC         ; 7B27 A4 CC 
             bne L07B2D         ; 7B29 D0 02 
             sty $00CF         ; 7B2B 84 CF 
@@ -3462,6 +3739,8 @@ L07BC7      ldy $00CD         ; 7BC7 A4 CD
 L07BE2      rts                ; 7BE2 60 
 
 
+
+
 Sub_7BE3    bit VGHalted  		; 7BE3 2C 02 20 - Wait for the vector generator to finish
             bmi Sub_7BE3        ; 7BE6 30 FB 
 
@@ -3554,7 +3833,9 @@ L07C4A      sta $006A         	; 7C4A 85 6A
             bne >@          	; 7C63 D0 01 
             inx                	; 7C65 E8 
 @           stx $006E         	; 7C66 86 6E 
-            jmp L07844         	; 7C68 4C 44 78 
+            jmp Sub_7844         	; 7C68 4C 44 78 
+
+
 
 
 ; Bonus ship table
@@ -3572,13 +3853,17 @@ L07C71      sty $0009         	; 7C71 84 09
             lda #$70           	; 7C7A A9 70 
             jsr L07AEA         	; 7C7C 20 EA 7A 
             jmp L07C89         	; 7C7F 4C 89 7C 
+
+
 L07C82      ldx #$CA           	; 7C82 A2 CA 
             lda #$A4           	; 7C84 A9 A4 
-            jsr L07CD5         	; 7C86 20 D5 7C 
+            jsr Sub_7CD5         	; 7C86 20 D5 7C 
 L07C89      dec $0009         	; 7C89 C6 09 
             beq L07C8F         	; 7C8B F0 02 
             bpl L07C82         	; 7C8D 10 F3 
 L07C8F      rts                	; 7C8F 60 
+
+
 
 
 
@@ -3613,6 +3898,8 @@ L07CB2      ldx $001B         ; 7CB2 A6 1B
             dec $001C         ; 7CBD C6 1C 
             bpl L07CA2         ; 7CBF 10 E1 
             rts                ; 7CC1 60 
+
+
 L07CC2      jsr L07CC5         ; 7CC2 20 C5 7C 
 L07CC5      ldx $000C         ; 7CC5 A6 0C 
             dec $000C         ; 7CC7 C6 0C 
@@ -3621,12 +3908,18 @@ L07CC5      ldx $000C         ; 7CC5 A6 0C
 L07CCE      jsr L079EB         ; 7CCE 20 EB 79 
             lda #$0A           ; 7CD1 A9 0A 
             ldx #$CB           ; 7CD3 A2 CB 
-L07CD5      ldy #$00           ; 7CD5 A0 00 
-            sta ($0003),y     ; 7CD7 91 03 
-            iny                ; 7CD9 C8 
-            txa                ; 7CDA 8A 
-            sta ($0003),y     ; 7CDB 91 03 
-            jmp L07A55         ; 7CDD 4C 55 7A 
+
+; On entry:
+;  x = address of comething in Vector ROM
+;  a = address of something in Vector ROM
+Sub_7CD5    ldy #$00           		; 7CD5 A0 00 
+            sta ($03),y     		; 7CD7 91 03 
+            iny             		; 7CD9 C8 
+            txa                		; 7CDA 8A 
+            sta ($03),y     		; 7CDB 91 03 
+            jmp L07A55         		; 7CDD 4C 55 7A 
+
+
 
 
 
@@ -3893,6 +4186,8 @@ L07E54      bit VGHalted       				; 7E54 2C 02 20
 
 
 
+
+
 ; Selftest
 L07E71      lda $001A         				; 7E71 A5 1A 
             beq L07E7C         				; 7E73 F0 07 
@@ -3914,10 +4209,10 @@ L07E82      lda $0010,x       				; 7E82 B5 10
             jsr L07AE5         ; 7E92 20 E5 7A 
             ldx $000C         ; 7E95 A6 0C 
             ldy L07FEE,x       ; 7E97 BC EE 7F 
-            jsr L079F8         ; 7E9A 20 F8 79 
+            jsr Sub_79F8         ; 7E9A 20 F8 79 
             ldx $000C         ; 7E9D A6 0C 
             ldy L07FF4,x       ; 7E9F BC F4 7F 
-            jsr L079F8         ; 7EA2 20 F8 79 
+            jsr Sub_79F8         ; 7EA2 20 F8 79 
             ldx $000C         ; 7EA5 A6 0C 
 L07EA7      dex                ; 7EA7 CA 
             bpl L07E82         ; 7EA8 10 D8 
@@ -3986,7 +4281,7 @@ L07F2D      lda $00D4         ; 7F2D A5 D4
             beq L07F38         ; 7F2F F0 07 
             ldx #$CB           ; 7F31 A2 CB 
             lda #$F4           ; 7F33 A9 F4 
-            jsr L07CD5         ; 7F35 20 D5 7C 
+            jsr Sub_7CD5         ; 7F35 20 D5 7C 
 L07F38      inc $0076         ; 7F38 E6 76 
 
 ; Note, buttons are active low, so will read as a "1" (b1xxxxxxx) when not
@@ -4014,7 +4309,7 @@ L07F57      lda $0021         ; 7F57 A5 21
             ldx #$F2           ; 7F66 A2 F2 
             lda #$57           ; 7F68 A9 57 
             jsr L07A18         ; 7F6A 20 18 7A 
-            jsr L07AFF         ; 7F6D 20 FF 7A 
+            jsr Sub_7AFF         ; 7F6D 20 FF 7A 
             lda $0078         ; 7F70 A5 78 
             clc                ; 7F72 18 
             adc #$04           ; 7F73 69 04 
@@ -4042,6 +4337,8 @@ L07F97      sta PKY_AUDC1         ; 7F97 8D 01 2C
 
 
 
+
+
             
 L07FA4      jsr L07FA7         ; 7FA4 20 A7 7F 
 L07FA7      ldx #$07           ; 7FA7 A2 07 
@@ -4065,6 +4362,8 @@ L07FC4      tax                ; 7FC4 AA
             stx $0016,y       ; 7FCB 96 16 
             iny                ; 7FCD C8 
             rts                ; 7FCE 60 
+
+
 L07FCF      lda $0076         ; 7FCF A5 76 
             and #$03           ; 7FD1 29 03 
             tax                ; 7FD3 AA 
@@ -4082,6 +4381,8 @@ L07FE2      dex                ; 7FE2 CA
             ror                ; 7FEA 6A 
             sta $00D4         ; 7FEB 85 D4 
             rts                ; 7FED 60 
+
+
 
 L07FEE	    .byt $38
 			.byt $30

@@ -20,16 +20,7 @@ import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
-import javax.swing.JTabbedPane;
 
-import com.loomcom.symon.Bus;
-import com.loomcom.symon.Cpu;
-import com.loomcom.symon.devices.Acia;
-import com.loomcom.symon.devices.Acia6850;
-import com.loomcom.symon.devices.Via6522;
-import com.loomcom.symon.exceptions.MemoryAccessException;
-import com.loomcom.symon.exceptions.MemoryRangeException;
-import com.loomcom.symon.machines.Machine;
 import com.loomcom.symon.machines.SymonMachine;
 
 import uk.org.wookey.atari.sim.Simulator;
@@ -38,7 +29,8 @@ import uk.org.wookey.atari.utils.Logger;
 public class ApplicationWindow extends JFrame implements ActionListener {
 	private static final long serialVersionUID = 1L;
 	private final static Logger _logger = new Logger("ApplicationWindow");
-	protected JTabbedPane tabs;
+	//protected JTabbedPane tabs;
+	protected Simulator sim;
 	private MainStatusBar statusBar;
 	
 	public ApplicationWindow() {
@@ -84,17 +76,20 @@ public class ApplicationWindow extends JFrame implements ActionListener {
 		MainMenuBar menu = new MainMenuBar();
 		setJMenuBar(menu);
 		
-		tabs = new JTabbedPane();
+		//tabs = new JTabbedPane();
 		
-        tabs.addMouseListener(new PopupListener());
+        addMouseListener(new PopupListener());
         
 		//tabs.add("Console", new DebugTab());
 		//tabs.add("Simulator", new Simulator(new SymonMachine()));
-		tabs.addTab("Assembler",  new AssemblerTab());
+		//tabs.addTab("Assembler",  new AssemblerTab());
 		
 		gbc.gridy = 1;
 		gbc.weighty = 1.0;
-		add(tabs, gbc);
+		//add(tabs, gbc);
+	
+		sim = new Simulator(new SymonMachine());
+		add(sim);
 		
 		statusBar = MainStatusBar.getMainStatusBar(); 
 		JPanel outer = new JPanel();
@@ -114,8 +109,8 @@ public class ApplicationWindow extends JFrame implements ActionListener {
 		String title;
 		
 		title = tab.getName();
-		tabs.add(title, tab);
-		tabs.setSelectedComponent(tab);
+		//tabs.add(title, tab);
+		//tabs.setSelectedComponent(tab);
 	}
 	
 	class FocusHandler implements FocusListener {
@@ -141,9 +136,9 @@ public class ApplicationWindow extends JFrame implements ActionListener {
 		_logger.logInfo("Not sure what to do with this type of tab: " + x.toString());
 	}
 	
-	public JTabbedPane getTabbedPane() {
-		return tabs;
-	}
+	//public JTabbedPane getTabbedPane() {
+	//	return tabs;
+	//}
 	
 	private class MainWindowListener implements WindowListener {
 
@@ -209,7 +204,7 @@ public class ApplicationWindow extends JFrame implements ActionListener {
 			settings.addActionListener(this);
 			popup.add(settings);
 
-			popup.show(tabs.getSelectedComponent(), x, y-20);
+			popup.show(sim, x, y-20);
 		}
 
 		@Override
