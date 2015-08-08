@@ -1,8 +1,8 @@
 package uk.org.wookey.atari.ui;
 
-import javax.swing.JPanel;
+import javax.swing.JButton;
 
-public class PushButton extends JPanel implements PushButtonInterface {
+public class PushButton extends RoundButton implements PushButtonInterface {
 	private static final long serialVersionUID = 1L;
 
 	public PushButton() {

@@ -13,6 +13,10 @@ public class RoundButton extends JButton {
 
 	private Shape shape;
 
+	public RoundButton() {
+		this("");
+	}
+	
 	public RoundButton(String label) {
 		super(label);
 	    
@@ -25,7 +29,9 @@ public class RoundButton extends JButton {
 	    // This call causes the JButton not to paint 
 	    // the background.	
 	    // This allows us to paint a round background.
-	    setContentAreaFilled(false);	
+	    setContentAreaFilled(false);
+	    
+	    setBackground(Color.green);
 	}
 
 	// Paint the round background and label.

@@ -29,7 +29,6 @@ import uk.org.wookey.atari.utils.Logger;
 public class ApplicationWindow extends JFrame implements ActionListener {
 	private static final long serialVersionUID = 1L;
 	private final static Logger _logger = new Logger("ApplicationWindow");
-	//protected JTabbedPane tabs;
 	protected Simulator sim;
 	private MainStatusBar statusBar;
 	
@@ -76,20 +75,13 @@ public class ApplicationWindow extends JFrame implements ActionListener {
 		MainMenuBar menu = new MainMenuBar();
 		setJMenuBar(menu);
 		
-		//tabs = new JTabbedPane();
-		
         addMouseListener(new PopupListener());
         
-		//tabs.add("Console", new DebugTab());
-		//tabs.add("Simulator", new Simulator(new SymonMachine()));
-		//tabs.addTab("Assembler",  new AssemblerTab());
-		
 		gbc.gridy = 1;
 		gbc.weighty = 1.0;
-		//add(tabs, gbc);
 	
 		sim = new Simulator(new SymonMachine());
-		add(sim);
+		add(sim, gbc);
 		
 		statusBar = MainStatusBar.getMainStatusBar(); 
 		JPanel outer = new JPanel();
@@ -103,15 +95,14 @@ public class ApplicationWindow extends JFrame implements ActionListener {
 		//gbc.gridwidth = 3;
 		add(outer, gbc);
 		
+		gbc.weightx = 0;
+		gbc.weighty = 0;
+		gbc.gridx = 4;
+		gbc.gridy = 4;
+		add(new ControlPanel());
+		
 		setVisible(true);
 	}	
-	public void addTab(JPanel tab) {
-		String title;
-		
-		title = tab.getName();
-		//tabs.add(title, tab);
-		//tabs.setSelectedComponent(tab);
-	}
 	
 	class FocusHandler implements FocusListener {
 		@Override
