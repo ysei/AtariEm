@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 
 public class GameButton extends PushButton {
+	private static final long serialVersionUID = 1L;
+
 	public GameButton() {
 		super();
 		

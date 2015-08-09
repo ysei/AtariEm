@@ -1,5 +1,6 @@
 package uk.org.wookey.atari.ui;
 
+import java.awt.Color;
 import java.awt.Dimension;
 
 public class PlayerSelectButton extends PushButton {
@@ -8,6 +9,11 @@ public class PlayerSelectButton extends PushButton {
 	public PlayerSelectButton() {
 		super();
 		
-		setSize(new Dimension(10, 10));
+		Dimension d = new Dimension(10, 10);
+		
+		setSize(d);
+		setPreferredSize(d);
+		
+		setBackground(new Color(32, 32, 128));
 	}
 }

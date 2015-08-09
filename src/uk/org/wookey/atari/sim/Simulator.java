@@ -2,7 +2,6 @@ package uk.org.wookey.atari.sim;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
-import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -19,7 +18,6 @@ import uk.org.wookey.atari.utils.Logger;
 import com.loomcom.symon.Cpu;
 import com.loomcom.symon.exceptions.MemoryAccessException;
 import com.loomcom.symon.machines.Machine;
-import com.loomcom.symon.ui.MemoryWindow;
 import com.loomcom.symon.ui.StatusPanel;
 import com.loomcom.symon.ui.TraceLog;
 
@@ -30,8 +28,6 @@ public class Simulator extends JPanel {
 	
     private static final String[] STEPS = {"1", "5", "10", "20", "50", "100"};
 
-	private StatusPanel statusPane;
-	
 	private JPanel machinePane;
 	
     private JButton runStopButton;
@@ -41,8 +37,7 @@ public class Simulator extends JPanel {
     private JComboBox<String> stepCountBox;
     
     private TraceLog traceLog;
-    private MemoryWindow memoryWindow;
-
+    private StatusPanel statusPane;
     private JFileChooser fileChooser;
     
     private int stepsPerClick;
@@ -51,7 +46,7 @@ public class Simulator extends JPanel {
     
     private SimRunner simRunner;
 
-	public Simulator(Machine machine) {
+	public Simulator(Machine machine, StatusPanel stPanel) {
 		super();
 		
 		stepsPerClick = 1;
@@ -64,16 +59,11 @@ public class Simulator extends JPanel {
 			e.printStackTrace();
 		}
 
-		//setTitle("6502 Simulator - " + machine.getName());
 		setLayout(new BorderLayout());
 
-        // UI components used for I/O.
-        statusPane = new StatusPanel(machine);
-        statusPane.updateState();
-        
         // UI component for machine specific components
         machinePane = machine.getUI();
-        
+        statusPane = stPanel;
         
         // File Chooser
         fileChooser = new JFileChooser(System.getProperty("user.dir"));
@@ -118,9 +108,6 @@ public class Simulator extends JPanel {
         JScrollPane scroller = new JScrollPane(machinePane);
         add(scroller, BorderLayout.CENTER);
         
-        // Right side - status pane
-        add(statusPane, BorderLayout.LINE_END);
-
         // Bottom - buttons.
         add(buttonContainer, BorderLayout.PAGE_END);
 
@@ -152,8 +139,8 @@ public class Simulator extends JPanel {
         traceLog = new TraceLog();
 
         // Prepare the memory window
-        memoryWindow = new MemoryWindow(machine.getBus());
-        add(memoryWindow, BorderLayout.LINE_START);
+        //memoryWindow = new MemoryWindow(machine.getBus());
+        //add(memoryWindow, BorderLayout.LINE_START);
 
         setVisible(true);
 

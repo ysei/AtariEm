@@ -3,9 +3,6 @@ package uk.org.wookey.atari.ui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -22,6 +19,7 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 
 import com.loomcom.symon.machines.SymonMachine;
+import com.loomcom.symon.ui.StatusPanel;
 
 import uk.org.wookey.atari.sim.Simulator;
 import uk.org.wookey.atari.utils.Logger;
@@ -30,27 +28,12 @@ public class ApplicationWindow extends JFrame implements ActionListener {
 	private static final long serialVersionUID = 1L;
 	private final static Logger _logger = new Logger("ApplicationWindow");
 	protected Simulator sim;
-	private MainStatusBar statusBar;
+	private MainStatusBar statusBar; 
+	private StatusPanel statusPane;
 	
 	public ApplicationWindow() {
 		super("IC");
-		
-		GridBagConstraints gbc = new GridBagConstraints();
-		
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		
-		gbc.gridwidth = 1;
-		gbc.gridheight = 1;
-		
-		gbc.weightx = 1.0;
-		gbc.weighty = 0.0;
-		
-		gbc.insets = new Insets(2, 2, 2, 2);
-		
-		gbc.fill = GridBagConstraints.BOTH;
-		
-		gbc.anchor = GridBagConstraints.PAGE_START;
+		SymonMachine machine = new SymonMachine();
 		
 		Toolkit tk = Toolkit.getDefaultToolkit();
 		int xSize = tk.getScreenSize().width;
@@ -67,7 +50,7 @@ public class ApplicationWindow extends JFrame implements ActionListener {
 		setSize(xSize, ySize);
 		setLocation((tk.getScreenSize().width - xSize) / 2, (tk.getScreenSize().height - ySize) / 2);
 
-		setLayout(new GridBagLayout());
+		setLayout(new BorderLayout());
 		
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.addWindowListener(new MainWindowListener());
@@ -77,30 +60,18 @@ public class ApplicationWindow extends JFrame implements ActionListener {
 		
         addMouseListener(new PopupListener());
         
-		gbc.gridy = 1;
-		gbc.weighty = 1.0;
-	
-		sim = new Simulator(new SymonMachine());
-		add(sim, gbc);
+        statusPane = new StatusPanel(machine);
+        statusPane.updateState();
+
+		sim = new Simulator(machine, statusPane);
+		add(sim, BorderLayout.CENTER);
+		
+		add(new Cabinet(), BorderLayout.LINE_START);
+		add(statusPane, BorderLayout.LINE_END);
 		
 		statusBar = MainStatusBar.getMainStatusBar(); 
-		JPanel outer = new JPanel();
-		outer.setLayout(new BorderLayout());
-		outer.add(statusBar, BorderLayout.EAST);
-		outer.setBackground(new Color(0xd0, 0xd0, 0xd0));
-		gbc.gridx = 0;
-		gbc.gridy = 2;
-		gbc.weightx = 1.0;
-		gbc.weighty = 0.0;
-		//gbc.gridwidth = 3;
-		add(outer, gbc);
 		
-		gbc.weightx = 0;
-		gbc.weighty = 0;
-		gbc.gridx = 4;
-		gbc.gridy = 4;
-		add(new ControlPanel());
-		
+		add(statusBar, BorderLayout.PAGE_END);
 		setVisible(true);
 	}	
 	

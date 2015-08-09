@@ -91,6 +91,11 @@ public class StatusPanel extends JPanel {
         super();
         this.machine = machine;
         createUi();
+
+        Dimension d = new Dimension(300, 700);
+        
+        setSize(d);
+        setPreferredSize(d);
     }
 
     private void createUi() {
