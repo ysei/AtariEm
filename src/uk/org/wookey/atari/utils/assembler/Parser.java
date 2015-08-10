@@ -5,8 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import com.loomcom.symon.InstructionTable;
-
+import uk.org.wookey.atari.architecture.InstructionData;
 import uk.org.wookey.atari.exceptions.EOFException;
 import uk.org.wookey.atari.exceptions.LabelExistsException;
 import uk.org.wookey.atari.exceptions.NosuchLabelException;
@@ -53,7 +52,7 @@ public class Parser extends SimpleParser {
 		generatingCode = false;
 		anonLabelCounter = 0;
 		
-		for (String op: InstructionTable.opcodeNames) {
+		for (String op: InstructionData.opcodeNames) {
 			if (op != null) {
 				op = op.toLowerCase();
 
@@ -709,7 +708,7 @@ public class Parser extends SimpleParser {
 	}
 	
 	private Instruction lookup(String inst) {
-		for (Instruction i: InstructionTable.instructions) {
+		for (Instruction i: InstructionData.instructions) {
 			if (inst.equalsIgnoreCase(i.name)) {
 				return i;
 			}

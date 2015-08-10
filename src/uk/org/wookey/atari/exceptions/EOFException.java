@@ -1,11 +1,9 @@
 package uk.org.wookey.atari.exceptions;
 
-public class EOFException extends Exception {
+public class EOFException extends WookeyException {
 	private static final long serialVersionUID = 1L;
 
-	public EOFException() {}
-
-    public EOFException(String message) {
+	public EOFException(String message) {
        super(message);
     }
 }

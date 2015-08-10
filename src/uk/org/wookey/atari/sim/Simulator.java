@@ -13,13 +13,13 @@ import javax.swing.JScrollPane;
 import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
 
-import uk.org.wookey.atari.utils.Logger;
-
-import com.loomcom.symon.Cpu;
-import com.loomcom.symon.exceptions.MemoryAccessException;
 import com.loomcom.symon.machines.Machine;
 import com.loomcom.symon.ui.StatusPanel;
 import com.loomcom.symon.ui.TraceLog;
+
+import uk.org.wookey.atari.architecture.Cpu;
+import uk.org.wookey.atari.exceptions.MemoryAccessException;
+import uk.org.wookey.atari.utils.Logger;
 
 public class Simulator extends JPanel {
 	private static final long serialVersionUID = 1L;

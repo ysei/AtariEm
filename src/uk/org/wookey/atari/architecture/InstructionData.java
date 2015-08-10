@@ -1,151 +1,81 @@
-/*
- * Copyright (c) 2014 Seth J. Morabito <web@loomcom.com>
- *
- * Permission is hereby granted, free of charge, to any person obtaining
- * a copy of this software and associated documentation files (the
- * "Software"), to deal in the Software without restriction, including
- * without limitation the rights to use, copy, modify, merge, publish,
- * distribute, sublicense, and/or sell copies of the Software, and to
- * permit persons to whom the Software is furnished to do so, subject to
- * the following conditions:
- *
- * The above copyright notice and this permission notice shall be
- * included in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
- * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
- * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
- * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
-
-package com.loomcom.symon;
+package uk.org.wookey.atari.architecture;
 
 import uk.org.wookey.atari.utils.assembler.Instruction;
 
-public interface InstructionTable {
-
-    /**
-     * Enumeration of valid CPU behaviors. These determine what behavior and instruction
-     * set will be simulated, depending on desired version of 6502.
-     *
-     * TODO: As of version 0.6, this is still not used! All CPUs are "idealized" NMOS 6502 only.
-     */
+public interface InstructionData {
     public enum CpuBehavior {
-        /**
-         * The earliest NMOS 6502 includes a bug that causes the ROR instruction
-         * to behave like an ASL that does not affect the carry bit. This version
-         * is very rare in the wild.
-         *
-         * NB: Does NOT implement "unimplemented" NMOS instructions.
-         */
         NMOS_WITH_ROR_BUG,
-
-        /**
-         * All NMOS 6502's have a bug with the indirect JMP instruction. If the
-         *
-         * NB: Does NOT implement "unimplemented" NMOS instructions.
-         */
         NMOS_WITH_INDIRECT_JMP_BUG,
-
-        /**
-         * Emulate an NMOS 6502 without the indirect JMP bug. This type of 6502
-         * does not actually exist in the wild.
-         *
-         * NB: Does NOT implement "unimplemented" NMOS instructions.
-         */
         NMOS_WITHOUT_INDIRECT_JMP_BUG,
-
-        /**
-         * Emulate a CMOS 65C02, with all CMOS instructions and addressing modes.
-         */
         CMOS
     }
 
-    /**
-     * Enumeration of Addressing Modes.
-     */
     public enum Mode {
         ACC {
             public String toString() {
                 return "Accumulator";
             }
         },
-
         ABS {
             public String toString() {
                 return "Absolute";
             }
         },
-
         ABX {
             public String toString() {
                 return "Absolute, X-indexed";
             }
         },
-
         ABY {
             public String toString() {
                 return "Absolute, Y-indexed";
             }
         },
-
         IMM {
             public String toString() {
                 return "Immediate";
             }
         },
-
         IMP {
             public String toString() {
                 return "Implied";
             }
         },
-
         IND {
             public String toString() {
                 return "Indirect";
             }
         },
-
         XIN {
             public String toString() {
                 return "X-indexed Indirect";
             }
         },
-
         INY {
             public String toString() {
                 return "Indirect, Y-indexed";
             }
         },
-
         REL {
             public String toString() {
                 return "Relative";
             }
         },
-
         ZPG {
             public String toString() {
                 return "Zeropage";
             }
         },
-
         ZPX {
             public String toString() {
                 return "Zeropage, X-indexed";
             }
         },
-
         ZPY {
             public String toString() {
                 return "Zeropage, Y-indexed";
             }
         },
-
         NUL {
             public String toString() {
                 return "NULL";
@@ -153,11 +83,6 @@ public interface InstructionTable {
         }
     }
 
-    // 6502 opcodes.  No 65C02 opcodes implemented.
-
-    /**
-     * Instruction opcode names.
-     */
     public static final String[] opcodeNames = {
         "BRK", "ORA",  null,  null,  null, "ORA", "ASL",  null,
         "PHP", "ORA", "ASL",  null,  null, "ORA", "ASL",  null,
@@ -193,9 +118,6 @@ public interface InstructionTable {
         "SED", "SBC",  null,  null,  null, "SBC", "INC",  null
     };
 
-    /**
-     * Instruction addressing modes.
-     */
     public static final Mode[] instructionModes = {
         Mode.IMP, Mode.XIN, Mode.NUL, Mode.NUL,   // 0x00-0x03
         Mode.NUL, Mode.ZPG, Mode.ZPG, Mode.NUL,   // 0x04-0x07
@@ -263,10 +185,6 @@ public interface InstructionTable {
         Mode.NUL, Mode.ABX, Mode.ABX, Mode.NUL    // 0xfc-0xff
     };
 
-
-    /**
-     * Size, in bytes, required for each instruction.
-     */
     public static final int[] instructionSizes = {
         1, 2, 0, 0, 0, 2, 2, 0, 1, 2, 1, 0, 0, 3, 3, 0,
         2, 2, 0, 0, 0, 2, 2, 0, 1, 3, 0, 0, 0, 3, 3, 0,
@@ -286,9 +204,6 @@ public interface InstructionTable {
         2, 2, 0, 0, 0, 2, 2, 0, 1, 3, 0, 0, 0, 3, 3, 0
     };
 
-    /**
-     * Number of clock cycles required for each instruction
-     */
     public static final int[] instructionClocks = {
         7, 6, 0, 0, 0, 3, 5, 0, 3, 2, 2, 0, 0, 4, 6, 0,
         2, 5, 0, 0, 0, 4, 6, 0, 2, 4, 0, 0, 0, 4, 7, 0,

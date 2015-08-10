@@ -26,27 +26,12 @@ package com.loomcom.symon.machines;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
 
+import uk.org.wookey.atari.architecture.Bus;
+import uk.org.wookey.atari.architecture.Cpu;
 import uk.org.wookey.atari.utils.Logger;
-
-import com.loomcom.symon.Bus;
-import com.loomcom.symon.Cpu;
-import com.loomcom.symon.exceptions.MemoryRangeException;
-import com.loomcom.symon.ui.MemoryWindow;
-import com.loomcom.symon.ui.PreferencesDialog;
-import com.loomcom.symon.ui.StatusPanel;
-import com.loomcom.symon.ui.TraceLog;
-
 
 public class Machine {
 	private final static Logger _logger = new Logger("Machine");

@@ -9,8 +9,7 @@ import org.fife.ui.rsyntaxtextarea.RSyntaxUtilities;
 import org.fife.ui.rsyntaxtextarea.Token;
 import org.fife.ui.rsyntaxtextarea.TokenMap;
 
-import com.loomcom.symon.InstructionTable;
-
+import uk.org.wookey.atari.architecture.InstructionData;
 import uk.org.wookey.atari.utils.Logger;
 import uk.org.wookey.atari.utils.assembler.Parser;
 
@@ -28,7 +27,7 @@ public class AssemblerTokenMaker extends AbstractTokenMaker {
 		
 		Hashtable<String, Integer> opcodes = new Hashtable<String, Integer>();
 		
-		for (String instr: InstructionTable.opcodeNames) {
+		for (String instr: InstructionData.opcodeNames) {
 			if (instr != null && !opcodes.containsKey(instr)) {
 				tokenMap.put(instr,  Token.RESERVED_WORD);
 				opcodes.put(instr,  0);
