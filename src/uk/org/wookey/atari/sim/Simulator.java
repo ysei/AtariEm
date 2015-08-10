@@ -173,7 +173,7 @@ public class Simulator extends JPanel {
 		if (!simRunner.isRunning()) {
 			runStopButton.setText("Stop");
 			stepButton.setEnabled(false);
-			//statusPane.setGreyed(true);
+			statusPane.setGreyed(true);
 			
 			simRunner.setRunning(true);
 		}
@@ -196,7 +196,7 @@ public class Simulator extends JPanel {
 			runStopButton.setText("Run");
 			stepButton.setEnabled(true);
 			
-			//statusPane.setGreyed(false);
+			statusPane.setGreyed(false);
 		}
 	}
 	

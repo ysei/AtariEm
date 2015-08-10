@@ -1,7 +1,6 @@
 package uk.org.wookey.atari.ui;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -15,7 +14,6 @@ import java.awt.event.WindowListener;
 
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
-import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 
 import com.loomcom.symon.machines.SymonMachine;
@@ -97,10 +95,6 @@ public class ApplicationWindow extends JFrame implements ActionListener {
 		x = x.getParent();
 		_logger.logInfo("Not sure what to do with this type of tab: " + x.toString());
 	}
-	
-	//public JTabbedPane getTabbedPane() {
-	//	return tabs;
-	//}
 	
 	private class MainWindowListener implements WindowListener {
 
