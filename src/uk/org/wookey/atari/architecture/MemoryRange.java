@@ -26,6 +26,12 @@ public class MemoryRange implements Comparable<MemoryRange> {
 		this(0, size-1);
 	}
 
+	public MemoryRange(MemoryRange src) {
+		startAddress = src.startAddress;
+		endAddress = src.endAddress;
+		length = src.length;
+	}
+
 	public int startAddress() {
 	    return startAddress;
 	}

@@ -2,8 +2,6 @@ package uk.org.wookey.atari.utils;
 
 import java.util.HashMap;
 
-import com.loomcom.symon.util.HexUtil;
-
 public class MemoryMap {
 	private HashMap<Integer, AddressLabel> memoryMap;
 	
@@ -16,7 +14,7 @@ public class MemoryMap {
 			return memoryMap.get(address).getReadLabel();
 		}
 
-		return "$" + HexUtil.wordToHex(address);
+		return "$" + Formatter.toHexString(address, 4);
 	}
 	
 	public String getWriteLabel(int address) {
@@ -24,7 +22,7 @@ public class MemoryMap {
 			return memoryMap.get(address).getWriteLabel();
 		}
 
-		return "$" + HexUtil.wordToHex(address);
+		return "$" + Formatter.toHexString(address, 4);
 	}
 	
 	public String getLabel(int address, boolean checkRead, boolean checkWrite) {
@@ -43,7 +41,7 @@ public class MemoryMap {
 		}
 		
 		if (res == null) {
-			res = "$" + HexUtil.wordToHex(address);
+			res = "$" + Formatter.toHexString(address, 4);
 		}
 		
 		return res;

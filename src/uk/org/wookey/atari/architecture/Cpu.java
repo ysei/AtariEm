@@ -1,8 +1,9 @@
 package uk.org.wookey.atari.architecture;
 
+import uk.org.wookey.atari.disassembler.DecodedInstruction;
+import uk.org.wookey.atari.disassembler.Disassembler;
 import uk.org.wookey.atari.exceptions.MemoryAccessException;
-
-import com.loomcom.symon.util.HexUtil;
+import uk.org.wookey.atari.utils.Formatter;
 
 public class Cpu implements InstructionData {
 
@@ -1147,23 +1148,23 @@ public class Cpu implements InstructionData {
     }
 
     public String getAccumulatorStatus() {
-        return "$" + HexUtil.byteToHex(state.a);
+        return "$" + Formatter.toHexString(state.a, 2);
     }
 
     public String getXRegisterStatus() {
-        return "$" + HexUtil.byteToHex(state.x);
+        return "$" + Formatter.toHexString(state.x, 2);
     }
 
     public String getYRegisterStatus() {
-        return "$" + HexUtil.byteToHex(state.y);
+        return "$" + Formatter.toHexString(state.y, 2);
     }
 
     public String getProgramCounterStatus() {
-        return "$" + HexUtil.wordToHex(state.pc);
+        return "$" + Formatter.toHexString(state.pc, 4);
     }
 
     public String getStackPointerStatus() {
-        return "$" + HexUtil.byteToHex(state.sp);
+        return "$" + Formatter.toHexString(state.sp, 2);
     }
 
     public int getProcessorStatus() {
@@ -1391,25 +1392,6 @@ public class Cpu implements InstructionData {
         }
 
         /**
-         * Returns a string formatted for the trace log.
-         *
-         * @return a string formatted for the trace log.
-         */
-        public String toTraceEvent() {
-            String opcode = disassembleOp();
-            StringBuilder sb = new StringBuilder(getInstructionByteStatus());
-            sb.append("  ");
-            sb.append(String.format("%-14s", opcode));
-            sb.append("A:" + HexUtil.byteToHex(a) + " ");
-            sb.append("X:" + HexUtil.byteToHex(x) + " ");
-            sb.append("Y:" + HexUtil.byteToHex(y) + " ");
-            sb.append("F:" + HexUtil.byteToHex(getStatusFlag()) + " ");
-            sb.append("S:1" + HexUtil.byteToHex(sp) + " ");
-            sb.append(getProcessorStatusString() + "\n");
-            return sb.toString();
-        }
-
-        /**
          * @returns The value of the Process Status Register, as a byte.
          */
         public int getStatusFlag() {
@@ -1438,153 +1420,11 @@ public class Cpu implements InstructionData {
             return status;
         }
 
-        public String getInstructionByteStatus() {
-            switch (Cpu.instructionSizes[ir]) {
-                case 0:
-                case 1:
-                    return HexUtil.wordToHex(lastPc) + "  " +
-                           HexUtil.byteToHex(ir) + "      ";
-                case 2:
-                    return HexUtil.wordToHex(lastPc) + "  " +
-                           HexUtil.byteToHex(ir) + " " +
-                           HexUtil.byteToHex(args[0]) + "   ";
-                case 3:
-                    return HexUtil.wordToHex(lastPc) + "  " +
-                           HexUtil.byteToHex(ir) + " " +
-                           HexUtil.byteToHex(args[0]) + " " +
-                           HexUtil.byteToHex(args[1]);
-                default:
-                    return null;
-            }
-        }
-
-
-        /**
-         * Given an opcode and its operands, return a formatted name.
-         *
-         * @return A string representing the mnemonic and operands of the instruction
-         */
-        public String disassembleOp() {
-            String mnemonic = opcodeNames[ir];
-
-            if (mnemonic == null) {
-                return "???";
-            }
-
-            StringBuilder sb = new StringBuilder(mnemonic);
-
-            switch (instructionModes[ir]) {
-                case ABS:
-                    sb.append(" $" + HexUtil.wordToHex(address(args[0], args[1])));
-                    //sb.append(" $" + bus.getLabel(address(args[0], args[1]));
-                    break;
-                case ABX:
-                    sb.append(" $" + HexUtil.wordToHex(address(args[0], args[1])) + ",X");
-                    break;
-                case ABY:
-                    sb.append(" $" + HexUtil.wordToHex(address(args[0], args[1])) + ",Y");
-                    break;
-                case IMM:
-                    sb.append(" #$" + HexUtil.byteToHex(args[0]));
-                    break;
-                case IND:
-                    sb.append(" ($" + HexUtil.wordToHex(address(args[0], args[1])) + ")");
-                    break;
-                case XIN:
-                    sb.append(" ($" + HexUtil.byteToHex(args[0]) + ",X)");
-                    break;
-                case INY:
-                    sb.append(" ($" + HexUtil.byteToHex(args[0]) + "),Y");
-                    break;
-                case REL:
-                case ZPG:
-                    sb.append(" $" + HexUtil.byteToHex(args[0]));
-                    break;
-                case ZPX:
-                    sb.append(" $" + HexUtil.byteToHex(args[0]) + ",X");
-                    break;
-                case ZPY:
-                    sb.append(" $" + HexUtil.byteToHex(args[0]) + ",Y");
-                    break;
-            }
-
-            return sb.toString();
-        }
-
-        /**
-         * Given an opcode and its operands, return a formatted name.
-         *
-         * @return A string representing the mnemonic and operands of the instruction
-         */
-        public String disassembleOp(Bus bus) {
-            String mnemonic = opcodeNames[ir];
-
-            if (mnemonic == null) {
-                return "???";
-            }
-
-            StringBuilder sb = new StringBuilder(mnemonic);
-
-            switch (instructionModes[ir]) {
-                case ABS:
-                    sb.append(" $" + bus.getLabel(address(args[0], args[1])));
-                    break;
-                case ABX:
-                    sb.append(" $" + bus.getLabel(address(args[0], args[1])) + ",X");
-                    break;
-                case ABY:
-                    sb.append(" $" + bus.getLabel(address(args[0], args[1])) + ",Y");
-                    break;
-                case IMM:
-                    sb.append(" #$" + HexUtil.byteToHex(args[0]));
-                    break;
-                case IND:
-                    sb.append(" ($" + bus.getLabel(address(args[0], args[1])) + ")");
-                    break;
-                case XIN:
-                    sb.append(" ($" + HexUtil.byteToHex(args[0]) + ",X)");
-                    break;
-                case INY:
-                    sb.append(" ($" + HexUtil.byteToHex(args[0]) + "),Y");
-                    break;
-                case REL:
-                case ZPG:
-                    sb.append(" $" + HexUtil.byteToHex(args[0]));
-                    break;
-                case ZPX:
-                    sb.append(" $" + HexUtil.byteToHex(args[0]) + ",X");
-                    break;
-                case ZPY:
-                    sb.append(" $" + HexUtil.byteToHex(args[0]) + ",Y");
-                    break;
-            }
-
-            return sb.toString();
-        }
-
         /**
          * Given two bytes, return an address.
          */
         private int address(int lowByte, int hiByte) {
             return ((hiByte << 8) | lowByte) & 0xffff;
-        }
-
-
-        /**
-         * @return A string representing the current status register state.
-         */
-        public String getProcessorStatusString() {
-            StringBuilder sb = new StringBuilder("[");
-            sb.append(negativeFlag ? 'N' : '.');    // Bit 7
-            sb.append(overflowFlag ? 'V' : '.');    // Bit 6
-            sb.append("-");                         // Bit 5 (always 1)
-            sb.append(breakFlag ? 'B' : '.');       // Bit 4
-            sb.append(decimalModeFlag ? 'D' : '.'); // Bit 3
-            sb.append(irqDisableFlag ? 'I' : '.');  // Bit 2
-            sb.append(zeroFlag ? 'Z' : '.');        // Bit 1
-            sb.append(carryFlag ? 'C' : '.');       // Bit 0
-            sb.append("]");
-            return sb.toString();
         }
     }
 }

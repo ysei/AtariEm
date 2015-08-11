@@ -1,4 +1,4 @@
-package uk.org.wookey.atari.utils.assembler;
+package uk.org.wookey.atari.assembler;
 
 import java.util.List;
 import java.util.ArrayList;

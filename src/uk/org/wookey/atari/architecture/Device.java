@@ -49,6 +49,22 @@ public abstract class Device implements Comparable<Device> {
     public Device() throws MemoryRangeException {
         this((String)null);
     }
+    
+    public Device(Device src) {
+    	name = src.name;
+    	labelPrefix = src.labelPrefix;
+    	bus = src.bus;
+
+    	range = new MemoryRange(src.range);
+    	ui = null;
+    	if (hasUI()) {
+            ui = new JPanel();
+            //ui.setBorder(new TitledBorder(getName()));
+            
+            ui.setLayout(new BoxLayout(ui, BoxLayout.Y_AXIS));
+            ui.setAlignmentX(0);
+    	}
+    }
 
     /* Methods required to be implemented by inheriting classes. */
     public abstract void write(int address, int data) throws MemoryAccessException;

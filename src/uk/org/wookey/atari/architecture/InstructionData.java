@@ -1,6 +1,6 @@
 package uk.org.wookey.atari.architecture;
 
-import uk.org.wookey.atari.utils.assembler.Instruction;
+import uk.org.wookey.atari.assembler.Instruction;
 
 public interface InstructionData {
     public enum CpuBehavior {

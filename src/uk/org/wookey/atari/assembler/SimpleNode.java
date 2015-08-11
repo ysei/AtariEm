@@ -1,4 +1,4 @@
-package uk.org.wookey.atari.utils.assembler;
+package uk.org.wookey.atari.assembler;
 
 public class SimpleNode extends ExprNode {
 	private int val;

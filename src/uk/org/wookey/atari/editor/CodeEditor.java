@@ -13,11 +13,11 @@ import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextPane;
 
+import uk.org.wookey.atari.assembler.Assembler;
+import uk.org.wookey.atari.assembler.Lexer;
+import uk.org.wookey.atari.assembler.LexerToken;
+import uk.org.wookey.atari.assembler.Parser;
 import uk.org.wookey.atari.utils.Logger;
-import uk.org.wookey.atari.utils.assembler.Assembler;
-import uk.org.wookey.atari.utils.assembler.Lexer;
-import uk.org.wookey.atari.utils.assembler.LexerToken;
-import uk.org.wookey.atari.utils.assembler.Parser;
 
 public class CodeEditor extends JPanel {
 	private static final long serialVersionUID = 1L;

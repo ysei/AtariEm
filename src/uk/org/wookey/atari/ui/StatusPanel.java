@@ -20,6 +20,9 @@ import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 
 import uk.org.wookey.atari.architecture.Cpu;
+import uk.org.wookey.atari.disassembler.DecodedInstruction;
+import uk.org.wookey.atari.disassembler.Disassembler;
+import uk.org.wookey.atari.exceptions.MemoryAccessException;
 import uk.org.wookey.atari.machines.Machine;
 
 public class StatusPanel extends JPanel {
@@ -305,7 +308,17 @@ public class StatusPanel extends JPanel {
         negativeFlagLabel.setIcon(iconForFlag(status, 7));
 
         // Update the register and address displays
-        opcodeField.setText(cpu.getCpuState().disassembleOp(cpu.getBus()));
+        Disassembler da = new Disassembler(machine.getBus());
+        DecodedInstruction inst;
+		try {
+			inst = da.disassemble(cpuState.lastPc);
+	        opcodeField.setText(inst.toString());
+		} catch (MemoryAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			opcodeField.setText(" ???");
+		}
+        
         pcField.setText(cpu.getProgramCounterStatus());
         spField.setText(cpu.getStackPointerStatus());
         aField.setText(cpu.getAccumulatorStatus());

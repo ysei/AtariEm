@@ -1,9 +1,10 @@
-package uk.org.wookey.atari.utils.disassembler;
+package uk.org.wookey.atari.disassembler;
 
 public class DecodedInstruction {
 	private String opcode;
 	private String operand;
 	private int length;
+	private int address;
 	
 	public DecodedInstruction() {
 		this("?", "");
@@ -13,6 +14,7 @@ public class DecodedInstruction {
 		opcode = op;
 		operand = opnd;
 		length = 1;
+		address = 0;
 	}
 	
 	public void setOpcode(String op) {
@@ -30,5 +32,9 @@ public class DecodedInstruction {
 	
 	public void setLength(int l) {
 		length = l;
+	}
+	
+	public String toString() {
+		return "" + address + ": " + opcode + " " + operand;
 	}
 }

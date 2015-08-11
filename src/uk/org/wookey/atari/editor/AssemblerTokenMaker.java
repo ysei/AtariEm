@@ -10,8 +10,8 @@ import org.fife.ui.rsyntaxtextarea.Token;
 import org.fife.ui.rsyntaxtextarea.TokenMap;
 
 import uk.org.wookey.atari.architecture.InstructionData;
+import uk.org.wookey.atari.assembler.Parser;
 import uk.org.wookey.atari.utils.Logger;
-import uk.org.wookey.atari.utils.assembler.Parser;
 
 public class AssemblerTokenMaker extends AbstractTokenMaker {
 	private final static Logger _logger = new Logger(AssemblerTokenMaker.class.getName());

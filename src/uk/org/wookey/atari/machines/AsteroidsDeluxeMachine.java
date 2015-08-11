@@ -22,6 +22,7 @@ public class AsteroidsDeluxeMachine extends Machine {
     // The simulated peripherals
     private Memory ram;
     private Memory rom;
+    private Memory ghostRom;
 
     public AsteroidsDeluxeMachine() {
     	super("Asteroids Deluxe");
@@ -43,16 +44,25 @@ public class AsteroidsDeluxeMachine extends Machine {
 	                        " not found, loading empty R/W memory image.");
 	            this.rom = Memory.makeRAM(ROM_SIZE);
 	        }
-
+	        
+	        romImage = new File("machines/" + this.getName() + "/rom.bin");
+	        if (romImage.canRead()) {
+	            _logger.logInfo("Loading ROM image from file " + romImage);
+	            this.ghostRom = Memory.makeROM(ROM_SIZE, romImage);
+	        } else {
+	            _logger.logInfo("Default ROM file " + romImage +
+	                        " not found, loading empty R/W memory image.");
+	            this.ghostRom = Memory.makeRAM(ROM_SIZE);
+	        }
+	        
 	        bus.addDevice(rom, ROM_BASE);
-	        bus.addDevice(rom, ROM_BASE+0x8000);
+	        bus.addDevice(ghostRom, ROM_BASE+0x8000);
 		} catch (MemoryRangeException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-        
+		}     
 	}
 }
