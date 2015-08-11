@@ -11,7 +11,7 @@ import uk.org.wookey.atari.utils.Logger;
 public class LabelTable {
 	private final static Logger _logger = new Logger(LabelTable.class.getName());
 
-	TreeMap<String,Integer> labels;
+	private TreeMap<String,Integer> labels;
 	
 	public LabelTable() {
 		labels = new TreeMap<String, Integer>();
@@ -30,6 +30,10 @@ public class LabelTable {
 	
 	public boolean labelExists(String label) {
 		return labels.containsKey(label);
+	}
+	
+	public boolean addressHasLabel(int address) {
+		return false;
 	}
 	
 	public int get(String label) throws NosuchLabelException {

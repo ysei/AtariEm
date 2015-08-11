@@ -30,7 +30,8 @@ public class AsteroidsDeluxeMachine extends Machine {
 
 	public void addDevices() {
         try {
-			this.ram = new Memory(RAM_SIZE, false);
+			ram = new Memory(RAM_SIZE, false);
+			ram.setLabelPrefix("RAM");
 
 	        //bus.addCpu(cpu);
 	        bus.addDevice(ram, RAM_BASE);
@@ -38,23 +39,25 @@ public class AsteroidsDeluxeMachine extends Machine {
 	        File romImage = new File("machines/" + this.getName() + "/rom.bin");
 	        if (romImage.canRead()) {
 	            _logger.logInfo("Loading ROM image from file " + romImage);
-	            this.rom = Memory.makeROM(ROM_SIZE, romImage);
+	            rom = Memory.makeROM(ROM_SIZE, romImage);
 	        } else {
 	            _logger.logInfo("Default ROM file " + romImage +
 	                        " not found, loading empty R/W memory image.");
-	            this.rom = Memory.makeRAM(ROM_SIZE);
+	            rom = Memory.makeRAM(ROM_SIZE);
 	        }
 	        
 	        romImage = new File("machines/" + this.getName() + "/rom.bin");
 	        if (romImage.canRead()) {
 	            _logger.logInfo("Loading ROM image from file " + romImage);
-	            this.ghostRom = Memory.makeROM(ROM_SIZE, romImage);
+	            ghostRom = Memory.makeROM(ROM_SIZE, romImage);
 	        } else {
 	            _logger.logInfo("Default ROM file " + romImage +
 	                        " not found, loading empty R/W memory image.");
-	            this.ghostRom = Memory.makeRAM(ROM_SIZE);
+	            ghostRom = Memory.makeRAM(ROM_SIZE);
 	        }
 	        
+	        rom.setLabelPrefix("ROM");
+	        ghostRom.setLabelPrefix("Ghost ROM");
 	        bus.addDevice(rom, ROM_BASE);
 	        bus.addDevice(ghostRom, ROM_BASE+0x8000);
 		} catch (MemoryRangeException e) {

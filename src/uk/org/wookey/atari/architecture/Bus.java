@@ -8,6 +8,7 @@ import javax.swing.JPanel;
 
 import uk.org.wookey.atari.exceptions.MemoryAccessException;
 import uk.org.wookey.atari.exceptions.MemoryRangeException;
+import uk.org.wookey.atari.labels.LabelTable;
 import uk.org.wookey.atari.ui.CollapsablePanel;
 import uk.org.wookey.atari.utils.Logger;
 
@@ -17,16 +18,18 @@ public class Bus {
     private int endAddress = 0xffff;
 
     private Cpu cpu;
+    private LabelTable labels;
     
     private ArrayList<Device> deviceList;
     
     private JPanel ui;
 
-    public Bus(int busWidth) {
+    public Bus(int busWidth, LabelTable labs) {
     	deviceList = new ArrayList<Device>();
         startAddress = 0;
         endAddress = (1 << busWidth) - 1;
         cpu = null;
+        labels = labs;
         
         ui = new JPanel();
     	ui.setLayout(new BoxLayout(ui, BoxLayout.Y_AXIS));
@@ -89,6 +92,13 @@ public class Bus {
     }
     
     public String getLabel(int address) {
+    	// The global label table takes priority
+    	String res = labels.addressToLabelString(address);
+    	
+    	if (res != "") {
+    		return res;
+    	}
+    	
         Device d = deviceAt(address);
         
         if (d != null) {

@@ -7,6 +7,7 @@ import javax.swing.JPanel;
 
 import uk.org.wookey.atari.architecture.Bus;
 import uk.org.wookey.atari.architecture.Cpu;
+import uk.org.wookey.atari.labels.LabelTable;
 import uk.org.wookey.atari.utils.Logger;
 
 public class Machine {
@@ -14,12 +15,15 @@ public class Machine {
 	
 	protected Bus bus;
 	protected Cpu cpu;
+	protected LabelTable labels;
 	
 	protected JPanel ui;
 	
 	private String name;
 	public Machine(String name) {
-		bus = new Bus(getBusWidth());
+		labels = new LabelTable();
+		
+		bus = new Bus(getBusWidth(), labels);
 		cpu = new Cpu();
 		
 		setName(name);
@@ -47,6 +51,10 @@ public class Machine {
     
     public Cpu getCpu() {
     	return cpu;
+    }
+    
+    public LabelTable getLabelTable() {
+    	return labels;
     }
     
     public JPanel getUI() {

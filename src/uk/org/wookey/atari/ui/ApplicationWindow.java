@@ -15,6 +15,7 @@ import java.awt.event.WindowListener;
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
+import javax.swing.SwingUtilities;
 
 import uk.org.wookey.atari.machines.AsteroidsDeluxeMachine;
 import uk.org.wookey.atari.machines.Machine;
@@ -25,12 +26,14 @@ public class ApplicationWindow extends JFrame implements ActionListener {
 	private static final long serialVersionUID = 1L;
 	private final static Logger _logger = new Logger("ApplicationWindow");
 	protected Simulator sim;
+	protected Machine machine;
 	private MainStatusBar statusBar; 
 	private StatusPanel statusPane;
 	
 	public ApplicationWindow() {
-		super("IC");
-		Machine machine = new AsteroidsDeluxeMachine();
+		super("Atari Emulator");
+		
+		machine = new AsteroidsDeluxeMachine();
 		
 		Toolkit tk = Toolkit.getDefaultToolkit();
 		int xSize = tk.getScreenSize().width;
@@ -52,7 +55,7 @@ public class ApplicationWindow extends JFrame implements ActionListener {
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.addWindowListener(new MainWindowListener());
 		
-		MainMenuBar menu = new MainMenuBar();
+		MainMenuBar menu = new MainMenuBar(this);
 		setJMenuBar(menu);
 		
         addMouseListener(new PopupListener());
@@ -87,12 +90,24 @@ public class ApplicationWindow extends JFrame implements ActionListener {
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent event) {
-		_logger.logInfo("Got a close tab click");
-		Component x = (Component) event.getSource();
+	public void actionPerformed(ActionEvent e) {
+		String cmd = e.getActionCommand();
 		
-		x = x.getParent();
-		_logger.logInfo("Not sure what to do with this type of tab: " + x.toString());
+		_logger.logInfo("Main menu click: '" + cmd + "'");
+		
+		if (cmd.equalsIgnoreCase(MainMenuBar.EXIT_TEXT)) {
+			System.exit(0);
+		}
+		else if (cmd.equalsIgnoreCase(MainMenuBar.EDITOR_TEXT)) {
+			 SwingUtilities.invokeLater(new Runnable() {
+				 @Override
+				 public void run() {
+					 @SuppressWarnings("unused")
+					CodeEditorWindow win = new CodeEditorWindow(machine);
+				 }
+			 });
+
+		}
 	}
 	
 	private class MainWindowListener implements WindowListener {
