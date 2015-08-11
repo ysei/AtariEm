@@ -1,0 +1,19 @@
+I've looked at a lot of other projects while pulling this one together. In fact, some early
+versions depended on various 3rd party projects. I've also read a lot of articles, books etc
+around the history of Atari's coin-op machine so this list is my attempt to recognise that
+fact and to give credit where it's due.
+
+So, in no particular order, here's a list of people and projects that have in some way or other
+helped me to move this project forward:
+
+asm816 - https://code.google.com/p/asm816/
+	A fairly sophisticated 6502 assembler. It was going to need too much simplification to 
+	stand any real chance of integrating nicely with my design framework.
+
+symon - https://github.com/sethm/symon/
+   Seth Morabito's excellent 6502 emulator. I started out by attempting to extend this but
+   eventually dropped the idea. I'm a bit of a Java noob so found this very useful to look over.
+   Some of Seth's design decisions have influenced this project, I'm sure. Thanks, Seth.
+   
+Andrew Jacob's 6502 pages - http://www.obelisk.demon.co.uk/6502/
+   A great source of reliable information on the 6502.
