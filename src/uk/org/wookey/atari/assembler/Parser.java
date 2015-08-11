@@ -11,8 +11,8 @@ import uk.org.wookey.atari.exceptions.LabelExistsException;
 import uk.org.wookey.atari.exceptions.NosuchLabelException;
 import uk.org.wookey.atari.exceptions.RuntimeAssemblyException;
 import uk.org.wookey.atari.exceptions.SyntaxException;
+import uk.org.wookey.atari.labels.LabelTable;
 import uk.org.wookey.atari.utils.Formatter;
-import uk.org.wookey.atari.utils.LabelTable;
 import uk.org.wookey.atari.utils.Logger;
 
 public class Parser extends SimpleParser {

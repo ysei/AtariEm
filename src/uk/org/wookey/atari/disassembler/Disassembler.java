@@ -14,7 +14,8 @@ public class Disassembler implements InstructionData {
 	
 	public DecodedInstruction disassemble(int addr) throws MemoryAccessException {
 		DecodedInstruction inst = new DecodedInstruction();
-        String mnemonic = opcodeNames[addr];
+		int op = bus.read(addr);
+        String mnemonic = opcodeNames[op];
 
         if (mnemonic == null) {
             return inst;
@@ -24,7 +25,7 @@ public class Disassembler implements InstructionData {
 
         StringBuilder sb = new StringBuilder(mnemonic);
 
-        switch (instructionModes[addr]) {
+        switch (instructionModes[op]) {
         	case ACC:
         		break;
         		

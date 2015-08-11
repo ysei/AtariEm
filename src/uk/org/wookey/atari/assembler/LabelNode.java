@@ -1,7 +1,7 @@
 package uk.org.wookey.atari.assembler;
 
 import uk.org.wookey.atari.exceptions.NosuchLabelException;
-import uk.org.wookey.atari.utils.LabelTable;
+import uk.org.wookey.atari.labels.LabelTable;
 import uk.org.wookey.atari.utils.Logger;
 
 public class LabelNode extends ExprNode {

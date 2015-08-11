@@ -32,7 +32,7 @@ public class AsteroidsDeluxeMachine extends Machine {
         try {
 			this.ram = new Memory(RAM_SIZE, false);
 
-	        bus.addCpu(cpu);
+	        //bus.addCpu(cpu);
 	        bus.addDevice(ram, RAM_BASE);
 
 	        File romImage = new File("machines/" + this.getName() + "/rom.bin");

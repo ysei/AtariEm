@@ -1,4 +1,4 @@
-package uk.org.wookey.atari.utils;
+package uk.org.wookey.atari.labels;
 
 public class AddressLabel {
 	private int address;

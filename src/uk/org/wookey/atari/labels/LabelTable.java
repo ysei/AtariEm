@@ -1,4 +1,4 @@
-package uk.org.wookey.atari.utils;
+package uk.org.wookey.atari.labels;
 
 import java.util.Map.Entry;
 import java.util.Set;
@@ -6,6 +6,7 @@ import java.util.TreeMap;
 
 import uk.org.wookey.atari.exceptions.LabelExistsException;
 import uk.org.wookey.atari.exceptions.NosuchLabelException;
+import uk.org.wookey.atari.utils.Logger;
 
 public class LabelTable {
 	private final static Logger _logger = new Logger(LabelTable.class.getName());
