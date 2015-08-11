@@ -29,7 +29,6 @@ import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 
 import uk.org.wookey.atari.ui.ApplicationWindow;
-import uk.org.wookey.atari.ui.DebugWindow;
 
 public class Main {
     
@@ -48,11 +47,16 @@ public class Main {
 		        }
 		    }
 		} catch (Exception e) {
-		    // If Nimbus is not available, you can set the GUI to another look and feel.
 		}
 		
 
         //new DebugWindow();
-        ApplicationWindow app = new ApplicationWindow();
+        javax.swing.SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                @SuppressWarnings("unused")
+				ApplicationWindow app = new ApplicationWindow();
+            }
+        });
     }
 }
+

@@ -9,8 +9,9 @@ import javax.swing.*;
 import javax.swing.text.*;
 
 public class Logger {
-	private static JTextPane _log = null;
 	private static PrintWriter _out = null;
+	private static ArrayList<JTextPane> logPanes = null;
+	
 	private String _logName;
 	private int _logLevel = 1;
 	private SimpleAttributeSet _labAttribs;
@@ -20,12 +21,10 @@ public class Logger {
 	private SimpleAttributeSet _warnAttribs;
 	private SimpleAttributeSet _errAttribs;
 	
-	private ArrayList<String[]> _msgBuffer;
-	
-	public Logger(JTextPane log)
-	{
-		_log = log;
+	public Logger(JTextPane log) {
 		initialise("");
+
+		logPanes.add(log);
 	}
 	
 	public Logger(String tag) {
@@ -38,6 +37,10 @@ public class Logger {
 	}
 	
 	private void initialise(String tag) {
+		if (logPanes == null) {
+			logPanes = new ArrayList<JTextPane>();
+		}
+		
 		if (tag.equals("")) {
 			_logName = "";
 		}
@@ -45,14 +48,14 @@ public class Logger {
 			_logName = "[" + tag + "]:";
 		}
 		
+		/*
 		if (_out == null) {
 			try {
 				_out = new PrintWriter("debug.txt");
 			} catch (FileNotFoundException e) {
 			}
 		}
-		
-		_msgBuffer = new ArrayList<String[]>();
+		*/
 		
 		_labAttribs = new SimpleAttributeSet();
 		StyleConstants.setForeground(_labAttribs, Color.blue);
@@ -80,16 +83,8 @@ public class Logger {
 			_out.println(msg);
 			_out.flush();
 		}
-		
-		if (_log != null) {
-			if (_msgBuffer.size() > 0) {
-				for (int i=0; i<_msgBuffer.size(); i++) {
-					String bits[] = _msgBuffer.get(i);
-					append(bits[0], labAttribs);
-					append(bits[1], msgAttribs);
-				}
-				_msgBuffer.clear();
-			}
+	
+		if (logPanes.size() > 0) {
 			append(_logName, labAttribs);
 			append(' ' + msg + '\n', msgAttribs);
 		}
@@ -98,10 +93,9 @@ public class Logger {
 			String item[] = new String[2];
 			item[0] = _logName;
 			item[1] = msg;
-			_msgBuffer.add(item);
 			
-			System.out.println(_logName + ' ' +msg);
-		}
+			System.out.println(_logName + ' ' + msg);
+		}		
 	}
 	
 	private void logMsg(String msg, SimpleAttributeSet attribs) {
@@ -122,14 +116,16 @@ public class Logger {
 	}
 	
 	protected void append(String msg, SimpleAttributeSet attributes) {
-		Document doc = _log.getDocument();
+		for (JTextPane log: logPanes) {
+			Document doc = log.getDocument();
 		
-		try {
-			doc.insertString(doc.getLength(), msg, attributes);
-			_log.setCaretPosition(doc.getLength());		
-		} catch (BadLocationException e) {
-			e.printStackTrace();
-		}		
+			try {
+				doc.insertString(doc.getLength(), msg, attributes);
+				log.setCaretPosition(doc.getLength());		
+			} catch (BadLocationException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	public synchronized void logMsg(String msg) {

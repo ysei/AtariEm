@@ -24,10 +24,12 @@
 package com.loomcom.symon.ui;
 
 import com.loomcom.symon.devices.Crtc;
-import com.loomcom.symon.devices.DeviceChangeListener;
 import com.loomcom.symon.exceptions.MemoryAccessException;
 
 import javax.swing.*;
+
+import uk.org.wookey.atari.architecture.DeviceChangeListener;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;

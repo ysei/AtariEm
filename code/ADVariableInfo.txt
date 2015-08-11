@@ -1,0 +1,78 @@
+Memory locations:
+
+Page 0
+
+$01				- set to $00 in Sub_7118
+
+$03				- set tp $02 in Sub_7118. Some kind of scratch area????
+$04				- set to $47 in Sub_7118
+				- found examples of $03,$04 as a word which gets added to. 16-bit count of some sort
+
+$09				- set to $BE in Sub_7118
+$0a				- set to $75 in Sub_7118
+
+$22				- read in Sub_6FD4
+				- read in NMI handler - used as index
+
+$42				- initialised to $ff in Sub_7BE3
+				- written to in Sub_6FD4
+				
+$43				- initialised to $ff in Sub_7BE3
+				- written to in Sub_6FD4
+
+$62, $63, $64	- set to 0 in Sub_7BE3
+$65, $66, $67	- set to 0 in Sub_7BE3
+
+$69             - set to item from bonus table: $ff-no bonus ship, $50, $20, $00 - bonus ship at 15000, 12000, 10000
+$6a             - set to $10 if bonus ship, otherwise 0?
+
+$6c             - set to item from bonus table: $ff-no bonus ship, $50, $20, $00 - bonus ship at 15000, 12000, 10000
+$6d             - set to $10 if bonus ship, otherwise 0?
+
+$76				- set to 4 in Sub_7118
+				- used as a loop counter at $711f
+				- used as a loop counter at $604D
+
+$77				- written to in Sub_6FD4
+$78				- counter? incremented in NMI handler - wraps every 4 NMIs
+
+$84				- read at $6059 as $64,x
+$8d             - possibly cost per play. Think #$03 means 50cents/play
+$9c - $a2       - set to 0 in Sub_7BE3
+
+$cb
+$cc
+$cd				- copied to $cb, $cc, $ce at $6005
+				- reset to $20 at $600F
+				
+$ce				- written to in Sub_6FD4
+
+
+$d3				- set to 0 in Sub_7BE3
+$dd				- set to 0 in Sub_7BE3
+
+$f8             - set to item from bonus table: $ff-no bonus ship, $50, $20, $00 - bonus ship at 15000, 12000, 10000
+$f9             - set to $10 if bonus ship, otherwise 0?
+
+$fa				- set to 0 in Sub_7BE3
+$fb				- bottom two bits contain option switches 65
+$fc				- set to 0 in Sub_7BE3
+$fd				- bottom two bits contain option switches 65
+
+
+
+Page 1
+
+
+
+
+Page 2
+
+$e8				- initialised to $98 in Sub_7BE3
+$e9				- initialised to $98 in Sub_7BE3
+$ec				- initialised to $7f in Sub_7BE3
+$ed				- initialised to $30 in Sub_7BE3
+$ee				- initialised to $06 in Sub_7BE3
+
+
+Page 3

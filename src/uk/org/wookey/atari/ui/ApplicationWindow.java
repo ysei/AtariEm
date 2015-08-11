@@ -1,11 +1,7 @@
 package uk.org.wookey.atari.ui;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,19 +14,10 @@ import java.awt.event.WindowListener;
 
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
-import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
-import javax.swing.JTabbedPane;
 
-import com.loomcom.symon.Bus;
-import com.loomcom.symon.Cpu;
-import com.loomcom.symon.devices.Acia;
-import com.loomcom.symon.devices.Acia6850;
-import com.loomcom.symon.devices.Via6522;
-import com.loomcom.symon.exceptions.MemoryAccessException;
-import com.loomcom.symon.exceptions.MemoryRangeException;
-import com.loomcom.symon.machines.Machine;
 import com.loomcom.symon.machines.SymonMachine;
+import com.loomcom.symon.ui.StatusPanel;
 
 import uk.org.wookey.atari.sim.Simulator;
 import uk.org.wookey.atari.utils.Logger;
@@ -38,28 +25,13 @@ import uk.org.wookey.atari.utils.Logger;
 public class ApplicationWindow extends JFrame implements ActionListener {
 	private static final long serialVersionUID = 1L;
 	private final static Logger _logger = new Logger("ApplicationWindow");
-	protected JTabbedPane tabs;
-	private MainStatusBar statusBar;
+	protected Simulator sim;
+	private MainStatusBar statusBar; 
+	private StatusPanel statusPane;
 	
 	public ApplicationWindow() {
 		super("IC");
-		
-		GridBagConstraints gbc = new GridBagConstraints();
-		
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		
-		gbc.gridwidth = 1;
-		gbc.gridheight = 1;
-		
-		gbc.weightx = 1.0;
-		gbc.weighty = 0.0;
-		
-		gbc.insets = new Insets(2, 2, 2, 2);
-		
-		gbc.fill = GridBagConstraints.BOTH;
-		
-		gbc.anchor = GridBagConstraints.PAGE_START;
+		SymonMachine machine = new SymonMachine();
 		
 		Toolkit tk = Toolkit.getDefaultToolkit();
 		int xSize = tk.getScreenSize().width;
@@ -76,7 +48,7 @@ public class ApplicationWindow extends JFrame implements ActionListener {
 		setSize(xSize, ySize);
 		setLocation((tk.getScreenSize().width - xSize) / 2, (tk.getScreenSize().height - ySize) / 2);
 
-		setLayout(new GridBagLayout());
+		setLayout(new BorderLayout());
 		
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.addWindowListener(new MainWindowListener());
@@ -84,39 +56,22 @@ public class ApplicationWindow extends JFrame implements ActionListener {
 		MainMenuBar menu = new MainMenuBar();
 		setJMenuBar(menu);
 		
-		tabs = new JTabbedPane();
-		
-        tabs.addMouseListener(new PopupListener());
+        addMouseListener(new PopupListener());
         
-		tabs.add("Console", new DebugTab());
-		tabs.add("Simulator", new Simulator(new SymonMachine()));
-		tabs.addTab("Assembler",  new AssemblerTab());
+        statusPane = new StatusPanel(machine);
+        statusPane.updateState();
+
+		sim = new Simulator(machine, statusPane);
+		add(sim, BorderLayout.CENTER);
 		
-		gbc.gridy = 1;
-		gbc.weighty = 1.0;
-		add(tabs, gbc);
+		add(new Cabinet(), BorderLayout.LINE_START);
+		add(statusPane, BorderLayout.LINE_END);
 		
 		statusBar = MainStatusBar.getMainStatusBar(); 
-		JPanel outer = new JPanel();
-		outer.setLayout(new BorderLayout());
-		outer.add(statusBar, BorderLayout.EAST);
-		outer.setBackground(new Color(0xd0, 0xd0, 0xd0));
-		gbc.gridx = 0;
-		gbc.gridy = 2;
-		gbc.weightx = 1.0;
-		gbc.weighty = 0.0;
-		//gbc.gridwidth = 3;
-		add(outer, gbc);
 		
+		add(statusBar, BorderLayout.PAGE_END);
 		setVisible(true);
 	}	
-	public void addTab(JPanel tab) {
-		String title;
-		
-		title = tab.getName();
-		tabs.add(title, tab);
-		tabs.setSelectedComponent(tab);
-	}
 	
 	class FocusHandler implements FocusListener {
 		@Override
@@ -139,10 +94,6 @@ public class ApplicationWindow extends JFrame implements ActionListener {
 		
 		x = x.getParent();
 		_logger.logInfo("Not sure what to do with this type of tab: " + x.toString());
-	}
-	
-	public JTabbedPane getTabbedPane() {
-		return tabs;
 	}
 	
 	private class MainWindowListener implements WindowListener {
@@ -209,7 +160,7 @@ public class ApplicationWindow extends JFrame implements ActionListener {
 			settings.addActionListener(this);
 			popup.add(settings);
 
-			popup.show(tabs.getSelectedComponent(), x, y-20);
+			popup.show(sim, x, y-20);
 		}
 
 		@Override

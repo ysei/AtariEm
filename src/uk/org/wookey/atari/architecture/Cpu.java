@@ -1,39 +1,10 @@
-/*
- * Copyright (c) 2014 Seth J. Morabito <web@loomcom.com>
- *
- * Permission is hereby granted, free of charge, to any person obtaining
- * a copy of this software and associated documentation files (the
- * "Software"), to deal in the Software without restriction, including
- * without limitation the rights to use, copy, modify, merge, publish,
- * distribute, sublicense, and/or sell copies of the Software, and to
- * permit persons to whom the Software is furnished to do so, subject to
- * the following conditions:
- *
- * The above copyright notice and this permission notice shall be
- * included in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
- * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
- * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
- * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
+package uk.org.wookey.atari.architecture;
 
-package com.loomcom.symon;
+import uk.org.wookey.atari.exceptions.MemoryAccessException;
 
-import com.loomcom.symon.exceptions.MemoryAccessException;
 import com.loomcom.symon.util.HexUtil;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-/**
- * This class provides a simulation of the MOS 6502 CPU's state machine.
- * A simple interface allows this 6502 to read and write to a simulated bus,
- * and exposes some of the internal state for inspection and debugging.
- */
-public class Cpu implements InstructionTable {
+public class Cpu implements InstructionData {
 
     /* Process status register mnemonics */
     public static final int P_CARRY       = 0x01;
@@ -133,9 +104,6 @@ public class Cpu implements InstructionTable {
      * Reset the CPU to known initial values.
      */
     public void reset() throws MemoryAccessException {
-        /* TODO: In reality, the stack pointer could be anywhere
-           on the stack after reset. This non-deterministic behavior might be
-           worth while to simulate. */
         state.sp = 0xff;
 
         // Set the PC to the address stored in the reset vector
@@ -433,17 +401,6 @@ public class Cpu implements InstructionTable {
                 }
 
                 state.pc = address(bus.read(lo), bus.read(hi));
-                /* TODO: For accuracy, allow a flag to enable broken behavior of early 6502s:
-                 *
-                 * "An original 6502 has does not correctly fetch the target
-                 * address if the indirect vector falls on a page boundary
-                 * (e.g. $xxFF where xx is and value from $00 to $FF). In this
-                 * case fetches the LSB from $xxFF as expected but takes the MSB
-                 * from $xx00. This is fixed in some later chips like the 65SC02
-                 * so for compatibility always ensure the indirect vector is not
-                 * at the end of the page."
-                 * (http://www.obelisk.demon.co.uk/6502/reference.html#JMP)
-                 */
                 break;
 
 
@@ -744,7 +701,6 @@ public class Cpu implements InstructionTable {
                 break;
 
             /** Unimplemented Instructions ****************************************/
-            // TODO: Create a flag to enable highly-accurate emulation of unimplemented instructions.
             default:
                 setOpTrap();
                 break;

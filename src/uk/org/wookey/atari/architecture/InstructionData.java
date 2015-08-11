@@ -1,149 +1,81 @@
-/*
- * Copyright (c) 2014 Seth J. Morabito <web@loomcom.com>
- *
- * Permission is hereby granted, free of charge, to any person obtaining
- * a copy of this software and associated documentation files (the
- * "Software"), to deal in the Software without restriction, including
- * without limitation the rights to use, copy, modify, merge, publish,
- * distribute, sublicense, and/or sell copies of the Software, and to
- * permit persons to whom the Software is furnished to do so, subject to
- * the following conditions:
- *
- * The above copyright notice and this permission notice shall be
- * included in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
- * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
- * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
- * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
+package uk.org.wookey.atari.architecture;
 
-package com.loomcom.symon;
+import uk.org.wookey.atari.utils.assembler.Instruction;
 
-public interface InstructionTable {
-
-    /**
-     * Enumeration of valid CPU behaviors. These determine what behavior and instruction
-     * set will be simulated, depending on desired version of 6502.
-     *
-     * TODO: As of version 0.6, this is still not used! All CPUs are "idealized" NMOS 6502 only.
-     */
+public interface InstructionData {
     public enum CpuBehavior {
-        /**
-         * The earliest NMOS 6502 includes a bug that causes the ROR instruction
-         * to behave like an ASL that does not affect the carry bit. This version
-         * is very rare in the wild.
-         *
-         * NB: Does NOT implement "unimplemented" NMOS instructions.
-         */
         NMOS_WITH_ROR_BUG,
-
-        /**
-         * All NMOS 6502's have a bug with the indirect JMP instruction. If the
-         *
-         * NB: Does NOT implement "unimplemented" NMOS instructions.
-         */
         NMOS_WITH_INDIRECT_JMP_BUG,
-
-        /**
-         * Emulate an NMOS 6502 without the indirect JMP bug. This type of 6502
-         * does not actually exist in the wild.
-         *
-         * NB: Does NOT implement "unimplemented" NMOS instructions.
-         */
         NMOS_WITHOUT_INDIRECT_JMP_BUG,
-
-        /**
-         * Emulate a CMOS 65C02, with all CMOS instructions and addressing modes.
-         */
         CMOS
     }
 
-    /**
-     * Enumeration of Addressing Modes.
-     */
     public enum Mode {
         ACC {
             public String toString() {
                 return "Accumulator";
             }
         },
-
         ABS {
             public String toString() {
                 return "Absolute";
             }
         },
-
         ABX {
             public String toString() {
                 return "Absolute, X-indexed";
             }
         },
-
         ABY {
             public String toString() {
                 return "Absolute, Y-indexed";
             }
         },
-
         IMM {
             public String toString() {
                 return "Immediate";
             }
         },
-
         IMP {
             public String toString() {
                 return "Implied";
             }
         },
-
         IND {
             public String toString() {
                 return "Indirect";
             }
         },
-
         XIN {
             public String toString() {
                 return "X-indexed Indirect";
             }
         },
-
         INY {
             public String toString() {
                 return "Indirect, Y-indexed";
             }
         },
-
         REL {
             public String toString() {
                 return "Relative";
             }
         },
-
         ZPG {
             public String toString() {
                 return "Zeropage";
             }
         },
-
         ZPX {
             public String toString() {
                 return "Zeropage, X-indexed";
             }
         },
-
         ZPY {
             public String toString() {
                 return "Zeropage, Y-indexed";
             }
         },
-
         NUL {
             public String toString() {
                 return "NULL";
@@ -151,11 +83,6 @@ public interface InstructionTable {
         }
     }
 
-    // 6502 opcodes.  No 65C02 opcodes implemented.
-
-    /**
-     * Instruction opcode names.
-     */
     public static final String[] opcodeNames = {
         "BRK", "ORA",  null,  null,  null, "ORA", "ASL",  null,
         "PHP", "ORA", "ASL",  null,  null, "ORA", "ASL",  null,
@@ -191,9 +118,6 @@ public interface InstructionTable {
         "SED", "SBC",  null,  null,  null, "SBC", "INC",  null
     };
 
-    /**
-     * Instruction addressing modes.
-     */
     public static final Mode[] instructionModes = {
         Mode.IMP, Mode.XIN, Mode.NUL, Mode.NUL,   // 0x00-0x03
         Mode.NUL, Mode.ZPG, Mode.ZPG, Mode.NUL,   // 0x04-0x07
@@ -261,10 +185,6 @@ public interface InstructionTable {
         Mode.NUL, Mode.ABX, Mode.ABX, Mode.NUL    // 0xfc-0xff
     };
 
-
-    /**
-     * Size, in bytes, required for each instruction.
-     */
     public static final int[] instructionSizes = {
         1, 2, 0, 0, 0, 2, 2, 0, 1, 2, 1, 0, 0, 3, 3, 0,
         2, 2, 0, 0, 0, 2, 2, 0, 1, 3, 0, 0, 0, 3, 3, 0,
@@ -284,9 +204,6 @@ public interface InstructionTable {
         2, 2, 0, 0, 0, 2, 2, 0, 1, 3, 0, 0, 0, 3, 3, 0
     };
 
-    /**
-     * Number of clock cycles required for each instruction
-     */
     public static final int[] instructionClocks = {
         7, 6, 0, 0, 0, 3, 5, 0, 3, 2, 2, 0, 0, 4, 6, 0,
         2, 5, 0, 0, 0, 4, 6, 0, 2, 4, 0, 0, 0, 4, 7, 0,
@@ -306,4 +223,90 @@ public interface InstructionTable {
         2, 5, 0, 0, 0, 4, 6, 0, 2, 4, 0, 0, 0, 4, 7, 0
     };
 
+    public static Instruction[] instructions = {
+    	new Instruction("adc", 0x69, 0x65, 0x75, 0x6d, 0x7d, 0x79, 0x61, 0x71),
+    	new Instruction("and", 0x29, 0x25, 0x35, 0x2d, 0x3d, 0x39, 0x21, 0x31),
+    	
+    	new Instruction("asl", 0x0a, 0x06, 0x16, 0x0e, 0x1e),
+    	
+    	new Instruction("bcc", 0x90),
+    	new Instruction("bcs", 0xb0),
+    	new Instruction("beq", 0xf0),
+    	
+    	new Instruction("bit", 0x24, 0x2c),
+    	
+    	new Instruction("bmi", 0x30),
+    	new Instruction("bne", 0xd0),
+    	new Instruction("bpl", 0x10),
+    	
+    	new Instruction("brk", 0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1),
+    	
+    	new Instruction("bvc", 0x50),
+    	new Instruction("bvs", 0x70),
+
+    	new Instruction("clc", 0x18, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1),
+    	new Instruction("cld", 0xd8, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1),
+    	new Instruction("cli", 0x58, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1),
+    	new Instruction("clv", 0xb8, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1),
+    	
+    	new Instruction("cmp", 0xc9, 0xc5, 0xd5, 0xcd, 0xdd, 0xd9, 0xc1, 0xd1),
+    	
+    	new Instruction("cpx", 0xe0, 0xe4, 0xec),
+    	new Instruction("cpy", 0xc0, 0xc4, 0xcc),
+    	
+    	new Instruction("dec", 0xc6, 0xd6, 0xce, 0xde),
+    	
+    	new Instruction("dex", 0xca, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1),
+    	new Instruction("dey", 0x88, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1),
+    	
+    	new Instruction("eor", 0x49, 0x45, 0x55, 0x4d, 0x5d, 0x59, 0x41, 0x51),
+
+    	new Instruction("inc", 0xe6, 0xf6, 0xee, 0xfe),
+
+    	new Instruction("inx", 0xe8, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1),
+    	new Instruction("iny", 0xc8, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1),
+    	new Instruction("jmp", -1, -1, -1, -1, -1, -1, -1, 0x4c, -1, -1, 0x6c, -1, -1),
+    	new Instruction("jsr", -1, -1, -1, -1, -1, -1, -1, 0x20, -1, -1, -1, -1, -1),
+
+    	new Instruction("lda", 0xa9, 0xa5, 0xb5, 0xad, 0xbd, 0xb9, 0xa1, 0xb1),
+    	
+    	// int imp, int acc, int imm, int zp, int zpx, int zpy, int rel, int abs, int absx, int absy, int ind, int indx, int indy
+    	
+    	new Instruction("ldx", -1, -1, 0xa2, 0xa6, -1, 0xb6, -1, 0xae, -1, 0xbe, -1, -1, -1),
+    	new Instruction("ldy", -1, -1, 0xa0, 0xa4, 0xb4, -1, -1, 0xac, 0xbc, -1, -1, -1, -1),
+    	
+    	new Instruction("lsr", 0x4a, 0x46, 0x56, 0x4e, 0x5e),
+    	
+    	new Instruction("nop", 0xea, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1),
+    	
+    	new Instruction("ora", 0x09, 0x05, 0x15, 0x0d, 0x1d, 0x19, 0x01, 0x11),
+    	
+    	new Instruction("pha", 0x48, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1),
+    	new Instruction("php", 0x88, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1),
+    	new Instruction("pla", 0x68, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1),
+    	new Instruction("plp", 0x28, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1),
+    	
+    	new Instruction("rol", 0x2a, 0x26, 0x36, 0x2e, 0x3e),
+    	new Instruction("ror", 0x6a, 0x66, 0x76, 0x6e, 0x7e),
+
+    	new Instruction("rti", 0x40, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1),
+    	new Instruction("rts", 0x60, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1),
+
+    	new Instruction("sbc", 0xe9, 0xe5, 0xf5, 0xed, 0xfd, 0xf9, 0xe1, 0xf1),
+    	
+    	new Instruction("sec", 0x38, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1),
+    	new Instruction("sed", 0xf8, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1),
+    	new Instruction("sei", 0x78, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1),
+    	
+    	new Instruction("sta", -1, -1, -1, 0x85, 0x95, -1, -1, 0x8d, 0x9d, 0x99, -1, 0x81, 0x91),
+    	new Instruction("stx", -1, -1, -1, 0x86, -1, 0x96, -1, 0x8e, -1, -1, -1, -1, -1),
+    	new Instruction("sty", -1, -1, -1, 0x84, 0x94, -1, -1, 0x8c, -1, -1, -1, -1, -1),
+
+    	new Instruction("tax", 0xaa, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1),
+    	new Instruction("tay", 0xa8, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1),
+    	new Instruction("tsx", 0xba, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1),
+    	new Instruction("txa", 0x8a, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1),
+    	new Instruction("txs", 0x9a, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1),
+    	new Instruction("tya", 0x98, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1)
+    };
 }
