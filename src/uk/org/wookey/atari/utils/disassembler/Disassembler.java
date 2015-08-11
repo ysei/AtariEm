@@ -18,30 +18,33 @@ public class Disassembler implements InstructionData {
 		bus = machine.getBus();
 	}
 	
-	public void disassemble(int addr) {
+	public DecodedInstruction disassemble(int addr) {
+		DecodedInstruction inst = new DecodedInstruction();
         String mnemonic = opcodeNames[addr];
 
         if (mnemonic == null) {
-            return "???";
+            return inst;
         }
+        
+        inst.setOpcode(mnemonic);
 
         StringBuilder sb = new StringBuilder(mnemonic);
 
-        switch (instructionModes[address]) {
+        switch (instructionModes[addr]) {
             case ABS:
-                sb.append(" $" + bus.getLabel(address(args[0], args[1])));
+                inst.setOperand(bus.getLabel(bus.readWord(addr+1)));
                 break;
             case ABX:
-                sb.append(" $" + bus.getLabel(address(args[0], args[1])) + ",X");
+                inst.setOperand(bus.getLabel(bus.readWord(addr+1)) + ",X");
                 break;
             case ABY:
-                sb.append(" $" + bus.getLabel(address(args[0], args[1])) + ",Y");
+                inst.setOperand(bus.getLabel(bus.readWord(addr+1)) + ",Y");
                 break;
             case IMM:
                 sb.append(" #$" + HexUtil.byteToHex(args[0]));
                 break;
             case IND:
-                sb.append(" ($" + bus.getLabel(address(args[0], args[1])) + ")");
+                inst.setOperand("(" + bus.getLabel(bus.readWord(addr+1)) + ")");
                 break;
             case XIN:
                 sb.append(" ($" + HexUtil.byteToHex(args[0]) + ",X)");
@@ -61,6 +64,6 @@ public class Disassembler implements InstructionData {
                 break;
         }
 
-        return sb.toString();
+        return inst;
 	}
 }

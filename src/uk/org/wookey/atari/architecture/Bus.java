@@ -98,6 +98,10 @@ public class Bus {
         return String.format("$$$%04X", address);
     }
 
+    public int readWord(int address) throws MemoryAccessException {
+    	return read(address) | (read(address+1)>>8);
+    }
+    
     public int read(int address) throws MemoryAccessException {
         Device d = deviceAt(address);
         
@@ -112,6 +116,11 @@ public class Bus {
         throw new MemoryAccessException("Bus read failed. No device at address " + String.format("$%04X", address));
     }
 
+    public void writeWord(int address, int wordVal) throws MemoryAccessException {
+    	write(address, wordVal & 0xff);
+    	write(address+1, (wordVal<<8) & 0xff);
+    }
+    
     public void write(int address, int value) throws MemoryAccessException {
         Device d = deviceAt(address);
         
