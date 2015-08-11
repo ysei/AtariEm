@@ -16,9 +16,8 @@ import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
-import com.loomcom.symon.machines.SymonMachine;
-import com.loomcom.symon.ui.StatusPanel;
-
+import uk.org.wookey.atari.machines.AsteroidsDeluxeMachine;
+import uk.org.wookey.atari.machines.Machine;
 import uk.org.wookey.atari.sim.Simulator;
 import uk.org.wookey.atari.utils.Logger;
 
@@ -31,7 +30,7 @@ public class ApplicationWindow extends JFrame implements ActionListener {
 	
 	public ApplicationWindow() {
 		super("IC");
-		SymonMachine machine = new SymonMachine();
+		Machine machine = new AsteroidsDeluxeMachine();
 		
 		Toolkit tk = Toolkit.getDefaultToolkit();
 		int xSize = tk.getScreenSize().width;

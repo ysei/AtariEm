@@ -23,14 +23,14 @@
 
 package com.loomcom.symon;
 
-import com.loomcom.symon.exceptions.MemoryAccessException;
-import com.loomcom.symon.exceptions.SymonException;
-import com.loomcom.symon.machines.Machine;
-import com.loomcom.symon.ui.*;
-import com.loomcom.symon.ui.Console;
-
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+
+import com.loomcom.symon.machines.Machine;
+import com.loomcom.symon.ui.MemoryWindow;
+import com.loomcom.symon.ui.PreferencesDialog;
+import com.loomcom.symon.ui.StatusPanel;
+import com.loomcom.symon.ui.TraceLog;
 
 import java.awt.*;
 import java.awt.event.*;

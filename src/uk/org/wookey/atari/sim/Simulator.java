@@ -13,12 +13,10 @@ import javax.swing.JScrollPane;
 import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
 
-import com.loomcom.symon.machines.Machine;
-import com.loomcom.symon.ui.StatusPanel;
-import com.loomcom.symon.ui.TraceLog;
-
 import uk.org.wookey.atari.architecture.Cpu;
 import uk.org.wookey.atari.exceptions.MemoryAccessException;
+import uk.org.wookey.atari.machines.Machine;
+import uk.org.wookey.atari.ui.StatusPanel;
 import uk.org.wookey.atari.utils.Logger;
 
 public class Simulator extends JPanel {
@@ -36,7 +34,6 @@ public class Simulator extends JPanel {
     private JButton hardResetButton;
     private JComboBox<String> stepCountBox;
     
-    private TraceLog traceLog;
     private StatusPanel statusPane;
     private JFileChooser fileChooser;
     
@@ -135,17 +132,8 @@ public class Simulator extends JPanel {
             }
         });
 
-        // Prepare the log window
-        traceLog = new TraceLog();
-
-        // Prepare the memory window
-        //memoryWindow = new MemoryWindow(machine.getBus());
-        //add(memoryWindow, BorderLayout.LINE_START);
-
         setVisible(true);
 
-        //console.requestFocus();
-        
         _logger.logInfo("Simulator created and initialised");
 		
         _logger.logInfo("Create simRunner thread");
@@ -153,6 +141,7 @@ public class Simulator extends JPanel {
         _logger.logInfo("Starting SimRunner thread");
         simRunner.start();
 
+        //TODO: Decide if this is necessaery - maybe not bother unless stepping through code
         // Now the simRunner thread is alive, set a timer to update the statusPane every
         // so often (only if simRunner is actually doing anything)
         Timer SimpleTimer = new Timer(200, new ActionListener() {

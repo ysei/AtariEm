@@ -3,6 +3,7 @@ package uk.org.wookey.atari.utils.disassembler;
 import uk.org.wookey.atari.architecture.Bus;
 import uk.org.wookey.atari.architecture.Cpu;
 import uk.org.wookey.atari.architecture.InstructionData;
+import uk.org.wookey.atari.exceptions.MemoryAccessException;
 
 import com.loomcom.symon.machines.Machine;
 import com.loomcom.symon.util.HexUtil;
@@ -18,7 +19,7 @@ public class Disassembler implements InstructionData {
 		bus = machine.getBus();
 	}
 	
-	public DecodedInstruction disassemble(int addr) {
+	public DecodedInstruction disassemble(int addr) throws MemoryAccessException {
 		DecodedInstruction inst = new DecodedInstruction();
         String mnemonic = opcodeNames[addr];
 
@@ -32,35 +33,44 @@ public class Disassembler implements InstructionData {
 
         switch (instructionModes[addr]) {
             case ABS:
-                inst.setOperand(bus.getLabel(bus.readWord(addr+1)));
+                inst.setOperand(bus.getLabel(bus.readWord(addr+1)), 3);
                 break;
+                
             case ABX:
-                inst.setOperand(bus.getLabel(bus.readWord(addr+1)) + ",X");
+                inst.setOperand(bus.getLabel(bus.readWord(addr+1)) + ",X", 3);
                 break;
+                
             case ABY:
-                inst.setOperand(bus.getLabel(bus.readWord(addr+1)) + ",Y");
+                inst.setOperand(bus.getLabel(bus.readWord(addr+1)) + ",Y", 3);
                 break;
+                
             case IMM:
-                sb.append(" #$" + HexUtil.byteToHex(args[0]));
+            	inst.setOperand("#$" + HexUtil.byteToHex(bus.read(addr+1)), 2);
                 break;
+                
             case IND:
-                inst.setOperand("(" + bus.getLabel(bus.readWord(addr+1)) + ")");
+                inst.setOperand("(" + bus.getLabel(bus.readWord(addr+1)) + ")", 3);
                 break;
+                
             case XIN:
-                sb.append(" ($" + HexUtil.byteToHex(args[0]) + ",X)");
+            	inst.setOperand("($" + HexUtil.byteToHex(bus.read(addr+1)) + ",X)", 2);
                 break;
+                
             case INY:
-                sb.append(" ($" + HexUtil.byteToHex(args[0]) + "),Y");
+            	inst.setOperand("($" + HexUtil.byteToHex(bus.read(addr+1)) + "),Y", 2);
                 break;
+                
             case REL:
             case ZPG:
-                sb.append(" $" + HexUtil.byteToHex(args[0]));
+            	inst.setOperand("$" + HexUtil.byteToHex(bus.read(addr+1)), 2);
                 break;
+                
             case ZPX:
-                sb.append(" $" + HexUtil.byteToHex(args[0]) + ",X");
+            	inst.setOperand("$" + HexUtil.byteToHex(bus.read(addr+1)) + ",X", 2);
                 break;
+                
             case ZPY:
-                sb.append(" $" + HexUtil.byteToHex(args[0]) + ",Y");
+            	inst.setOperand("$" + HexUtil.byteToHex(bus.read(addr+1)) + ",Y", 2);
                 break;
         }
 
