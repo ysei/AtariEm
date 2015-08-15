@@ -2,19 +2,23 @@ package uk.org.wookey.atari.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Event;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
 import uk.org.wookey.atari.machines.AsteroidsDeluxeMachine;
@@ -53,9 +57,8 @@ public class ApplicationWindow extends JFrame implements ActionListener {
 		setLayout(new BorderLayout());
 		
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		this.addWindowListener(new MainWindowListener());
 		
-		MainMenuBar menu = new MainMenuBar(this);
+		MenuBar menu = new MenuBar(this);
 		setJMenuBar(menu);
 		
         addMouseListener(new PopupListener());
@@ -95,10 +98,10 @@ public class ApplicationWindow extends JFrame implements ActionListener {
 		
 		_logger.logInfo("Main menu click: '" + cmd + "'");
 		
-		if (cmd.equalsIgnoreCase(MainMenuBar.EXIT_TEXT)) {
+		if (cmd.equalsIgnoreCase(MenuBar.EXIT_TEXT)) {
 			System.exit(0);
 		}
-		else if (cmd.equalsIgnoreCase(MainMenuBar.EDITOR_TEXT)) {
+		else if (cmd.equalsIgnoreCase(MenuBar.EDITOR_TEXT)) {
 			 SwingUtilities.invokeLater(new Runnable() {
 				 @Override
 				 public void run() {
@@ -107,39 +110,6 @@ public class ApplicationWindow extends JFrame implements ActionListener {
 				 }
 			 });
 
-		}
-	}
-	
-	private class MainWindowListener implements WindowListener {
-
-		@Override
-		public void windowActivated(WindowEvent arg0) {
-		}
-
-		@Override
-		public void windowClosed(WindowEvent arg0) {
-			_logger.logInfo("Main window closed");
-		}
-
-		@Override
-		public void windowClosing(WindowEvent arg0) {
-			_logger.logInfo("Main window closing");
-		}
-
-		@Override
-		public void windowDeactivated(WindowEvent arg0) {
-		}
-
-		@Override
-		public void windowDeiconified(WindowEvent arg0) {
-		}
-
-		@Override
-		public void windowIconified(WindowEvent arg0) {
-		}
-
-		@Override
-		public void windowOpened(WindowEvent arg0) {
 		}
 	}
 	
@@ -182,6 +152,62 @@ public class ApplicationWindow extends JFrame implements ActionListener {
 			String cmd = e.getActionCommand();
 			
 			_logger.logInfo("Popup menu click: '" + cmd + "'");			
+		}
+	}
+	
+	private class MenuBar extends JMenuBar {
+		private static final long serialVersionUID = 1L;
+		private static final String FILE_TEXT = "File";
+		public static final String EXIT_TEXT = "Exit";
+		
+		private static final String TOOLS_TEXT = "Tools";
+		public static final String EDITOR_TEXT = "Code Editor";
+		public static final String SETTINGS_TEXT = "Settings";
+		public static final String LOGSESSION_TEXT = "Log Session";
+		
+		private static final String HELP_TEXT = "Help";
+		public static final String ABOUT_TEXT = "About";
+		
+		public MenuBar(ActionListener app) {
+			JMenu fileMenu = new JMenu(FILE_TEXT);
+			fileMenu.setMnemonic(KeyEvent.VK_F);
+			
+			JMenuItem exitItem = new JMenuItem(EXIT_TEXT);
+			exitItem.setMnemonic(KeyEvent.VK_X);
+			exitItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, Event.CTRL_MASK));
+			exitItem.addActionListener(app);
+			fileMenu.add(exitItem);
+			add(fileMenu);
+					
+			JMenu toolMenu = new JMenu(TOOLS_TEXT);
+			
+			JMenuItem editorItem = new JMenuItem(EDITOR_TEXT);
+			editorItem.setMnemonic(KeyEvent.VK_E);
+			editorItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, Event.CTRL_MASK));
+			editorItem.addActionListener(app);
+			toolMenu.add(editorItem);
+			
+			JMenuItem settingsItem = new JMenuItem(SETTINGS_TEXT);
+			settingsItem.setMnemonic(KeyEvent.VK_S);
+			settingsItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, Event.CTRL_MASK));
+			settingsItem.addActionListener(app);
+			toolMenu.add(settingsItem);
+			
+			JCheckBoxMenuItem logSession = new JCheckBoxMenuItem(LOGSESSION_TEXT);
+			logSession.setSelected(false);
+			logSession.addActionListener(app);
+			toolMenu.add(logSession);
+
+			add(toolMenu);
+			
+			JMenu helpMenu = new JMenu(HELP_TEXT);
+			helpMenu.setMnemonic(KeyEvent.VK_H);
+
+			JMenuItem aboutItem = new JMenuItem(ABOUT_TEXT);
+			aboutItem.addActionListener(app);
+			helpMenu.add(aboutItem);
+			
+			add(helpMenu);
 		}
 	}
 }

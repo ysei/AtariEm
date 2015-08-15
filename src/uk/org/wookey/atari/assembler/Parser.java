@@ -8,10 +8,12 @@ import java.util.Map;
 import uk.org.wookey.atari.architecture.InstructionData;
 import uk.org.wookey.atari.exceptions.EOFException;
 import uk.org.wookey.atari.exceptions.LabelExistsException;
+import uk.org.wookey.atari.exceptions.MemoryAccessException;
 import uk.org.wookey.atari.exceptions.NosuchLabelException;
 import uk.org.wookey.atari.exceptions.RuntimeAssemblyException;
 import uk.org.wookey.atari.exceptions.SyntaxException;
 import uk.org.wookey.atari.labels.LabelTable;
+import uk.org.wookey.atari.machines.Machine;
 import uk.org.wookey.atari.utils.Formatter;
 import uk.org.wookey.atari.utils.Logger;
 
@@ -23,6 +25,8 @@ public class Parser extends SimpleParser {
 		"org", "processor", "=", "equ",
 		".word", ".byte", ".byt"
 	}; 
+	
+	private Machine machine;
 	
 	private int pc;
 	
@@ -49,7 +53,10 @@ public class Parser extends SimpleParser {
 		
 		passNumber = 0;
 		silentReplace = false;
+		
 		generatingCode = false;
+		machine = null;
+		
 		anonLabelCounter = 0;
 		
 		for (String op: InstructionData.opcodeNames) {
@@ -63,8 +70,9 @@ public class Parser extends SimpleParser {
 		}
 	}
 	
-	public void pass(boolean generate) {
-		generatingCode = generate;
+	public void pass(Machine m) {
+		generatingCode = true;
+		machine = m;
 		
 		pass();
 	}
@@ -722,7 +730,12 @@ public class Parser extends SimpleParser {
 			b = b & 0xff;
 			
 			if (generatingCode) {
-				//_logger.logSuccess(Integer.toHexString(pc) + ": " + Formatter.toHexString(b,  2));
+				try {
+					machine.getBus().write(pc,  b);
+				} catch (MemoryAccessException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 			pc++;
 		}

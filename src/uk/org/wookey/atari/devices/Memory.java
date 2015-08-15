@@ -77,7 +77,6 @@ public class Memory extends Device {
         } else {
             throw new IOException("Cannot open file " + file);
         }
-
     }
 
     public int read(int address) throws MemoryAccessException {

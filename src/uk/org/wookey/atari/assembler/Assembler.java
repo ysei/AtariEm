@@ -2,13 +2,13 @@ package uk.org.wookey.atari.assembler;
 
 import java.util.List;
 
-import uk.org.wookey.atari.editor.CodeEditor;
+import uk.org.wookey.atari.machines.Machine;
 import uk.org.wookey.atari.utils.Logger;
 
 public class Assembler {
 	private final static Logger _logger = new Logger("Assembler");
 	
-	public Assembler(String sourceCode) {
+	public Assembler(Machine m, String sourceCode) {
 		Lexer lex = new Lexer();
 		
 		_logger.logInfo("Assembling...");
@@ -27,7 +27,7 @@ public class Assembler {
 		int passNum = 1;
 		
 		while (assembling) {
-			p.pass(false);
+			p.pass();
 			
 			if (p.hardErrors() > 0) {
 				_logger.logError("Giving up after pass " + passNum + " due to syntax errors.");
@@ -44,7 +44,7 @@ public class Assembler {
 			_logger.logError("Errors prevent code generation.");
 		}
 		else {
-			p.pass(true);
+			p.pass(m);
 		}
 		
 		//p.dumpLabels();

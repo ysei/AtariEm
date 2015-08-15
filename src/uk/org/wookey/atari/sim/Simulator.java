@@ -13,6 +13,8 @@ import javax.swing.JScrollPane;
 import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
 
+import com.grahamedgecombe.jterminal.JTerminal;
+
 import uk.org.wookey.atari.architecture.Cpu;
 import uk.org.wookey.atari.exceptions.MemoryAccessException;
 import uk.org.wookey.atari.machines.Machine;
@@ -60,6 +62,7 @@ public class Simulator extends JPanel {
 
         // UI component for machine specific components
         machinePane = machine.getUI();
+        
         statusPane = stPanel;
         
         // File Chooser

@@ -24,6 +24,11 @@ public class Lexer {
         for (int i = 0; i < input.length(); ) {
         	//_logger.logInfo("Examining '" + input.charAt(i) + "'");
             switch (input.charAt(i)) {
+            case '\r':
+            	i++;
+            	col++;
+            	break;
+            	
             case '\n':
                 add(new LexerToken(LexerTokenType.EOL, lineNum, col), result);
                 i++;
