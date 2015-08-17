@@ -75,23 +75,12 @@ public class ApplicationWindow extends JFrame implements ActionListener {
 		statusBar = MainStatusBar.getMainStatusBar(); 
 		
 		add(statusBar, BorderLayout.PAGE_END);
+		pack();
 		setVisible(true);
+		
+		sim.getConsole().requestFocusInWindow();
 	}	
 	
-	class FocusHandler implements FocusListener {
-		@Override
-		public void focusGained(FocusEvent fev) {
-			Component c = fev.getComponent();
-			c.setBackground(c.getBackground().darker());
-		}
-
-		@Override
-		public void focusLost(FocusEvent fev) {
-			Component c = fev.getComponent();
-			c.setBackground(c.getBackground().brighter());
-		}
-	}
-
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		String cmd = e.getActionCommand();

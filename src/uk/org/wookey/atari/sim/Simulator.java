@@ -16,6 +16,7 @@ import javax.swing.border.EmptyBorder;
 import com.grahamedgecombe.jterminal.JTerminal;
 
 import uk.org.wookey.atari.architecture.Cpu;
+import uk.org.wookey.atari.console.Console;
 import uk.org.wookey.atari.exceptions.MemoryAccessException;
 import uk.org.wookey.atari.machines.Machine;
 import uk.org.wookey.atari.ui.StatusPanel;
@@ -44,6 +45,7 @@ public class Simulator extends JPanel {
     private Cpu cpu;
     
     private SimRunner simRunner;
+    private Console console;
 
 	public Simulator(Machine machine, StatusPanel stPanel) {
 		super();
@@ -61,8 +63,7 @@ public class Simulator extends JPanel {
 		setLayout(new BorderLayout());
 
         // UI component for machine specific components
-        machinePane = machine.getUI();
-        
+        //machinePane = machine.getUI();
         statusPane = stPanel;
         
         // File Chooser
@@ -105,7 +106,9 @@ public class Simulator extends JPanel {
         add(consoleContainer, BorderLayout.LINE_START);
         
         // middle - machine panel
-        JScrollPane scroller = new JScrollPane(machinePane);
+        //JScrollPane scroller = new JScrollPane(machinePane);
+        console = new Console();
+        JScrollPane scroller = new JScrollPane(console);
         add(scroller, BorderLayout.CENTER);
         
         // Bottom - buttons.
@@ -156,6 +159,10 @@ public class Simulator extends JPanel {
             }
         });
         SimpleTimer.start();
+	}
+	
+	public Console getConsole() {
+		return console;
 	}
 	
 	private void handleRun() {
